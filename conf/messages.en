@@ -1225,7 +1225,8 @@ result.tfc.not.eligible = Tax-Free Childcare is based around your earnings and w
 
 result.esc.title = Childcare vouchers
 result.esc.period = a year in tax and National Insurance savings through salary sacrifice
-result.esc.para1 = On this scheme, each parent can take up to £55 a week of their wages as childcare vouchers, which you won’t pay tax or National Insurance on. Employers can only offer them to new claimants until the end of March 2018.
+result.esc.para1 = Each parent can take some of their pay as childcare vouchers and not pay tax or National Insurance on that amount. You could take up to £55, £28 or £25 a week in vouchers, depending on how much you earn.
+result.esc.para2 = Employers can only offer them to new claimants until the end of March 2018.
 
 result.esc.not.eligible.para1 = You wouldn’t get help from childcare vouchers as you told us that your employer doesn’t offer them.
 result.esc.not.eligible.para2 = Your employer may be able to help you with childcare costs by using vouchers (through salary sacrifice or salary plus) or other schemes, such as a staff nursery. If they don’t currently offer the scheme talk to them about joining it. The scheme will close to new joiners at the end of March 2018.
@@ -1261,8 +1262,9 @@ aboutYourResults.tfc.para1 = With this scheme, you’ll create an online childca
 aboutYourResults.tfc.para2 = You can get up to £2,000 a year for each child, or £4,000 if they are disabled, towards their costs - that’s up to £500 or £1,000 a month. You can only use this money to pay your childcare provider.
 
 aboutYourResults.esc.title = Childcare vouchers
-aboutYourResults.esc.para1 = Each parent can take up to £55 a week of their wages as childcare vouchers – around £243 a month. This is called salary sacrifice. You won’t pay tax or National Insurance on the amount of your pay you take in vouchers.
-aboutYourResults.esc.para2 = Employers can only offer them to new claimants until the end of March 2018, as they are being replaced by Tax-Free Childcare.
+aboutYourResults.esc.para1 = With this scheme, the amount of pay you can take in vouchers depends on how much you earn. It reduces your pay, which is why it’s called salary sacrifice. For example, basic-rate taxpayers can take up to £55 a week, higher-rate taxpayers can take up to £28 a week and top-rate taxpayers can take up to £25 a week – this is the amount you won’t pay tax or National Insurance on.
+aboutYourResults.esc.para2 = They are for children under 15, or 16 if disabled.
+aboutYourResults.esc.para3 = Employers can only offer them to new claimants until the end of March 2018, as they are being replaced by Tax-Free Childcare.
 
 aboutYourResults.more.info.title = More information on the schemes
 aboutYourResults.more.info.para1 = You can read more information about
