@@ -23,21 +23,49 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.{ChildcarePayFrequency, Yo
 
 class FirstParagraphBuilder @Inject()(utils: Utils){
 
+ /* var children = 0
+  val childAgeThreeOrFour = answers.childAgedThreeOrFour.getOrElse(false)
+  val childAgedTwo = answers.childAgedTwo.getOrElse(false)
+  val numberOfChildren = answers.noOfChildren.getOrElse(0)*/
+
   def buildFirstParagraph(answers: UserAnswers)(implicit messages: Messages) = {
+
+    val childAgeThreeOrFour = answers.childAgedThreeOrFour.getOrElse(false)
+    val childAgedTwo = answers.childAgedTwo.getOrElse(false)
+    val numberOfChildren = answers.noOfChildren.getOrElse(0)
     val doYouHaveChildren = buildFirstSection(answers, _: String)
     val yearlyChildcareCosts = buildSecondSection(answers, _: String)
     val whoAreYouLivingWith = buildThirdSection(answers, _: String)
     val areYouInPaidWork = buildFourthSection(answers, _: String)
-    val firstParagraph = (doYouHaveChildren andThen yearlyChildcareCosts andThen whoAreYouLivingWith andThen areYouInPaidWork) ("")
+    val firstParagraph = if ((numberOfChildren == 0) && (childAgeThreeOrFour) || (childAgedTwo)){
+      ( whoAreYouLivingWith andThen areYouInPaidWork) ("")
+    } else {
+      (doYouHaveChildren andThen yearlyChildcareCosts andThen whoAreYouLivingWith andThen areYouInPaidWork) ("")
+    }
     firstParagraph
+
+
   }
 
   private def buildFirstSection(answers: UserAnswers, paragraph: String)(implicit messages: Messages) = {
     val numberOfChildren = answers.noOfChildren.getOrElse(0)
     val childAgeThreeOrFour = answers.childAgedThreeOrFour.getOrElse(false)
+    val childAgedTwo = answers.childAgedTwo.getOrElse(false)
+
 
     val childOrChildren = if (numberOfChildren == 1) Messages("results.firstParagraph.aChild") else Messages("results.firstParagraph.children")
-    val numberOfChildrenMessage = if ((numberOfChildren == 0) && (!childAgeThreeOrFour) ) Messages("results.firstParagraph.dontHave") else Messages("results.firstParagraph.have")
+    val numberOfChildrenMessage =  if ((numberOfChildren == 0) &&  (childAgeThreeOrFour)){
+      Messages("results.firstParagraph.you ")
+    }
+      else if (numberOfChildren == 0){
+      Messages("results.firstParagraph.dontHave")
+
+    } else {
+      Messages("results.firstParagraph.have")
+    }
+    println("********************************childAgeThreeOrFour"+ childAgeThreeOrFour)
+    println("********************************numberOfChildrenMessage"+ numberOfChildrenMessage)
+    println(("*******************************numberOfChildren" + numberOfChildren))
     s"$paragraph${Messages("results.firstParagraph.youToldTheCalculator", numberOfChildrenMessage,childOrChildren)}"
   }
 

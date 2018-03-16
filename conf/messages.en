@@ -42,6 +42,7 @@ results.firstParagraph.children = children
 results.firstParagraph.aChild = one child
 results.firstParagraph.dontHave = don’t have
 results.firstParagraph.have = have
+results.firstParagraph.you = you
 results.firstParagraph.yearlyChildcareCosts = with yearly childcare costs of around £
 results.firstParagraph.withYourPartner = with your partner
 results.firstParagraph.onYourOwn = on your own
