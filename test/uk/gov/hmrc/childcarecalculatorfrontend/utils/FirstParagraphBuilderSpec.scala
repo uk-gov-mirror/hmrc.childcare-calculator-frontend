@@ -43,6 +43,16 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
        paragraphBuilder.buildFirstParagraph(answers) must include("you don’t have children")
      }
 
+     "You don’t have children but have a 3 or 4 year old" in {
+     //  val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(0))))
+
+       val answers = spy(userAnswers())
+       when(answers.childAgedThreeOrFour) thenReturn Some(true)
+     //when(answers.whoIsInPaidEmployment) thenReturn Some(YouPartnerBothEnum.BOTH.toString)
+
+       paragraphBuilder.buildFirstParagraph(answers) mustNot include("you don’t have children")
+     }
+
      "The number of children field is empty" in {
        val answers = new UserAnswers(new CacheMap("id", Map()))
 

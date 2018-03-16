@@ -34,8 +34,10 @@ class FirstParagraphBuilder @Inject()(utils: Utils){
 
   private def buildFirstSection(answers: UserAnswers, paragraph: String)(implicit messages: Messages) = {
     val numberOfChildren = answers.noOfChildren.getOrElse(0)
+    val childAgeThreeOrFour = answers.childAgedThreeOrFour.getOrElse(false)
+
     val childOrChildren = if (numberOfChildren == 1) Messages("results.firstParagraph.aChild") else Messages("results.firstParagraph.children")
-    val numberOfChildrenMessage = if (numberOfChildren == 0) Messages("results.firstParagraph.dontHave") else Messages("results.firstParagraph.have")
+    val numberOfChildrenMessage = if ((numberOfChildren == 0) && (!childAgeThreeOrFour) ) Messages("results.firstParagraph.dontHave") else Messages("results.firstParagraph.have")
     s"$paragraph${Messages("results.firstParagraph.youToldTheCalculator", numberOfChildrenMessage,childOrChildren)}"
   }
 
