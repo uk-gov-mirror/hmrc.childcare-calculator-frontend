@@ -16,40 +16,52 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
+import org.joda.time.LocalDate
 import org.mockito.Mockito.{spy, when}
+import org.mockito.ArgumentMatchers.any
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json._
 import play.api.mvc.Request
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{ChildcarePayFrequencyId, DoYouLiveWithPartnerId, ExpectedChildcareCostsId, NoOfChildrenId}
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{AboutYourChildId, ChildcarePayFrequencyId, DoYouLiveWithPartnerId, ExpectedChildcareCostsId, NoOfChildrenId}
 import uk.gov.hmrc.childcarecalculatorfrontend.models._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase {
+
+  val utils = new Utils()
+  val paragraphBuilder = new FirstParagraphBuilder(utils)
+  val answers = spy(userAnswers())
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val req: Request[_] = mock[Request[_]]
+
+  def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers: _*)))
+  when(answers.aboutYourChild(any())).thenReturn(Some(AboutYourChild("test-child", LocalDate.now())))
+
  "First Paragraph Builder" must {
    "Loading the Do You Have Children section" when {
      "You have two children" in {
-       val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(2))))
+       when(answers.noOfChildren).thenReturn(Some(2))
 
        paragraphBuilder.buildFirstParagraph(answers) must include("you have 2 children")
      }
 
      "You don’t have children" in {
-       val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(0))))
+       when(answers.noOfChildren).thenReturn(Some(0))
 
        paragraphBuilder.buildFirstParagraph(answers) must include("you don’t have children")
      }
 
      "The number of children field is empty" in {
-       val answers = new UserAnswers(new CacheMap("id", Map()))
+       when(answers.noOfChildren).thenReturn(None)
 
        paragraphBuilder.buildFirstParagraph(answers) mustBe ""
      }
 
      "You have one child" in {
-       val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(1))))
+       when(answers.noOfChildren).thenReturn(Some(1))
 
        paragraphBuilder.buildFirstParagraph(answers) must include("you have one child")
      }
@@ -89,7 +101,7 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
      }
 
      "We have children but no childcare costs" in {
-       val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(1))))
+       when(answers.noOfChildren).thenReturn(Some(1))
 
        paragraphBuilder.buildFirstParagraph(answers) must include("you have one child.")
      }
@@ -238,11 +250,4 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
    }
  }
 
-  val utils = new Utils()
-  val paragraphBuilder = new FirstParagraphBuilder(utils)
-  val answers = spy(userAnswers())
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val req: Request[_] = mock[Request[_]]
-
-  def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers: _*)))
 }

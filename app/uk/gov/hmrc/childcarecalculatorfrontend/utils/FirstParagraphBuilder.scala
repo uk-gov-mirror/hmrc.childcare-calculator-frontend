@@ -35,13 +35,14 @@ class FirstParagraphBuilder @Inject()(utils: Utils){
   private def buildFirstSection(answers: UserAnswers, paragraph: String)(implicit messages: Messages) = {
     answers.noOfChildren match {
       case Some(numberOfChildren) => {
-        val childOrChildren = if (numberOfChildren == 1) Messages("results.firstParagraph.aChild") else Messages("results.firstParagraph.children")
+        val definedNumberOfChildren = (for (i <- 0 until numberOfChildren; if answers.aboutYourChild(i).isDefined) yield i).length
+        val childOrChildren = if (definedNumberOfChildren == 1) Messages("results.firstParagraph.aChild") else Messages("results.firstParagraph.children")
         val numberOfChildrenMessage = {
-          if (numberOfChildren == 0) {
+          if (definedNumberOfChildren == 0) {
             Messages("results.firstParagraph.dontHave")
           }
           else {
-            if (numberOfChildren > 1) s"${Messages("results.firstParagraph.have")} $numberOfChildren" else Messages("results.firstParagraph.have")
+            if (definedNumberOfChildren > 1) s"${Messages("results.firstParagraph.have")} $definedNumberOfChildren" else Messages("results.firstParagraph.have")
           }
         }
         s"$paragraph${Messages("results.firstParagraph.youToldTheCalculator", numberOfChildrenMessage,childOrChildren)}"
