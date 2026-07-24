@@ -16,8 +16,13 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.DisabilityBenefit
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
 case class WhichDisabilityBenefitsId(id: Int) extends Identifier
 
-object WhichDisabilityBenefitsId {
+object WhichDisabilityBenefitsId extends CacheKey {
   override def toString: String = "whichDisabilityBenefits"
+
+  override type CacheValue = Map[Int, Set[DisabilityBenefit]]
 }

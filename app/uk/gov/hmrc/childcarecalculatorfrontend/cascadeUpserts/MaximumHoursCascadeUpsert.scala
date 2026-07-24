@@ -17,19 +17,16 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
 import play.api.libs.json.{JsBoolean, JsString, JsValue}
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{SelfEmployedOrApprenticeOrNeitherEnum, YesNoUnsureEnum}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, SubCascadeUpsert}
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{EmploymentStatus, YouPartnerBothNeither}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
-class MaximumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
+@Singleton
+class MaximumHoursCascadeUpsert @Inject() extends SubCascadeUpsert {
 
-  lazy val no: String      = YesNoUnsureEnum.NO.toString
-  lazy val notSure: String = YesNoUnsureEnum.NOTSURE.toString
-
-  val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
+  override val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
     Map(
       DoYouLiveWithPartnerId.toString()          -> ((v, cm) => storeDoYouLiveWithPartner(v, cm)),
       WhoIsInPaidEmploymentId.toString           -> ((v, cm) => storeWhoIsInPaidEmployment(v, cm)),
@@ -82,7 +79,7 @@ class MaximumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
   private def storeWhoIsInPaidEmployment(value: JsValue, cacheMap: CacheMap): CacheMap = {
     val mapToStore =
       value match {
-        case JsString(`you`) =>
+        case JsString(YouPartnerBothNeither.You.toString) =>
           cacheMap.copy(data =
             cacheMap.data - HasYourPartnersTaxCodeBeenAdjustedId.toString -
               DoYouKnowYourPartnersAdjustedTaxCodeId.toString - WhatIsYourPartnersTaxCodeId.toString - PartnerChildcareVouchersId.toString -
@@ -94,7 +91,7 @@ class MaximumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
               BothOtherIncomeThisYearId.toString - WhoGetsOtherIncomeCYId.toString - OtherIncomeAmountCYId.toString - BothAnyTheseBenefitsCYId.toString -
               WhosHadBenefitsId.toString - BenefitsIncomeCYId.toString
           )
-        case JsString(`partner`) =>
+        case JsString(YouPartnerBothNeither.Partner.toString) =>
           cacheMap.copy(data =
             cacheMap.data - HasYourTaxCodeBeenAdjustedId.toString -
               DoYouKnowYourAdjustedTaxCodeId.toString - WhatIsYourTaxCodeId.toString - YourChildcareVouchersId.toString - WhoGetsVouchersId.toString -
@@ -107,7 +104,7 @@ class MaximumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
               BothAnyTheseBenefitsCYId.toString - WhosHadBenefitsId.toString - BenefitsIncomeCYId.toString
           )
 
-        case JsString(`both`) =>
+        case JsString(YouPartnerBothNeither.Both.toString) =>
           cacheMap.copy(data =
             cacheMap.data - YourChildcareVouchersId.toString - PartnerChildcareVouchersId.toString -
               PartnerPaidWorkCYId.toString - ParentEmploymentIncomeCYId.toString - YouPaidPensionCYId.toString - HowMuchYouPayPensionId.toString -
@@ -117,7 +114,7 @@ class MaximumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
               PartnerBenefitsIncomeCYId.toString
           )
 
-        case JsString(`neither`) =>
+        case JsString(YouPartnerBothNeither.Neither.toString) =>
           cacheMap.copy(data =
             cacheMap.data -
               HasYourTaxCodeBeenAdjustedId.toString - DoYouKnowYourAdjustedTaxCodeId.toString - WhatIsYourTaxCodeId.toString -
@@ -148,8 +145,8 @@ class MaximumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
   private def AreYouSelfEmployedOrApprentice(value: JsValue, cacheMap: CacheMap): CacheMap = {
     val mapToStore =
       if (
-        value == JsString(SelfEmployedOrApprenticeOrNeitherEnum.APPRENTICE.toString)
-        || (value == JsString(SelfEmployedOrApprenticeOrNeitherEnum.NEITHER.toString))
+        value == JsString(EmploymentStatus.Apprentice.toString)
+        || (value == JsString(EmploymentStatus.Neither.toString))
       ) {
         cacheMap.copy(data = cacheMap.data - YourSelfEmployedId.toString)
       } else cacheMap
@@ -160,8 +157,8 @@ class MaximumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
   private def PartnerSelfEmployedOrApprentice(value: JsValue, cacheMap: CacheMap): CacheMap = {
     val mapToStore =
       if (
-        value == JsString(SelfEmployedOrApprenticeOrNeitherEnum.APPRENTICE.toString)
-        || (value == JsString(SelfEmployedOrApprenticeOrNeitherEnum.NEITHER.toString))
+        value == JsString(EmploymentStatus.Apprentice.toString)
+        || (value == JsString(EmploymentStatus.Neither.toString))
       ) {
         cacheMap.copy(data = cacheMap.data - PartnerSelfEmployedId.toString)
       } else cacheMap

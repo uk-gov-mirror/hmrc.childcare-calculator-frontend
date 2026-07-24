@@ -16,57 +16,65 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class YouBenefitsIncomeCYFormSpec extends FormSpec {
 
-  val errorKeyBlank   = youBenefitsIncomeCYRequiredErrorKey
-  val errorKeyInvalid = youBenefitsIncomeCYInvalidErrorKey
+  val missingErrorKey      = youBenefitsIncomeCYRequiredErrorKey
+  val invalidValueErrorKey = youBenefitsIncomeCYInvalidErrorKey
 
   "YouBenefitsIncomeCY Form" must {
 
     "bind positive numbers" in {
-      val form = YouBenefitsIncomeCYForm(errorKeyBlank, errorKeyInvalid).bind(Map("value" -> "1.0"))
+      val form = YouBenefitsIncomeCYForm(missingErrorKey, invalidValueErrorKey).bind(Map("value" -> "1.0"))
       form.get mustBe 1.0
     }
 
     "bind positive decimal number up to the threshold of 9999.99" in {
-      val form = YouBenefitsIncomeCYForm(errorKeyBlank, errorKeyInvalid).bind(Map("value" -> "9999.99"))
+      val form = YouBenefitsIncomeCYForm(missingErrorKey, invalidValueErrorKey).bind(Map("value" -> "9999.99"))
       form.get mustBe 9999.99
     }
 
     "fail to bind numbers greater than the threshold of 9999.99" in {
-      val expectedError = error("value", errorKeyInvalid)
-      checkForError(YouBenefitsIncomeCYForm(errorKeyBlank, errorKeyInvalid), Map("value" -> "10000"), expectedError)
+      val expectedError = error("value", invalidValueErrorKey)
+      checkForError(
+        YouBenefitsIncomeCYForm(missingErrorKey, invalidValueErrorKey),
+        Map("value" -> "10000"),
+        expectedError
+      )
     }
 
     "fail to bind numbers below the threshold" in {
-      val expectedError = error("value", errorKeyInvalid)
-      checkForError(YouBenefitsIncomeCYForm(errorKeyBlank, errorKeyInvalid), Map("value" -> "0.9"), expectedError)
+      val expectedError = error("value", invalidValueErrorKey)
+      checkForError(
+        YouBenefitsIncomeCYForm(missingErrorKey, invalidValueErrorKey),
+        Map("value" -> "0.9"),
+        expectedError
+      )
     }
 
     "fail to bind negative numbers" in {
-      val expectedError = error("value", errorKeyInvalid)
-      checkForError(YouBenefitsIncomeCYForm(errorKeyBlank, errorKeyInvalid), Map("value" -> "-1"), expectedError)
+      val expectedError = error("value", invalidValueErrorKey)
+      checkForError(YouBenefitsIncomeCYForm(missingErrorKey, invalidValueErrorKey), Map("value" -> "-1"), expectedError)
     }
 
     "fail to bind non-numerics" in {
-      val expectedError = error("value", errorKeyInvalid)
+      val expectedError = error("value", invalidValueErrorKey)
       checkForError(
-        YouBenefitsIncomeCYForm(errorKeyBlank, errorKeyInvalid),
+        YouBenefitsIncomeCYForm(missingErrorKey, invalidValueErrorKey),
         Map("value" -> "not a number"),
         expectedError
       )
     }
 
     "fail to bind a blank value" in {
-      val expectedError = error("value", errorKeyBlank)
-      checkForError(YouBenefitsIncomeCYForm(errorKeyBlank, errorKeyInvalid), Map("value" -> ""), expectedError)
+      val expectedError = error("value", missingErrorKey)
+      checkForError(YouBenefitsIncomeCYForm(missingErrorKey, invalidValueErrorKey), Map("value" -> ""), expectedError)
     }
 
     "fail to bind when value is omitted" in {
-      val expectedError = error("value", errorKeyBlank)
-      checkForError(YouBenefitsIncomeCYForm(errorKeyBlank, errorKeyInvalid), emptyForm, expectedError)
+      val expectedError = error("value", missingErrorKey)
+      checkForError(YouBenefitsIncomeCYForm(missingErrorKey, invalidValueErrorKey), emptyForm, expectedError)
     }
   }
 

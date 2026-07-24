@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.views
 
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location._
+import uk.gov.hmrc.childcarecalculatorfrontend.models.Location.*
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewViewBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.freeHoursInfo
 
@@ -30,14 +30,14 @@ class FreeHoursInfoViewSpec extends NewViewBehaviours {
 
   "FreeHoursInfo view" must {
 
-    behave.like(normalPage(createView(Location.ENGLAND), messageKeyPrefix))
+    behave.like(normalPage(createView(Location.England), messageKeyPrefix))
 
-    behave.like(pageWithBackLink(createView(Location.ENGLAND)))
+    behave.like(pageWithBackLink(createView(Location.England)))
 
     "display correct content" when {
 
       "location is England" in {
-        val viewInstance = view(Location.ENGLAND)(fakeRequest, messages)
+        val viewInstance = view(Location.England)(fakeRequest, messages)
 
         assertContainsText(asDocument(viewInstance), messages(s"$messageKeyPrefix.para1.england"))
         assertContainsText(asDocument(viewInstance), messages(s"$messageKeyPrefix.para2.england"))
@@ -48,7 +48,7 @@ class FreeHoursInfoViewSpec extends NewViewBehaviours {
         assertContainsText(asDocument(viewInstance), messages(s"$messageKeyPrefix.li.vouchers"))
       }
 
-      Seq(SCOTLAND, WALES, NORTHERN_IRELAND).foreach { location =>
+      Seq(Scotland, Wales, NorthernIreland).foreach { location =>
         s"location is $location" in {
           val viewInstance = view(location)(fakeRequest, messages)
 

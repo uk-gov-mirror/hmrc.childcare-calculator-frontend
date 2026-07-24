@@ -18,26 +18,25 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc._
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
+import play.api.mvc.*
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.AboutYourChildForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.AboutYourChildId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.AboutYourChild
 import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{MapFormats, SessionExpiredRouter, UserAnswers}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.aboutYourChild
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class AboutYourChildController @Inject() (
-    appConfig: FrontendAppConfig,
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -73,7 +72,7 @@ class AboutYourChildController @Inject() (
           case Some(value) =>
             AboutYourChildForm(childIndex, noOfChildren, request.userAnswers.aboutYourChild).fill(value)
         }
-        Future.successful(Ok(aboutYourChild(appConfig, preparedForm, childIndex, noOfChildren)))
+        Future.successful(Ok(aboutYourChild(preparedForm, childIndex, noOfChildren)))
       }
     }
 
@@ -83,12 +82,11 @@ class AboutYourChildController @Inject() (
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[AboutYourChild]) =>
-            Future.successful(BadRequest(aboutYourChild(appConfig, formWithErrors, childIndex, noOfChildren))),
+            Future.successful(BadRequest(aboutYourChild(formWithErrors, childIndex, noOfChildren))),
           value =>
-            dataCacheConnector
+            dataCacheService
               .saveInMap[Int, AboutYourChild](
-                request.sessionId,
-                AboutYourChildId.toString,
+                AboutYourChildId,
                 childIndex,
                 value
               )

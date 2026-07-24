@@ -18,14 +18,14 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.libs.json.JsNumber
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.PartnerBenefitsIncomeCYForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.PartnerBenefitsIncomeCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerBenefitsIncomeCY
 
 class PartnerBenefitsIncomeCYControllerSpec extends ControllerSpecBase {

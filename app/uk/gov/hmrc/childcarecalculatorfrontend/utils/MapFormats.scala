@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import scala.util.{Failure, Success, Try}
 
@@ -30,7 +30,7 @@ trait MapFormats {
         }) match {
           case Success(v) =>
             JsSuccess(v)
-          case Failure(e) =>
+          case Failure(_) =>
             JsError("Failed to convert map keys into ints")
         }
       }

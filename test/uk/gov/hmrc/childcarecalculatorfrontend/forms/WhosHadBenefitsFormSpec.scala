@@ -17,8 +17,8 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YouPartnerBothEnum
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.models.YouPartnerBoth
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class WhosHadBenefitsFormSpec extends FormBehaviours {
 
@@ -30,10 +30,10 @@ class WhosHadBenefitsFormSpec extends FormBehaviours {
 
   "WhosHadBenefits form" must {
 
-    behave.like(questionForm[YouPartnerBothEnum.Value](YouPartnerBothEnum.YOU))
+    behave.like(questionForm[YouPartnerBoth](YouPartnerBoth.You))
 
     behave.like(
-      formWithOptionFieldError("value", whosHadBenefitsErrorKey, WhosHadBenefitsForm.options.map(x => x.value): _*)
+      formWithOptionFieldError("value", whosHadBenefitsErrorKey, WhosHadBenefitsForm.options.map(x => x.value)*)
     )
   }
 

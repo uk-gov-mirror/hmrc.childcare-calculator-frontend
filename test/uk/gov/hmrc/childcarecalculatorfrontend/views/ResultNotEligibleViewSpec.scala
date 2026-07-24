@@ -26,7 +26,7 @@ class ResultNotEligibleViewSpec extends NewViewBehaviours with MockitoSugar {
 
   lazy val appResultNotEligible: resultNotEligible = application.injector.instanceOf[resultNotEligible]
 
-  val locationEngland: Location.Value = Location.ENGLAND
+  val locationEngland: Location = Location.England
 
   "Result not eligible view" must {
     "contain results" when {

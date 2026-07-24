@@ -19,7 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.forms
 import javax.inject.{Inject, Singleton}
 
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.models.OtherIncomeAmountCY
 

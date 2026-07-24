@@ -17,14 +17,14 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.models.schemes
 
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefits._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{Eligible, NotDetermined, NotEligible, ParentsBenefits}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.Location.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.{Eligible, NotDetermined, NotEligible, ParentsBenefit}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 
 class FreeChildcareWorkingParentsSpec extends PlaySpec with Matchers with BeforeAndAfterEach {
@@ -41,7 +41,7 @@ class FreeChildcareWorkingParentsSpec extends PlaySpec with Matchers with Before
     reset(userAnswers)
   }
 
-  private val FreeChildcareEligibleBenefits: Set[ParentsBenefits] = Set(
+  private val FreeChildcareEligibleBenefits: Set[ParentsBenefit] = Set(
     CarersAllowance,
     IncapacityBenefit,
     SevereDisablementAllowance,
@@ -60,7 +60,7 @@ class FreeChildcareWorkingParentsSpec extends PlaySpec with Matchers with Before
       }
     }
 
-    Seq(SCOTLAND, WALES, NORTHERN_IRELAND).foreach { location =>
+    Seq(Scotland, Wales, NorthernIreland).foreach { location =>
       s"location is ${location.toString}" must {
 
         "NOT call FreeChildcareEligibilityCalculator" in {
@@ -84,7 +84,7 @@ class FreeChildcareWorkingParentsSpec extends PlaySpec with Matchers with Before
       "user does NOT have children in any of the qualifying age groups" must {
 
         def initMocks(): Unit = {
-          when(userAnswers.location).thenReturn(Some(ENGLAND))
+          when(userAnswers.location).thenReturn(Some(England))
           when(userAnswers.isChildAgedNineTo23Months).thenReturn(Some(false))
           when(userAnswers.isChildAgedTwo).thenReturn(Some(false))
           when(userAnswers.isChildAgedThreeOrFour).thenReturn(Some(false))
@@ -108,7 +108,7 @@ class FreeChildcareWorkingParentsSpec extends PlaySpec with Matchers with Before
       "user has a 9 to 23 months old child" must {
 
         def initMocks(): Unit = {
-          when(userAnswers.location).thenReturn(Some(ENGLAND))
+          when(userAnswers.location).thenReturn(Some(England))
           when(userAnswers.isChildAgedNineTo23Months).thenReturn(Some(true))
           when(userAnswers.isChildAgedTwo).thenReturn(Some(false))
           when(userAnswers.isChildAgedThreeOrFour).thenReturn(Some(false))
@@ -139,7 +139,7 @@ class FreeChildcareWorkingParentsSpec extends PlaySpec with Matchers with Before
       "user has a 2 years old child" must {
 
         def initMocks(): Unit = {
-          when(userAnswers.location).thenReturn(Some(ENGLAND))
+          when(userAnswers.location).thenReturn(Some(England))
           when(userAnswers.isChildAgedNineTo23Months).thenReturn(Some(false))
           when(userAnswers.isChildAgedTwo).thenReturn(Some(true))
           when(userAnswers.isChildAgedThreeOrFour).thenReturn(Some(false))
@@ -170,7 +170,7 @@ class FreeChildcareWorkingParentsSpec extends PlaySpec with Matchers with Before
       "user has a 3 or 4 years old child" must {
 
         def initMocks(): Unit = {
-          when(userAnswers.location).thenReturn(Some(ENGLAND))
+          when(userAnswers.location).thenReturn(Some(England))
           when(userAnswers.isChildAgedNineTo23Months).thenReturn(Some(false))
           when(userAnswers.isChildAgedTwo).thenReturn(Some(false))
           when(userAnswers.isChildAgedThreeOrFour).thenReturn(Some(true))
@@ -201,7 +201,7 @@ class FreeChildcareWorkingParentsSpec extends PlaySpec with Matchers with Before
       "user has children in several qualifying age groups" must {
 
         def initMocks(): Unit = {
-          when(userAnswers.location).thenReturn(Some(ENGLAND))
+          when(userAnswers.location).thenReturn(Some(England))
           when(userAnswers.isChildAgedNineTo23Months).thenReturn(Some(true))
           when(userAnswers.isChildAgedTwo).thenReturn(Some(false))
           when(userAnswers.isChildAgedThreeOrFour).thenReturn(Some(true))

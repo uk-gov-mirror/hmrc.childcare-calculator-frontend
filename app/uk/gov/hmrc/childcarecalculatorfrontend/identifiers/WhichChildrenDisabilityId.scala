@@ -16,6 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object WhichChildrenDisabilityId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object WhichChildrenDisabilityId extends Identifier with CacheKey {
   override def toString: String = "whichChildrenDisability"
+
+  override type CacheValue = Set[Int]
 }

@@ -19,23 +19,23 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.YourOtherIncomeAmountCYForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.YourOtherIncomeAmountCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourOtherIncomeAmountCY
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class YourOtherIncomeAmountCYController @Inject() (
-    appConfig: FrontendAppConfig,
+
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -50,18 +50,17 @@ class YourOtherIncomeAmountCYController @Inject() (
       case None        => form()
       case Some(value) => form().fill(value)
     }
-    Ok(yourOtherIncomeAmountCY(appConfig, preparedForm))
+    Ok(yourOtherIncomeAmountCY(preparedForm))
   }
 
   def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
     form()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[BigDecimal]) =>
-          Future.successful(BadRequest(yourOtherIncomeAmountCY(appConfig, formWithErrors))),
+        (formWithErrors: Form[BigDecimal]) => Future.successful(BadRequest(yourOtherIncomeAmountCY(formWithErrors))),
         value =>
-          dataCacheConnector
-            .save[BigDecimal](request.sessionId, YourOtherIncomeAmountCYId.toString, value)
+          dataCacheService
+            .save(YourOtherIncomeAmountCYId, value)
             .map(cacheMap => Redirect(navigator.nextPage(YourOtherIncomeAmountCYId)(new UserAnswers(cacheMap))))
       )
   }

@@ -28,7 +28,7 @@ class LocationViewSpec extends NewViewBehaviours {
 
   def createView = () => view(frontendAppConfig, LocationForm())(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => view(frontendAppConfig, form)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[?]) => view(frontendAppConfig, form)(fakeRequest, messages)
 
   "Location view" must {
     behave.like(normalPage(createView, messageKeyPrefix, "guidance"))

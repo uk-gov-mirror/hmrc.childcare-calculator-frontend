@@ -17,12 +17,12 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import play.api.data.Form
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class PartnerEmploymentIncomeCYFormSpec extends FormSpec {
 
-  val errorKeyBlank   = partnerEmploymentIncomeBlankErrorKey
-  val errorKeyInvalid = partnerEmploymentIncomeInvalidErrorKey
+  val missingErrorKey      = partnerEmploymentIncomeBlankErrorKey
+  val invalidValueErrorKey = partnerEmploymentIncomeInvalidErrorKey
 
   val partnerEmpIncomeCYForm: Form[BigDecimal] = new PartnerEmploymentIncomeCYForm(frontendAppConfig).apply()
 
@@ -39,27 +39,27 @@ class PartnerEmploymentIncomeCYFormSpec extends FormSpec {
     }
 
     "fail to bind negative numbers" in {
-      val expectedError = error("value", errorKeyInvalid)
+      val expectedError = error("value", invalidValueErrorKey)
       checkForError(partnerEmpIncomeCYForm, Map("value" -> "-1"), expectedError)
     }
 
     "fail to bind non-numerics" in {
-      val expectedError = error("value", errorKeyInvalid)
+      val expectedError = error("value", invalidValueErrorKey)
       checkForError(partnerEmpIncomeCYForm, Map("value" -> "not a number"), expectedError)
     }
 
     "fail to bind a blank value" in {
-      val expectedError = error("value", errorKeyBlank)
+      val expectedError = error("value", missingErrorKey)
       checkForError(partnerEmpIncomeCYForm, Map("value" -> ""), expectedError)
     }
 
     "fail to bind when value is omitted" in {
-      val expectedError = error("value", errorKeyBlank)
+      val expectedError = error("value", missingErrorKey)
       checkForError(partnerEmpIncomeCYForm, emptyForm, expectedError)
     }
 
     "fail to bind numbers below the threshold" in {
-      val expectedError = error("value", errorKeyInvalid)
+      val expectedError = error("value", invalidValueErrorKey)
       checkForError(partnerEmpIncomeCYForm, Map("value" -> "0.9"), expectedError)
     }
   }

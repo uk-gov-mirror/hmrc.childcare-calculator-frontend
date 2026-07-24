@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class YourPartnersAgeFormSpec extends FormBehaviours {
 
@@ -31,7 +31,7 @@ class YourPartnersAgeFormSpec extends FormBehaviours {
     behave.like(questionForm[String](YourPartnersAgeForm.options.head.value))
 
     behave.like(
-      formWithOptionFieldError("value", yourPartnersAgeErrorKey, YourPartnersAgeForm.options.map(x => x.value): _*)
+      formWithOptionFieldError("value", yourPartnersAgeErrorKey, YourPartnersAgeForm.options.map(x => x.value)*)
     )
   }
 

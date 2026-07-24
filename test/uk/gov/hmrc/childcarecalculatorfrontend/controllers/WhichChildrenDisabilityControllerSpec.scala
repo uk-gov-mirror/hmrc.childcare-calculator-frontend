@@ -18,10 +18,10 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.libs.json._
-import play.api.test.Helpers._
+import play.api.libs.json.*
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhichChildrenDisabilityForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{AboutYourChildId, WhichChildrenDisabilityId}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.AboutYourChild
@@ -62,7 +62,7 @@ class WhichChildrenDisabilityControllerSpec extends ControllerSpecBase with Opti
     "Bar" -> "1"
   )
 
-  def viewAsString(form: Form[_] = WhichChildrenDisabilityForm()): String =
+  def viewAsString(form: Form[?] = WhichChildrenDisabilityForm()): String =
     view(frontendAppConfig, form, options)(fakeRequest, messages).toString
 
   "WhichChildrenDisability Controller" must {

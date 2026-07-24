@@ -22,7 +22,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.LocationForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.LocationId
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 import java.time.LocalDate
 

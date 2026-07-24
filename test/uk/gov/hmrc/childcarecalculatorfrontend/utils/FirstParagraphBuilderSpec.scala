@@ -19,7 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.utils
 import org.mockito.Mockito.{spy, when}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.api.mvc.Request
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
@@ -28,7 +28,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
   ExpectedChildcareCostsId,
   NoOfChildrenId
 }
-import uk.gov.hmrc.childcarecalculatorfrontend.models._
+import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase {
@@ -37,9 +37,9 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
   val paragraphBuilder           = new FirstParagraphBuilder(utils)
   val answers: UserAnswers       = spy(userAnswers())
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val req: Request[_]   = mock[Request[_]]
+  implicit val req: Request[?]   = mock[Request[_]]
 
-  def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers: _*)))
+  def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers*)))
 
   "First Paragraph Builder" must {
     "Loading the Do You Have Children section" when {
@@ -191,7 +191,7 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
       "Only you are in paid work" in {
         val answers = spy(userAnswers())
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothEnum.YOU.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.You.toString))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain(
           "you are in paid work and your partner is not in paid work"
@@ -201,7 +201,7 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
       "Partner in paid work" in {
         val answers = spy(userAnswers())
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothEnum.PARTNER.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.Partner.toString))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain(
           "you are not in paid work and your partner is in paid work"
@@ -211,7 +211,7 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
       "Both are in paid work" in {
         val answers = spy(userAnswers())
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothEnum.BOTH.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.Both.toString))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain(
           "you and your partner are both currently in paid work"
@@ -221,7 +221,7 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
       "Neither in paid work" in {
         val answers = spy(userAnswers())
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeitherEnum.NEITHER.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Neither.toString))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain("none of you are currently in paid work")
       }
@@ -230,7 +230,7 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
         val answers = spy(userAnswers())
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.areYouInPaidWork).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothEnum.YOU.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.You.toString))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain("you live on your own")
         paragraphBuilder.buildFirstParagraph(answers) must contain("you are in paid work")
@@ -246,7 +246,7 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
 
       "You are in paid work but there is no data to know if you live with partner" in {
         val answers = spy(userAnswers())
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothEnum.YOU.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.You.toString))
 
         paragraphBuilder.buildFirstParagraph(answers) mustNot contain("you live on your own")
         paragraphBuilder.buildFirstParagraph(answers) mustNot contain("you are currently in paid work")

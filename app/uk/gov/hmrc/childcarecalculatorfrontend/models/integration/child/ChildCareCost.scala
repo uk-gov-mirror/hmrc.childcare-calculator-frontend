@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
+package uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child
 
-case object PartnerPaidPensionCYId extends Identifier {
-  override def toString: String = "PartnerPaidPensionCY"
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Period
+
+case class ChildCareCost(
+    amount: Option[BigDecimal] = None,
+    period: Option[Period] = None
+)
+
+object ChildCareCost {
+  implicit val formatChildCareCost: OFormat[ChildCareCost] = Json.format[ChildCareCost]
 }

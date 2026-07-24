@@ -43,7 +43,7 @@ trait NewStringViewBehaviours extends NewQuestionViewBehaviours[String] {
           assertContainsLabel(
             doc,
             "value",
-            messages(s"$messageKeyPrefix.heading", args: _*),
+            messages(s"$messageKeyPrefix.heading", args*),
             expectedHintTextLine1,
             expectedHintTextLine2
           )

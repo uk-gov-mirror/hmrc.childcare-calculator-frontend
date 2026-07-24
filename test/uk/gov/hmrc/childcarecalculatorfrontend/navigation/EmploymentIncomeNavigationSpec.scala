@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.navigation
 
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.EmploymentIncomeCY
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers, Utils}
 
 class EmploymentIncomeNavigationSpec extends SpecBase with MockitoSugar with OptionValues {
@@ -32,7 +32,7 @@ class EmploymentIncomeNavigationSpec extends SpecBase with MockitoSugar with Opt
   val navigator = new EmploymentIncomeNavigator(new Utils())
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers =
-    new UserAnswers(CacheMap("", Map(answers: _*)))
+    new UserAnswers(CacheMap("", Map(answers*)))
 
   "Current Year Income Route Navigation" when {
 

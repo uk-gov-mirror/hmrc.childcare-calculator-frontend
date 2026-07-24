@@ -22,8 +22,9 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequired
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.freeHoursInfo
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
+@Singleton
 class FreeHoursInfoController @Inject() (
     mcc: MessagesControllerComponents,
     getData: DataRetrievalAction,

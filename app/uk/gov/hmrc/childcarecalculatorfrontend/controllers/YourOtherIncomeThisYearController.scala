@@ -19,23 +19,23 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.YourOtherIncomeThisYearId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{TaxYearInfo, UserAnswers}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourOtherIncomeThisYear
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class YourOtherIncomeThisYearController @Inject() (
-    appConfig: FrontendAppConfig,
+
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -50,7 +50,7 @@ class YourOtherIncomeThisYearController @Inject() (
       case None        => BooleanForm()
       case Some(value) => BooleanForm().fill(value)
     }
-    Ok(yourOtherIncomeThisYear(appConfig, preparedForm, taxYearInfo))
+    Ok(yourOtherIncomeThisYear(preparedForm, taxYearInfo))
   }
 
   def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
@@ -58,10 +58,10 @@ class YourOtherIncomeThisYearController @Inject() (
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Boolean]) =>
-          Future.successful(BadRequest(yourOtherIncomeThisYear(appConfig, formWithErrors, taxYearInfo))),
+          Future.successful(BadRequest(yourOtherIncomeThisYear(formWithErrors, taxYearInfo))),
         value =>
-          dataCacheConnector
-            .save[Boolean](request.sessionId, YourOtherIncomeThisYearId.toString, value)
+          dataCacheService
+            .save(YourOtherIncomeThisYearId, value)
             .map(cacheMap => Redirect(navigator.nextPage(YourOtherIncomeThisYearId)(new UserAnswers(cacheMap))))
       )
   }

@@ -18,9 +18,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.libs.json.JsString
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.LocationForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.LocationId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
@@ -43,7 +43,7 @@ class LocationControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[_] = LocationForm()) =
+  def viewAsString(form: Form[?] = LocationForm()) =
     view(frontendAppConfig, form)(fakeRequest, messages).toString
 
   "Location Controller" must {

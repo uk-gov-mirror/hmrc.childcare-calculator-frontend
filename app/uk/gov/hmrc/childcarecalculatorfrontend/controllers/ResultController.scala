@@ -18,14 +18,11 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.ResultsViewModelId
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
-import uk.gov.hmrc.childcarecalculatorfrontend.models.views.ResultsViewModel
-import uk.gov.hmrc.childcarecalculatorfrontend.services.ResultsService
+import uk.gov.hmrc.childcarecalculatorfrontend.services.{DataCacheService, ResultsService}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.Utils
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.result
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,9 +33,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ResultController @Inject() (
-    val appConfig: FrontendAppConfig,
+    val
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     resultsService: ResultsService,
@@ -56,11 +53,11 @@ class ResultController @Inject() (
   }
 
   private def renderResultsPage(
-      location: Location.Value
-  )(implicit request: DataRequest[_], hc: HeaderCarrier): Future[Result] =
+      location: Location
+  )(implicit request: DataRequest[?], hc: HeaderCarrier): Future[Result] =
     resultsService.getResultsViewModel(request.userAnswers, location).map { model =>
-      dataCacheConnector.save[ResultsViewModel](request.sessionId, ResultsViewModelId.toString, model)
-      Ok(result(appConfig, model, utils))
+      dataCacheService.save(ResultsViewModelId, model)
+      Ok(result(model, utils))
     }
 
 }

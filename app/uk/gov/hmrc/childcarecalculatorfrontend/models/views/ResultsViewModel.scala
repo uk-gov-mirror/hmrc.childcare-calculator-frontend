@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.models.views
 
-import play.api.libs.json._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.EarningsEnum.EarningsEnum
-import uk.gov.hmrc.childcarecalculatorfrontend.models._
+import play.api.libs.json.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
   freeHoursForEngland,
   freeHoursForNI,
@@ -32,15 +32,15 @@ case class ResultsViewModel(
     esc: Option[BigDecimal] = None,
     freeHours: Option[BigDecimal] = None,
     freeChildcareWorkingParents: Boolean = false,
-    location: Location.Value,
-    childrenAgeGroups: Set[ChildAgeGroup] = Set(NoneOfThese),
+    location: Location,
+    childrenAgeGroups: Set[ChildAgeGroup] = Set(ChildAgeGroup.NoneOfThese),
     tfcWarningMessage: Option[String] = None,
     hasChildcareCosts: Boolean,
     hasCostsWithApprovedProvider: Boolean,
     isAnyoneInPaidEmployment: Boolean,
     livesWithPartner: Boolean,
-    yourEarnings: Option[EarningsEnum] = None,
-    partnerEarnings: Option[EarningsEnum] = None,
+    yourEarnings: Option[Earnings] = None,
+    partnerEarnings: Option[Earnings] = None,
     freeChildcareWorkingParentsEligibilityMsg: Option[String] = None,
     taxFreeChildcareEligibilityMsg: Option[String] = None
 ) {
@@ -61,13 +61,20 @@ case class ResultsViewModel(
   def isEligibleToAllSchemes: Boolean = noOfEligibleSchemes == 3
 
   def showTwoYearOldInfo: Boolean =
-    if (childrenAgeGroups.contains(TwoYears)) {
+    if (childrenAgeGroups.contains(ChildAgeGroup.TwoYears)) {
       location match {
-        case Location.NORTHERN_IRELAND => false
-        case Location.WALES            => false
+        case Location.NorthernIreland => false
+        case Location.Wales           => false
         case _ =>
           if (noOfEligibleSchemes == 0) {
-            if (childrenAgeGroups.contains(ThreeYears) || childrenAgeGroups.contains(FourYears)) false else true
+            if (
+              childrenAgeGroups
+                .contains(ChildAgeGroup.ThreeYears) || childrenAgeGroups.contains(ChildAgeGroup.FourYears)
+            ) {
+              false
+            } else {
+              true
+            }
           } else {
             true
           }
@@ -77,9 +84,9 @@ case class ResultsViewModel(
     }
 
   def showNonEnglandFreeHoursLinks: Boolean =
-    location != Location.ENGLAND &&
-      !childrenAgeGroups.contains(NoneOfThese) &&
-      !(location == Location.WALES && yourEarnings.exists(_ != EarningsEnum.BetweenMinimumAndMaximum))
+    location != Location.England &&
+      !childrenAgeGroups.contains(ChildAgeGroup.NoneOfThese) &&
+      !(location == Location.Wales && yourEarnings.exists(_ != Earnings.BetweenMinimumAndMaximum))
 
 }
 

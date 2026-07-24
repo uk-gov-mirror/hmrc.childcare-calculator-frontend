@@ -16,8 +16,13 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequency
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
 case class ChildcarePayFrequencyId(id: Int) extends Identifier
 
-object ChildcarePayFrequencyId {
+object ChildcarePayFrequencyId extends Identifier with CacheKey {
   override def toString: String = "childcarePayFrequency"
+
+  override type CacheValue = Map[Int, ChildcarePayFrequency]
 }

@@ -19,9 +19,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.data.Form
 import play.api.libs.json.{JsNumber, JsString, JsValue, Json}
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ExpectedChildcareCostsForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
   AboutYourChildId,
@@ -29,9 +29,10 @@ import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
   ChildcarePayFrequencyId,
   ExpectedChildcareCostsId
 }
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildcarePayFrequency._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoNotYetEnum._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{AboutYourChild, ChildcarePayFrequency, YesNoNotYetEnum}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildcarePayFrequency.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoNotYet.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequency
+import uk.gov.hmrc.childcarecalculatorfrontend.models.{AboutYourChild, YesNoNotYet}
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.expectedChildcareCosts
@@ -58,16 +59,16 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
 
   def viewAsString(
       form: Form[BigDecimal] = ExpectedChildcareCostsForm(WEEKLY, "Foo"),
-      hasCosts: YesNoNotYetEnum.Value,
+      hasCosts: YesNoNotYet,
       id: Int = 0,
-      frequency: ChildcarePayFrequency.Value = WEEKLY,
+      frequency: ChildcarePayFrequency = WEEKLY,
       name: String = "Foo"
   ): String =
     view(frontendAppConfig, form, hasCosts, id, frequency, name)(fakeRequest, messages).toString
 
   val testNumber: Int = 123
 
-  def requiredData(hasCosts: YesNoNotYetEnum.Value): Map[String, JsValue] = Map(
+  def requiredData(hasCosts: YesNoNotYet): Map[String, JsValue] = Map(
     AboutYourChildId.toString -> Json.obj(
       "0" -> Json.toJson(AboutYourChild("Foo", testDate)),
       "1" -> Json.toJson(AboutYourChild("Bar", testDate))
@@ -79,17 +80,17 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
     ChildcareCostsId.toString -> JsString(hasCosts.toString)
   )
 
-  def getRequiredData(hasCosts: YesNoNotYetEnum.Value): DataRetrievalAction =
+  def getRequiredData(hasCosts: YesNoNotYet): DataRetrievalAction =
     new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, requiredData(hasCosts))), Some(testDate))
 
   def getRequiredData: DataRetrievalAction =
-    getRequiredData(YesNoNotYetEnum.YES)
+    getRequiredData(YesNoNotYet.Yes)
 
   "ExpectedChildcareCosts Controller" must {
 
     Seq(
-      (YES, 0, WEEKLY, "Foo"),
-      (NOTYET, 1, MONTHLY, "Bar")
+      (Yes, 0, WEEKLY, "Foo"),
+      (NotYet, 1, MONTHLY, "Bar")
     ).foreach { case (hasCosts, id, frequency, name) =>
 
       s"return OK and the correct view for a GET, for id: $id" in {
@@ -154,7 +155,7 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
           "0" -> JsString("weekly"),
           "1" -> JsString("monthly")
         ),
-        ChildcareCostsId.toString -> JsString(YesNoNotYetEnum.YES.toString)
+        ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
       )
       val getData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)), Some(testDate))
       val result  = controller(getData).onPageLoad(0)(fakeRequest)
@@ -167,7 +168,7 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
           "0" -> JsString("weekly"),
           "1" -> JsString("monthly")
         ),
-        ChildcareCostsId.toString -> JsString(YesNoNotYetEnum.YES.toString)
+        ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
       )
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testNumber.toString)).withMethod("POST")
       val getData     = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)), Some(testDate))
@@ -184,7 +185,7 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
         ChildcarePayFrequency.toString -> Json.obj(
           "1" -> JsString("monthly")
         ),
-        ChildcareCostsId.toString -> JsString(YesNoNotYetEnum.YES.toString)
+        ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
       )
       val getData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)), Some(testDate))
       val result  = controller(getData).onPageLoad(0)(fakeRequest)
@@ -200,7 +201,7 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
         ChildcarePayFrequency.toString -> Json.obj(
           "1" -> JsString("monthly")
         ),
-        ChildcareCostsId.toString -> JsString(YesNoNotYetEnum.YES.toString)
+        ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
       )
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testNumber.toString)).withMethod("POST")
       val getData     = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)), Some(testDate))

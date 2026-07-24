@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.childcarecalculatorfrontend.utils
+package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
+
+import play.api.libs.json.*
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json._
-import uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts._
 
 @Singleton
 class CascadeUpsert @Inject() (
@@ -28,27 +29,21 @@ class CascadeUpsert @Inject() (
     maxHours: MaximumHoursCascadeUpsert,
     minHours: MinimumHoursCascadeUpsert,
     children: ChildrenCascadeUpsert
-) {
+) extends SubCascadeUpsert {
 
-  val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] = pensions.funcMap ++ income.funcMap ++
+  override val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] = pensions.funcMap ++ income.funcMap ++
     benefits.funcMap ++ maxHours.funcMap ++ minHours.funcMap ++ children.funcMap
 
-  def apply[A](key: String, value: A, originalCacheMap: CacheMap)(implicit fmt: Format[A]): CacheMap =
+  def apply[A](key: String, value: A, originalCacheMap: CacheMap)(implicit fmt: Writes[A]): CacheMap =
     funcMap.get(key).fold(store(key, value, originalCacheMap))(fn => fn(Json.toJson(value), originalCacheMap))
-
-  def addRepeatedValue[A](key: String, value: A, originalCacheMap: CacheMap)(implicit fmt: Format[A]): CacheMap = {
-    val values = originalCacheMap.getEntry[Seq[A]](key).getOrElse(Seq()) :+ value
-    originalCacheMap.copy(data = originalCacheMap.data + (key -> Json.toJson(values)))
-  }
-
-  private def store[A](key: String, value: A, cacheMap: CacheMap)(implicit fmt: Format[A]) =
-    cacheMap.copy(data = cacheMap.data + (key -> Json.toJson(value)))
 
 }
 
 abstract class SubCascadeUpsert {
 
-  def store[A](key: String, value: A, cacheMap: CacheMap)(implicit fmt: Format[A]) =
+  val funcMap: Map[String, (JsValue, CacheMap) => CacheMap]
+
+  protected def store[A](key: String, value: A, cacheMap: CacheMap)(implicit fmt: Writes[A]): CacheMap =
     cacheMap.copy(data = cacheMap.data + (key -> Json.toJson(value)))
 
 }

@@ -28,7 +28,7 @@ trait FormSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
-  def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]) =
+  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError]) =
     form
       .bind(data)
       .fold(

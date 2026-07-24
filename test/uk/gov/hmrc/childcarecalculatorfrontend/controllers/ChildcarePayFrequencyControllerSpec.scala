@@ -19,16 +19,17 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.{JsString, JsValue, Json}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ChildcarePayFrequencyForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
   AboutYourChildId,
   ChildcarePayFrequencyId,
   WhoHasChildcareCostsId
 }
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{AboutYourChild, ChildcarePayFrequency}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.AboutYourChild
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequency
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.childcarePayFrequency
@@ -52,7 +53,7 @@ class ChildcarePayFrequencyControllerSpec extends ControllerSpecBase with Option
     )
 
   def viewAsString(
-      form: Form[ChildcarePayFrequency.Value] = ChildcarePayFrequencyForm("Foo"),
+      form: Form[ChildcarePayFrequency] = ChildcarePayFrequencyForm("Foo"),
       id: Int = 0,
       name: String = "Foo"
   ) =

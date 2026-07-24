@@ -18,12 +18,12 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.libs.json.JsString
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ApprovedProviderForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{ApprovedProviderId, ChildcareCostsId}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoNotYetEnum
+import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoNotYet
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.approvedProvider
@@ -67,7 +67,7 @@ class ApprovedProviderControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when we have NOT YET on childcare costs" in {
-      val validData       = Map(ChildcareCostsId.toString -> JsString(YesNoNotYetEnum.NOTYET.toString))
+      val validData       = Map(ChildcareCostsId.toString -> JsString(YesNoNotYet.NotYet.toString))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
@@ -79,7 +79,7 @@ class ApprovedProviderControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when we have selected YES on childcare costs" in {
-      val validData       = Map(ChildcareCostsId.toString -> JsString(YesNoNotYetEnum.YES.toString))
+      val validData       = Map(ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)

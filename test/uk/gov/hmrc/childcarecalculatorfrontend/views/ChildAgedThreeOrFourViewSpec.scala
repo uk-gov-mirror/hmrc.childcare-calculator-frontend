@@ -30,7 +30,7 @@ class ChildAgedThreeOrFourViewSpec extends NewYesNoViewBehaviours {
   val messageKeyPrefix = "childAgedThreeOrFour"
   val view             = application.injector.instanceOf[childAgedThreeOrFour]
 
-  val location = Location.ENGLAND
+  val location = Location.England
 
   def createView = () => view(frontendAppConfig, BooleanForm(), location)(fakeRequest, messages)
 

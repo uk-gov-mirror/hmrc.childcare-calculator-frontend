@@ -18,9 +18,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BenefitsIncomeCYForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.BenefitsIncomeCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.BenefitsIncomeCY

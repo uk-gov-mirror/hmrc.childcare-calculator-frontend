@@ -19,12 +19,12 @@ package uk.gov.hmrc.childcarecalculatorfrontend.views
 import play.api.data.Form
 import play.twirl.api.Html
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.DoYouGetAnyBenefitsForm
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefits
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefits._
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.*
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.{NewCheckboxViewBehaviours, NewViewBehaviours}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.doYouGetAnyBenefits
 
-class DoYouGetAnyBenefitsViewSpec extends NewViewBehaviours with NewCheckboxViewBehaviours[ParentsBenefits] {
+class DoYouGetAnyBenefitsViewSpec extends NewViewBehaviours with NewCheckboxViewBehaviours[ParentsBenefit] {
 
   override val form    = DoYouGetAnyBenefitsForm()
   val testView         = application.injector.instanceOf[doYouGetAnyBenefits]
@@ -50,7 +50,7 @@ class DoYouGetAnyBenefitsViewSpec extends NewViewBehaviours with NewCheckboxView
       (s"$messageKeyPrefix.$NoneOfThese", NoneOfThese.toString)
     )
 
-  override def createView(form: Form[Set[ParentsBenefits]] = form): Html =
+  override def createView(form: Form[Set[ParentsBenefit]] = form): Html =
     testView(frontendAppConfig, form)(fakeRequest, messages)
 
   "DoYouGetAnyBenefits view" must {

@@ -24,7 +24,7 @@ class SchemeResultsSpec extends PlaySpec {
     " throw an exception" when {
       "trying to build a scheme object and ESC claimant is missing" in
         intercept[Exception] {
-          SingleSchemeResult(name = SchemeEnum.ESCELIGIBILITY, amount = BigDecimal(0.00), escClaimantEligibility = None)
+          SingleSchemeResult(name = Scheme.EscEligibility, amount = BigDecimal(0.00), escClaimantEligibility = None)
         }
     }
   }

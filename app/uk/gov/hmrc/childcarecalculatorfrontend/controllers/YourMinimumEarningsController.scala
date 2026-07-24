@@ -21,24 +21,25 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.YourMinimumEarningsId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.yourMinimumEarningsErrorKey
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourMinimumEarnings
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import java.time.LocalDate
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class YourMinimumEarningsController @Inject() (
     appConfig: FrontendAppConfig,
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -55,21 +56,14 @@ class YourMinimumEarningsController @Inject() (
         Redirect(routes.LocationController.onPageLoad())
 
       case Some(location) =>
-        if (request.userAnswers.yourAge.isEmpty) {
-          logger.warn(
-            s"Arrived at ${request.uri} without an age value, redirecting to ${routes.YourAgeController.onPageLoad().url}"
-          )
-          Redirect(routes.YourAgeController.onPageLoad())
-        } else {
-          val earningsForAge =
-            utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, request.userAnswers.yourAge)
+        val earningsForAge =
+          utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, request.userAnswers.yourAge)
 
-          val preparedForm = request.userAnswers.yourMinimumEarnings match {
-            case None        => BooleanForm(yourMinimumEarningsErrorKey, earningsForAge)
-            case Some(value) => BooleanForm(yourMinimumEarningsErrorKey, earningsForAge).fill(value)
-          }
-          Ok(yourMinimumEarnings(appConfig, preparedForm, earningsForAge, location))
+        val preparedForm = request.userAnswers.yourMinimumEarnings match {
+          case None        => BooleanForm(yourMinimumEarningsErrorKey, earningsForAge)
+          case Some(value) => BooleanForm(yourMinimumEarningsErrorKey, earningsForAge).fill(value)
         }
+        Ok(yourMinimumEarnings(preparedForm, earningsForAge, location))
     }
   }
 
@@ -84,10 +78,10 @@ class YourMinimumEarningsController @Inject() (
           .bindFromRequest()
           .fold(
             (formWithErrors: Form[Boolean]) =>
-              Future.successful(BadRequest(yourMinimumEarnings(appConfig, formWithErrors, earningsForAge, location))),
+              Future.successful(BadRequest(yourMinimumEarnings(formWithErrors, earningsForAge, location))),
             value =>
-              dataCacheConnector
-                .save[Boolean](request.sessionId, YourMinimumEarningsId.toString, value)
+              dataCacheService
+                .save(YourMinimumEarningsId, value)
                 .map(cacheMap => Redirect(navigator.nextPage(YourMinimumEarningsId)(new UserAnswers(cacheMap))))
           )
     }

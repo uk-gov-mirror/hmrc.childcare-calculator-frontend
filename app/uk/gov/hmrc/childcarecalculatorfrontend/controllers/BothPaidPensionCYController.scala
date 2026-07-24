@@ -19,23 +19,23 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.BothPaidPensionCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{TaxYearInfo, UserAnswers}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.bothPaidPensionCY
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class BothPaidPensionCYController @Inject() (
-    appConfig: FrontendAppConfig,
+
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -50,7 +50,7 @@ class BothPaidPensionCYController @Inject() (
       case None        => BooleanForm()
       case Some(value) => BooleanForm().fill(value)
     }
-    Ok(bothPaidPensionCY(appConfig, preparedForm, taxYearInfo))
+    Ok(bothPaidPensionCY(preparedForm, taxYearInfo))
   }
 
   def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
@@ -58,10 +58,10 @@ class BothPaidPensionCYController @Inject() (
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Boolean]) =>
-          Future.successful(BadRequest(bothPaidPensionCY(appConfig, formWithErrors, taxYearInfo))),
+          Future.successful(BadRequest(bothPaidPensionCY(formWithErrors, taxYearInfo))),
         value =>
-          dataCacheConnector
-            .save[Boolean](request.sessionId, BothPaidPensionCYId.toString, value)
+          dataCacheService
+            .save(BothPaidPensionCYId, value)
             .map(cacheMap => Redirect(navigator.nextPage(BothPaidPensionCYId)(new UserAnswers(cacheMap))))
       )
   }

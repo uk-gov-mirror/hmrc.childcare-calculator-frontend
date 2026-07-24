@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend
 
-import uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts._
+import uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CascadeUpsert
 
 trait CascadeUpsertBase {

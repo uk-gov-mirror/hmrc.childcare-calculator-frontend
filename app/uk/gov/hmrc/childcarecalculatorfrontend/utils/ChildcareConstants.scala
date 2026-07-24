@@ -16,35 +16,9 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
-import uk.gov.hmrc.childcarecalculatorfrontend.models._
-
 object ChildcareConstants {
 
-  val maxFreeHours = BigDecimal(30)
-
-  val YouSelected: String     = YouPartnerBothNeitherEnum.YOU.toString
-  val PartnerSelected: String = YouPartnerBothNeitherEnum.PARTNER.toString
-  val BothSelected: String    = YouPartnerBothNeitherEnum.BOTH.toString
-  val NeitherSelected: String = YouPartnerBothNeitherEnum.NEITHER.toString
-
-  val you: String     = YouPartnerBothEnum.YOU.toString
-  val partner: String = YouPartnerBothEnum.PARTNER.toString
-  val both: String    = YouPartnerBothEnum.BOTH.toString
-  val neither: String = YouPartnerBothNeitherEnum.NEITHER.toString
-  val notSure: String = YouPartnerBothNeitherNotSureEnum.NOTSURE.toString
-
-  // First letter is capital in naming for below constants as these are being used in case statements
-  val You: String     = YouPartnerBothEnum.YOU.toString
-  val Partner: String = YouPartnerBothEnum.PARTNER.toString
-  val Both: String    = YouPartnerBothEnum.BOTH.toString
-
-  val YES: String     = YesNoUnsureEnum.YES.toString
-  val NO: String      = YesNoUnsureEnum.NO.toString
-  val NOTSURE: String = YesNoUnsureEnum.NOTSURE.toString
-
-  val no     = YesNoNotYetEnum.NO.toString
-  val yes    = YesNoNotYetEnum.YES.toString
-  val notYet = YesNoNotYetEnum.NOTYET.toString
+  val maxFreeHours: BigDecimal = BigDecimal(30)
 
   val firstMonthOfTaxYear = 4
   val startDayOfTaxYear   = 6
@@ -93,6 +67,8 @@ object ChildcareConstants {
 
   val whichBenefitsYouGetErrorKey     = "whichBenefitsYouGet.error.notCompleted"
   val whichBenefitsPartnerGetErrorKey = "whichBenefitsPartnerGet.error.notCompleted"
+
+  val whichDisabilityBenefitsErrorKey = "whichDisabilityBenefits.error.notCompleted"
 
   val doYouKnowYourPartnerAdjustedTaxCodeErrorKey = "doYouKnowYourPartnersAdjustedTaxCode.error.notCompleted"
   val taxCodeLength_six                           = 6
@@ -164,7 +140,8 @@ object ChildcareConstants {
   val partnerOtherIncomeRequiredErrorKey = "partnerOtherIncome.error.required"
   val partnerOtherIncomeInvalidErrorKey  = "partnerOtherIncome.error.invalid"
 
-  val childcareCostsErrorKey = "childcareCosts.error.notCompleted"
+  val childcareCostsErrorKey        = "childcareCosts.error.notCompleted"
+  val childcarePayFrequencyErrorKey = "childcarePayFrequency.error.notCompleted"
 
   val eitherGetsVouchersErrorKey = "eitherGetsVouchers.error.notCompleted"
   val approvedProviderErrorKey   = "approvedProvider.error.notCompleted"

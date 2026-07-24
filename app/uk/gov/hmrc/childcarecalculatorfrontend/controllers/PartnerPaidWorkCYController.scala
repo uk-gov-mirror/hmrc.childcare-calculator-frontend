@@ -19,24 +19,24 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.PartnerPaidWorkCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.partnerPaidWorkCYErrorKey
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{TaxYearInfo, UserAnswers}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerPaidWorkCY
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class PartnerPaidWorkCYController @Inject() (
-    appConfig: FrontendAppConfig,
+
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -51,7 +51,7 @@ class PartnerPaidWorkCYController @Inject() (
       case None        => BooleanForm()
       case Some(value) => BooleanForm().fill(value)
     }
-    Ok(partnerPaidWorkCY(appConfig, preparedForm, taxYearInfo))
+    Ok(partnerPaidWorkCY(preparedForm, taxYearInfo))
   }
 
   def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
@@ -59,10 +59,10 @@ class PartnerPaidWorkCYController @Inject() (
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[Boolean]) =>
-          Future.successful(BadRequest(partnerPaidWorkCY(appConfig, formWithErrors, taxYearInfo))),
+          Future.successful(BadRequest(partnerPaidWorkCY(formWithErrors, taxYearInfo))),
         value =>
-          dataCacheConnector
-            .save[Boolean](request.sessionId, PartnerPaidWorkCYId.toString, value)
+          dataCacheService
+            .save(PartnerPaidWorkCYId, value)
             .map(cacheMap => Redirect(navigator.nextPage(PartnerPaidWorkCYId)(new UserAnswers(cacheMap))))
       )
   }

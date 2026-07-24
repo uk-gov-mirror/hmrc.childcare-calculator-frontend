@@ -20,7 +20,7 @@ import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ExpectedChildcareCostsForm
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildcarePayFrequency.WEEKLY
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoNotYetEnum._
+import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoNotYet.*
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewBigDecimalViewBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.expectedChildcareCosts
 
@@ -31,19 +31,19 @@ class ExpectedChildcareCostsViewSpec extends NewBigDecimalViewBehaviours {
   val view              = application.injector.instanceOf[expectedChildcareCosts]
 
   def createView = () =>
-    view(frontendAppConfig, ExpectedChildcareCostsForm(WEEKLY, "Foo"), YES, 0, WEEKLY, "Foo")(
+    view(frontendAppConfig, ExpectedChildcareCostsForm(WEEKLY, "Foo"), Yes, 0, WEEKLY, "Foo")(
       fakeRequest,
       messages
     )
 
   def createViewNotYet = () =>
-    view(frontendAppConfig, ExpectedChildcareCostsForm(WEEKLY, "Foo"), NOTYET, 0, WEEKLY, "Foo")(
+    view(frontendAppConfig, ExpectedChildcareCostsForm(WEEKLY, "Foo"), NotYet, 0, WEEKLY, "Foo")(
       fakeRequest,
       messages
     )
 
   def createViewUsingForm = (form: Form[BigDecimal]) =>
-    view(frontendAppConfig, form, YES, 0, WEEKLY, "Foo")(fakeRequest, messages)
+    view(frontendAppConfig, form, Yes, 0, WEEKLY, "Foo")(fakeRequest, messages)
 
   val form     = ExpectedChildcareCostsForm(WEEKLY, "Foo")
   val cardinal = messages("nth.0")

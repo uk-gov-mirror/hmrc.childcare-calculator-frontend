@@ -16,19 +16,19 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsBoolean, JsString}
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{
   DataRequiredAction,
   DataRetrievalAction,
   FakeDataRetrievalAction
 }
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models._
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.{EmploymentSupportedChildcare, TaxFreeChildcare}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.maxFreeHoursInfo
@@ -95,7 +95,7 @@ class MaxFreeHoursInfoControllerSpec extends ControllerSpecBase with MockitoSuga
           DoYouLiveWithPartnerId.toString -> JsBoolean(false),
           AreYouInPaidWorkId.toString     -> JsBoolean(true),
           DoYouGetAnyBenefitsId.toString  -> JsBoolean(false),
-          ChildcareCostsId.toString       -> JsString(YesNoNotYetEnum.YES.toString)
+          ChildcareCostsId.toString       -> JsString(YesNoNotYet.Yes.toString)
         )
 
         val info   = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
@@ -113,7 +113,7 @@ class MaxFreeHoursInfoControllerSpec extends ControllerSpecBase with MockitoSuga
           DoYouLiveWithPartnerId.toString -> JsBoolean(true),
           AreYouInPaidWorkId.toString     -> JsBoolean(true),
           DoYouGetAnyBenefitsId.toString  -> JsBoolean(false),
-          ChildcareCostsId.toString       -> JsString(YesNoNotYetEnum.YES.toString)
+          ChildcareCostsId.toString       -> JsString(YesNoNotYet.Yes.toString)
         )
         val info   = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
         val result = controller(info).onPageLoad(fakeRequest)
@@ -130,7 +130,7 @@ class MaxFreeHoursInfoControllerSpec extends ControllerSpecBase with MockitoSuga
           DoYouLiveWithPartnerId.toString -> JsBoolean(true),
           AreYouInPaidWorkId.toString     -> JsBoolean(true),
           DoYouGetAnyBenefitsId.toString  -> JsBoolean(false),
-          ChildcareCostsId.toString       -> JsString(YesNoNotYetEnum.YES.toString)
+          ChildcareCostsId.toString       -> JsString(YesNoNotYet.Yes.toString)
         )
         val info   = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
         val result = controller(info).onPageLoad(fakeRequest)
@@ -147,7 +147,7 @@ class MaxFreeHoursInfoControllerSpec extends ControllerSpecBase with MockitoSuga
           DoYouLiveWithPartnerId.toString -> JsBoolean(true),
           AreYouInPaidWorkId.toString     -> JsBoolean(true),
           DoYouGetAnyBenefitsId.toString  -> JsBoolean(false),
-          ChildcareCostsId.toString       -> JsString(YesNoNotYetEnum.YES.toString)
+          ChildcareCostsId.toString       -> JsString(YesNoNotYet.Yes.toString)
         )
 
         val info   = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))

@@ -34,7 +34,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
       "We have free hours value" in {
         val model = ResultsViewModel(
           freeHours = Some(15),
-          location = Location.ENGLAND,
+          location = Location.England,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -48,7 +48,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
       "User is eligible for TFC scheme" in {
         val modelWithLessThan1000 = ResultsViewModel(
           tfc = Some(600),
-          location = Location.ENGLAND,
+          location = Location.England,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -56,7 +56,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
         )
         val modelWithMoreThan1000 = ResultsViewModel(
           tfc = Some(1600),
-          location = Location.ENGLAND,
+          location = Location.England,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -73,7 +73,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
       "User is eligible for ESC scheme" in {
         val modelWithLessThan1000 = ResultsViewModel(
           esc = Some(900),
-          location = Location.ENGLAND,
+          location = Location.England,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -81,7 +81,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
         )
         val modelWithMoreThan1000 = ResultsViewModel(
           tfc = Some(1900),
-          location = Location.ENGLAND,
+          location = Location.England,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -101,7 +101,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
       "location is England and no of hours is 15" in {
         val model = ResultsViewModel(
           freeHours = Some(BigDecimal(15)),
-          location = Location.ENGLAND,
+          location = Location.England,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -119,7 +119,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
       "location is Wales" in {
         val model = ResultsViewModel(
           freeHours = Some(10),
-          location = Location.WALES,
+          location = Location.Wales,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -137,7 +137,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
       "location is Scotland" in {
         val model = ResultsViewModel(
           freeHours = Some(16),
-          location = Location.SCOTLAND,
+          location = Location.Scotland,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -155,7 +155,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
       "location is NI" in {
         val model = ResultsViewModel(
           freeHours = Some(12.5),
-          location = Location.NORTHERN_IRELAND,
+          location = Location.NorthernIreland,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -176,7 +176,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
         val model = ResultsViewModel(
           freeHours = Some(30),
           freeChildcareWorkingParents = true,
-          location = Location.ENGLAND,
+          location = Location.England,
           childrenAgeGroups = Set(TwoYears),
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
@@ -197,7 +197,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
         val model = ResultsViewModel(
           freeHours = Some(30),
           freeChildcareWorkingParents = true,
-          location = Location.ENGLAND,
+          location = Location.England,
           childrenAgeGroups = Set(ThreeYears),
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
@@ -215,7 +215,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
         val model = ResultsViewModel(
           freeHours = Some(30),
           freeChildcareWorkingParents = true,
-          location = Location.ENGLAND,
+          location = Location.England,
           childrenAgeGroups = Set(TwoYears, ThreeYears, FourYears),
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
@@ -235,7 +235,7 @@ class ResultEligibleViewSpec extends NewViewBehaviours {
       "location is England and not working parents with 2 year old and 3 or 4 year old" in {
         val model = ResultsViewModel(
           freeHours = Some(15),
-          location = Location.ENGLAND,
+          location = Location.England,
           childrenAgeGroups = Set(TwoYears, FourYears),
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,

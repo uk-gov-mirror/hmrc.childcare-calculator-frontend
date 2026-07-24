@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class WhoGetsOtherIncomeCYFormSpec extends FormBehaviours {
 
@@ -34,7 +34,7 @@ class WhoGetsOtherIncomeCYFormSpec extends FormBehaviours {
       formWithOptionFieldError(
         "value",
         whoGetsOtherIncomeCYErrorKey,
-        WhoGetsOtherIncomeCYForm.options.map(x => x.value): _*
+        WhoGetsOtherIncomeCYForm.options.map(x => x.value)*
       )
     )
   }

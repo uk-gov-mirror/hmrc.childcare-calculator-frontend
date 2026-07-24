@@ -16,6 +16,11 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object PartnerSelfEmployedOrApprenticeId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.EmploymentStatus
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object PartnerSelfEmployedOrApprenticeId extends Identifier with CacheKey {
   override def toString: String = "partnerSelfEmployedOrApprentice"
+
+  override type CacheValue = EmploymentStatus
 }

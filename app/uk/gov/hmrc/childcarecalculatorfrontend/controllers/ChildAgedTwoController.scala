@@ -19,23 +19,23 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.ChildAgedTwoId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.childAgedTwo
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class ChildAgedTwoController @Inject() (
-    appConfig: FrontendAppConfig,
+
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -54,26 +54,27 @@ class ChildAgedTwoController @Inject() (
           case None        => BooleanForm()
           case Some(value) => BooleanForm().fill(value)
         }
-        Ok(childAgedTwo(appConfig, preparedForm, location))
+        Ok(childAgedTwo(preparedForm, location))
 
     }
   }
 
   def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
-    if (request.userAnswers.location.isEmpty) {
-      Future.successful(Redirect(routes.LocationController.onPageLoad()))
-    } else {
-      BooleanForm("childAgedTwo.error.notCompleted")
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[Boolean]) =>
-            Future
-              .successful(BadRequest(childAgedTwo(appConfig, formWithErrors, request.userAnswers.location.get))),
-          value =>
-            dataCacheConnector
-              .save[Boolean](request.sessionId, ChildAgedTwoId.toString, value)
-              .map(cacheMap => Redirect(navigator.nextPage(ChildAgedTwoId)(new UserAnswers(cacheMap))))
-        )
+    request.userAnswers.location match {
+      case None =>
+        Future.successful(Redirect(routes.LocationController.onPageLoad()))
+      case Some(location) =>
+        BooleanForm("childAgedTwo.error.notCompleted")
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[Boolean]) =>
+              Future
+                .successful(BadRequest(childAgedTwo(formWithErrors, location))),
+            value =>
+              dataCacheService
+                .save(ChildAgedTwoId, value)
+                .map(cacheMap => Redirect(navigator.nextPage(ChildAgedTwoId)(new UserAnswers(cacheMap))))
+          )
     }
   }
 

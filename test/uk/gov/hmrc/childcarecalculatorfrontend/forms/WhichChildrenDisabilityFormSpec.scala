@@ -24,7 +24,7 @@ class WhichChildrenDisabilityFormSpec extends CheckboxBehaviours[Int] {
   override def invalidValue: String = "5"
   override def validOptions         = Set(0, 1)
 
-  val form = WhichChildrenDisabilityForm(validOptions.toSeq: _*)
+  val form = WhichChildrenDisabilityForm(validOptions.toSeq*)
 
   "WhichChildrenDisability form" must {
 

@@ -16,20 +16,16 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
-import play.api.libs.json._
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{
-  SelfEmployedOrApprenticeOrNeitherEnum,
-  YesNoNotYetEnum,
-  YesNoUnsureEnum
-}
+import play.api.libs.json.*
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.{SelfEmployedOrApprenticeOrNeither, YesNoNotSure, YesNoNotYet}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.{CascadeUpsertBase, SpecBase}
 
 class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
-  lazy val no: String = YesNoNotYetEnum.NO.toString
-  lazy val No: String = YesNoUnsureEnum.NO.toString
+  lazy val no: String = YesNoNotYet.No.toString
+  lazy val No: String = YesNoNotSure.No.toString
 
   "MinimumHoursCascadeUpsert" when {
 
@@ -116,7 +112,7 @@ class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
             YourPartnersAgeId.toString                      -> JsString("under18"),
             PartnerMinimumEarningsId.toString               -> JsBoolean(true),
             PartnerSelfEmployedOrApprenticeId.toString -> JsString(
-              SelfEmployedOrApprenticeOrNeitherEnum.SELFEMPLOYED.toString
+              SelfEmployedOrApprenticeOrNeither.SelfEmployed.toString
             ),
             PartnerMaximumEarningsId.toString -> JsBoolean(true)
           )
@@ -169,7 +165,7 @@ class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
             YourPartnersAgeId.toString                      -> JsString("under18"),
             PartnerMinimumEarningsId.toString               -> JsBoolean(true),
             PartnerSelfEmployedOrApprenticeId.toString -> JsString(
-              SelfEmployedOrApprenticeOrNeitherEnum.SELFEMPLOYED.toString
+              SelfEmployedOrApprenticeOrNeither.SelfEmployed.toString
             ),
             PartnerMaximumEarningsId.toString -> JsBoolean(true)
           )
@@ -212,7 +208,7 @@ class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
             LocationId.toString                             -> JsString("england"),
             ChildrenAgeGroupsId.toString                    -> JsArray(Seq(JsString("threeYears"))),
             ChildcareCostsId.toString                       -> JsString(yes),
-            ApprovedProviderId.toString                     -> JsString(YesNoUnsureEnum.YES.toString),
+            ApprovedProviderId.toString                     -> JsString(YesNoNotSure.Yes.toString),
             DoYouLiveWithPartnerId.toString                 -> JsBoolean(false),
             WhoIsInPaidEmploymentId.toString                -> JsString(partner),
             HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
@@ -222,7 +218,7 @@ class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
             YourPartnersAgeId.toString                      -> JsString("under18"),
             PartnerMinimumEarningsId.toString               -> JsBoolean(true),
             PartnerSelfEmployedOrApprenticeId.toString -> JsString(
-              SelfEmployedOrApprenticeOrNeitherEnum.SELFEMPLOYED.toString
+              SelfEmployedOrApprenticeOrNeither.SelfEmployed.toString
             ),
             PartnerMaximumEarningsId.toString -> JsBoolean(true)
           )
@@ -269,7 +265,7 @@ class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
             ChildAgedTwoId.toString                         -> JsBoolean(false),
             ChildAgedThreeOrFourId.toString                 -> JsBoolean(true),
             ChildcareCostsId.toString                       -> JsString(yes),
-            ApprovedProviderId.toString                     -> JsString(YesNoUnsureEnum.YES.toString),
+            ApprovedProviderId.toString                     -> JsString(YesNoNotSure.Yes.toString),
             DoYouLiveWithPartnerId.toString                 -> JsBoolean(false),
             WhoIsInPaidEmploymentId.toString                -> JsString(partner),
             HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
@@ -279,7 +275,7 @@ class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
             YourPartnersAgeId.toString                      -> JsString("under18"),
             PartnerMinimumEarningsId.toString               -> JsBoolean(true),
             PartnerSelfEmployedOrApprenticeId.toString -> JsString(
-              SelfEmployedOrApprenticeOrNeitherEnum.SELFEMPLOYED.toString
+              SelfEmployedOrApprenticeOrNeither.SelfEmployed.toString
             ),
             PartnerMaximumEarningsId.toString -> JsBoolean(true)
           )

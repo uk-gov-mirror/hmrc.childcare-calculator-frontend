@@ -15,18 +15,20 @@
  *@
 
 @this(
-        govukTextarea : GovukTextarea
+    govukTextarea : GovukTextarea
 )
 
 @(
-        label: String,
-        secondaryLabel: Option[String] = None,
-        inputClass: Option[String] = None,
-        hint: Option[String] = None,
-        labelClass: Option[String] = None,
-        isPageHeading: Boolean = true,
-        field: Field
-)(implicit messages: Messages)
+    label: String,
+    secondaryLabel: Option[String] = None,
+    inputClass: Option[String] = None,
+    hint: Option[String] = None,
+    labelClass: Option[String] = None,
+    isPageHeading: Boolean = true,
+    field: Field,
+)(
+    implicit messages: Messages,
+)
 
 
 @govukTextarea(Textarea(

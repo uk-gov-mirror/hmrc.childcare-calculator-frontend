@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.navigation
 
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models._
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.TaxFreeChildcare
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers, Utils}
 
 class OtherIncomeNavigatorSpec extends SpecBase with MockitoSugar {
@@ -34,7 +34,7 @@ class OtherIncomeNavigatorSpec extends SpecBase with MockitoSugar {
   def navigator()           = new OtherIncomeNavigator(new Utils())
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers =
-    new UserAnswers(CacheMap("", Map(answers: _*)))
+    new UserAnswers(CacheMap("", Map(answers*)))
 
   "Current Year Other Income Route Navigation" when {
 

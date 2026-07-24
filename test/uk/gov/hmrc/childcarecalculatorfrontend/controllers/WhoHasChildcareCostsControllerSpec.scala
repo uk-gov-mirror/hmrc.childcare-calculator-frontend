@@ -21,10 +21,10 @@ import play.api.data.Form
 import play.api.libs.json.Json.JsValueWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Call
-import play.api.test.Helpers._
-import uk.gov.hmrc.childcarecalculatorfrontend.DataGenerator._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.DataGenerator.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhoHasChildcareCostsForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
   AboutYourChildId,
@@ -172,7 +172,7 @@ class WhoHasChildcareCostsControllerSpec extends ControllerSpecBase with OptionV
   val defaultValues: Map[String, String] = Map("Foo" -> "0", "Bar" -> "1")
 
   def viewAsString(
-      form: Form[_] = WhoHasChildcareCostsForm(0, 1),
+      form: Form[?] = WhoHasChildcareCostsForm(0, 1),
       values: Map[String, String] = defaultValues
   ): String =
     view(frontendAppConfig, form, values.toSeq)(fakeRequest, messages).toString
@@ -181,7 +181,7 @@ class WhoHasChildcareCostsControllerSpec extends ControllerSpecBase with OptionV
     AboutYourChildId.toString -> Json.obj(
       values.map { case (name, v) =>
         v -> (Json.toJson(AboutYourChild(name, LocalDate.now)): JsValueWrapper)
-      }.toSeq: _*
+      }.toSeq*
     )
   )
 

@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.connectors
 
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.models.integration._
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.{Location, SchemeResults}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
@@ -67,7 +67,7 @@ class EligiblityConnectorSpec extends PlaySpec with MockitoSugar with ScalaFutur
       val res = mockConnector.getEligibility(
         Household(
           credits = None,
-          location = Location.ENGLAND,
+          location = Location.England,
           children = List.empty,
           parent = Claimant(),
           partner = None

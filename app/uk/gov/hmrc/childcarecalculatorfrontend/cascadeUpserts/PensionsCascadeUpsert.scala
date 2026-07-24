@@ -16,15 +16,17 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
-import javax.inject.Inject
 import play.api.libs.json.{JsBoolean, JsString, JsValue}
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, SubCascadeUpsert}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBoth
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 
-class PensionsCascadeUpsert @Inject() () extends SubCascadeUpsert {
+import javax.inject.{Inject, Singleton}
 
-  val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
+@Singleton
+class PensionsCascadeUpsert @Inject() extends SubCascadeUpsert {
+
+  override val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
     Map(
       YouPaidPensionCYId.toString     -> ((v, cm) => storeYouPaidPensionCY(v, cm)),
       PartnerPaidPensionCYId.toString -> ((v, cm) => storePartnerPaidPensionCY(v, cm)),
@@ -65,17 +67,17 @@ class PensionsCascadeUpsert @Inject() () extends SubCascadeUpsert {
 
   private def storeWhoPaysIntoPension(value: JsValue, cacheMap: CacheMap): CacheMap = {
     val mapToStore = value match {
-      case JsString(`you`) =>
+      case JsString(YouPartnerBoth.You.toString) =>
         cacheMap.copy(data =
           cacheMap.data - HowMuchPartnerPayPensionId.toString -
             HowMuchBothPayPensionId.toString
         )
-      case JsString(`partner`) =>
+      case JsString(YouPartnerBoth.Partner.toString) =>
         cacheMap.copy(data =
           cacheMap.data - HowMuchYouPayPensionId.toString -
             HowMuchBothPayPensionId.toString
         )
-      case JsString(`both`) =>
+      case JsString(YouPartnerBoth.Both.toString) =>
         cacheMap.copy(data =
           cacheMap.data - HowMuchYouPayPensionId.toString -
             HowMuchPartnerPayPensionId.toString

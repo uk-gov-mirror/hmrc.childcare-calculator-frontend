@@ -27,7 +27,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
 
 class ResultsViewModelSpec extends SpecBase {
 
-  val location: Location.Value = Location.ENGLAND
+  val location: Location = Location.England
 
   "ResultViewModel" must {
     "let you know if you are eligible to all schemes" in {
@@ -73,7 +73,7 @@ class ResultsViewModelSpec extends SpecBase {
       "user does not live in Northern Ireland, has a two year old and either has a three year old or is eligible to any scheme" in {
         val model = ResultsViewModel(
           tfc = Some(100),
-          location = Location.SCOTLAND,
+          location = Location.Scotland,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -85,7 +85,7 @@ class ResultsViewModelSpec extends SpecBase {
 
       "user does not live in Northern Ireland, has a two year old and does not have a three year old and not eligible to any scheme " in {
         val model = ResultsViewModel(
-          location = Location.SCOTLAND,
+          location = Location.Scotland,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
@@ -100,7 +100,7 @@ class ResultsViewModelSpec extends SpecBase {
       "user does live in Northern Ireland, has a two year old and either has a three year old or is eligible to any scheme" in {
         val model = ResultsViewModel(
           tfc = Some(100),
-          location = Location.NORTHERN_IRELAND,
+          location = Location.NorthernIreland,
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,

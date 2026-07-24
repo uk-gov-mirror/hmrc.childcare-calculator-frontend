@@ -18,21 +18,27 @@ package uk.gov.hmrc.childcarecalculatorfrontend.services
 
 import play.api.i18n.Messages
 import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.models.EarningsEnum._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.SchemeEnum._
+import uk.gov.hmrc.childcarecalculatorfrontend.models.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
+  Earnings,
+  Location,
+  Scheme,
+  YesNoNotSure,
+  YesNoNotYet,
+  YouPartnerBothNeither
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.{FreeChildcareWorkingParents, FreeHours, TaxFreeChildcare}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.views.ResultsViewModel
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{Location, _}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
-import uk.gov.hmrc.childcarecalculatorfrontend.utils._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.*
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 //scalastyle:off
+@Singleton
 class ResultsService @Inject() (
     appConfig: FrontendAppConfig,
     eligibilityService: EligibilityService,
@@ -46,16 +52,16 @@ class ResultsService @Inject() (
   def getResultsViewModel(
       answers: UserAnswers,
       location: Location
-  )(implicit req: play.api.mvc.Request[_], hc: HeaderCarrier, messages: Messages): Future[ResultsViewModel] = {
+  )(implicit req: play.api.mvc.Request[?], hc: HeaderCarrier, messages: Messages): Future[ResultsViewModel] = {
 
     val childcareCost = answers.childcareCosts.fold(false) {
-      case ChildcareConstants.no => false
-      case _                     => true
+      case YesNoNotYet.No => false
+      case _              => true
     }
 
     val approvedProvider = answers.approvedProvider.fold(false) {
-      case ChildcareConstants.NO => false
-      case _                     => true
+      case YesNoNotSure.No => false
+      case _               => true
     }
 
     val livingWithPartner = answers.doYouLiveWithPartner.fold(false)(identity)
@@ -69,7 +75,7 @@ class ResultsService @Inject() (
       firstParagraph = firstParagraphBuilder.buildFirstParagraph(answers),
       freeChildcareWorkingParents = getFreeChildcareWorkingParentsEligibility(answers),
       location = location,
-      childrenAgeGroups = answers.childrenAgeGroups.getOrElse(Set(NoneOfThese)),
+      childrenAgeGroups = answers.childrenAgeGroups.getOrElse(Set(ChildAgeGroup.NoneOfThese)),
       hasChildcareCosts = childcareCost,
       hasCostsWithApprovedProvider = approvedProvider,
       isAnyoneInPaidEmployment = paidEmployment,
@@ -100,27 +106,27 @@ class ResultsService @Inject() (
     }
   }
 
-  private def getEarnings(moreThanMinimum: Option[Boolean], moreThanMaximum: Option[Boolean]): Option[EarningsEnum] =
+  private def getEarnings(moreThanMinimum: Option[Boolean], moreThanMaximum: Option[Boolean]): Option[Earnings] =
     (moreThanMinimum, moreThanMaximum) match {
-      case (Some(true), Some(true)) => Some(EarningsEnum.GreaterThanMaximum)
-      case (Some(true), _)          => Some(EarningsEnum.BetweenMinimumAndMaximum)
-      case (Some(false), _)         => Some(EarningsEnum.LessThanMinimum)
+      case (Some(true), Some(true)) => Some(Earnings.GreaterThanMaximum)
+      case (Some(true), _)          => Some(Earnings.BetweenMinimumAndMaximum)
+      case (Some(false), _)         => Some(Earnings.LessThanMinimum)
       case _                        => None
     }
 
   private def getFreeChildcareWorkingParentsEligibility(userAnswers: UserAnswers): Boolean =
     freeChildcareWorkingParents.eligibility(userAnswers) match {
-      case Eligible => true
-      case _        => false
+      case Eligibility.Eligible => true
+      case _                    => false
     }
 
   private def setSchemeInViewModel(scheme: SingleSchemeResult, resultViewModel: ResultsViewModel) =
     if (scheme.amount > 0) {
       scheme.name match {
-        case TCELIGIBILITY  => resultViewModel
-        case TFCELIGIBILITY => resultViewModel.copy(tfc = Some(scheme.amount))
-        case ESCELIGIBILITY => resultViewModel.copy(esc = Some(scheme.amount))
-        case _              => resultViewModel
+        case Scheme.TcEligibility  => resultViewModel
+        case Scheme.TfcEligibility => resultViewModel.copy(tfc = Some(scheme.amount))
+        case Scheme.EscEligibility => resultViewModel.copy(esc = Some(scheme.amount))
+        case _                     => resultViewModel
       }
     } else {
       resultViewModel
@@ -131,33 +137,36 @@ class ResultsService @Inject() (
       userAnswers.areYouInPaidWork.getOrElse(false)
     } else {
       userAnswers.whoIsInPaidEmployment.fold(false) {
-        case ChildcareConstants.neither => false
-        case _                          => true
+        case YouPartnerBothNeither.Neither => false
+        case _                             => true
       }
     }
 
   private def getViewModelWithFreeHours(answers: UserAnswers, resultViewModel: ResultsViewModel) = {
     val freeHoursEligibility                   = freeHours.eligibility(answers)
     val freeChildcareWorkingParentsEligibility = freeChildcareWorkingParents.eligibility(answers)
-    val location: Option[Location.Value]       = answers.location
+    val location: Option[Location]             = answers.location
 
     freeHoursEligibility match {
-      case _ if freeChildcareWorkingParentsEligibility == Eligible && answers.isChildAgedThreeOrFour.getOrElse(true) =>
+      case _
+          if freeChildcareWorkingParentsEligibility == Eligibility.Eligible && answers.isChildAgedThreeOrFour.getOrElse(
+            true
+          ) =>
         resultViewModel.copy(freeHours = Some(eligibleMaxFreeHours))
-      case _ if freeChildcareWorkingParentsEligibility == Eligible =>
+      case _ if freeChildcareWorkingParentsEligibility == Eligibility.Eligible =>
         resultViewModel.copy(freeHours = Some(appConfig.maxFreeHoursAmount))
-      case Eligible => getFreeHoursForLocation(location, resultViewModel)
-      case _        => resultViewModel
+      case Eligibility.Eligible => getFreeHoursForLocation(location, resultViewModel)
+      case _                    => resultViewModel
     }
   }
 
-  private def getFreeHoursForLocation(optionLocation: Option[Location.Value], resultViewModel: ResultsViewModel) =
+  private def getFreeHoursForLocation(optionLocation: Option[Location], resultViewModel: ResultsViewModel) =
     optionLocation.fold(resultViewModel) {
-      case ENGLAND          => resultViewModel.copy(freeHours = Some(freeHoursForEngland))
-      case SCOTLAND         => resultViewModel.copy(freeHours = Some(freeHoursForScotland))
-      case WALES            => resultViewModel.copy(freeHours = Some(freeHoursForWales))
-      case NORTHERN_IRELAND => resultViewModel.copy(freeHours = Some(freeHoursForNI))
-      case _                => resultViewModel
+      case Location.England         => resultViewModel.copy(freeHours = Some(freeHoursForEngland))
+      case Location.Scotland        => resultViewModel.copy(freeHours = Some(freeHoursForScotland))
+      case Location.Wales           => resultViewModel.copy(freeHours = Some(freeHoursForWales))
+      case Location.NorthernIreland => resultViewModel.copy(freeHours = Some(freeHoursForNI))
+      case _                        => resultViewModel
     }
 
   private def tfcEligibilityMessage(answers: UserAnswers)(implicit messages: Messages): Option[String] = {
@@ -167,7 +176,7 @@ class ResultsService @Inject() (
     lazy val youEligibleMinEarnings = answers.yourMinimumEarnings.getOrElse(false)
     lazy val youEligibleMaxEarnings = !answers.yourMaximumEarnings.getOrElse(false)
     lazy val hasPartner             = answers.doYouLiveWithPartner.getOrElse(false)
-    lazy val bothInPaidWork         = answers.whoIsInPaidEmployment.contains(both)
+    lazy val bothInPaidWork         = answers.whoIsInPaidEmployment.contains(YouPartnerBothNeither.Both)
     lazy val earningsForPartnerAge =
       utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, answers.yourPartnersAge)
     lazy val bothEligibleMinEarnings =
@@ -177,8 +186,8 @@ class ResultsService @Inject() (
     lazy val msgKey = "result.tfc.ineligible"
 
     taxFreeChildcare.eligibility(answers) match {
-      case Eligible => None
-      case _ if answers.childcareCosts.contains(no) || answers.approvedProvider.contains(NO) =>
+      case Eligibility.Eligible => None
+      case _ if answers.childcareCosts.contains(YesNoNotYet.No) || answers.approvedProvider.contains(YesNoNotSure.No) =>
         Some(messages(s"$msgKey.noCostsWithApprovedProvider"))
       case _ if hasPartner && !bothInPaidWork =>
         Some(messages(s"$msgKey.partner.paidEmployment"))
@@ -203,14 +212,14 @@ class ResultsService @Inject() (
   private def freeChildcareWorkingParentsEligibilityMessage(
       answers: UserAnswers
   )(implicit messages: Messages): Option[String] = {
-    lazy val inEngland            = answers.location.contains(ENGLAND)
-    lazy val hasEligibileChildren = answers.childrenAgeGroups.exists(!_.contains(NoneOfThese))
+    lazy val inEngland            = answers.location.contains(Location.England)
+    lazy val hasEligibileChildren = answers.childrenAgeGroups.exists(!_.contains(ChildAgeGroup.NoneOfThese))
     lazy val youInPaidWork        = answers.areYouInPaidWork.getOrElse(false)
     lazy val earningsForAge = utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, answers.yourAge)
     lazy val youEligibleMinEarnings = answers.yourMinimumEarnings.getOrElse(false)
     lazy val youEligibleMaxEarnings = !answers.yourMaximumEarnings.getOrElse(false)
     lazy val hasPartner             = answers.doYouLiveWithPartner.getOrElse(false)
-    lazy val bothInPaidWork         = answers.whoIsInPaidEmployment.contains(both)
+    lazy val bothInPaidWork         = answers.whoIsInPaidEmployment.contains(YouPartnerBothNeither.Both)
     lazy val earningsForPartnerAge =
       utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, answers.yourPartnersAge)
     lazy val bothEligibleMinEarnings =
@@ -219,8 +228,8 @@ class ResultsService @Inject() (
 
     lazy val msgKey = "result.free.childcare.working.parents.ineligible"
     freeChildcareWorkingParents.eligibility(answers) match {
-      case Eligible        => None
-      case _ if !inEngland => None
+      case Eligibility.Eligible => None
+      case _ if !inEngland      => None
       case _ if !hasEligibileChildren =>
         Some(messages(s"$msgKey.noChildrenInAgeRange"))
       case _ if hasPartner && !bothInPaidWork =>

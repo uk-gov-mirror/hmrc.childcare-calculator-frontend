@@ -16,17 +16,21 @@
 
 @import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.ucSchemeGuidanceLinkUrl
 @import uk.gov.hmrc.childcarecalculatorfrontend.models.views.{EligibilityModel, SchemeResultModel}
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.*
 
 @this(
     heading: heading,
     detailSummaryComponent: detail_summary,
     govukWarningText : GovukWarningText,
-        link: link,
-        p: p
+    link: link,
+    p: p,
 )
 
-@(schemeResult: SchemeResultModel)(implicit messages: Messages)
+@(
+    schemeResult: SchemeResultModel,
+)(
+    implicit messages: Messages,
+)
 
 <h3 class="govuk-heading-m" @if(schemeResult.id.isDefined) { id="@schemeResult.id"} >@schemeResult.title</h3>
 

@@ -20,7 +20,7 @@ import play.api.data.Form
 import play.twirl.api.Html
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ChildrenAgeGroupsForm
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildAgeGroup
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildAgeGroup._
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildAgeGroup.*
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.{NewCheckboxViewBehaviours, NewViewBehaviours}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.childrenAgeGroups
 
@@ -34,7 +34,7 @@ class ChildrenAgeGroupsViewSpec extends NewViewBehaviours with NewCheckboxViewBe
 
   override val values: Seq[(String, String)] =
     Seq(
-      (s"$messageKeyPrefix.$nineTo23Months", nineTo23Months),
+      (s"$messageKeyPrefix.$nineTo23Months", ChildAgeGroup.NineTo23Months),
       (s"$messageKeyPrefix.$twoYears", twoYears),
       (s"$messageKeyPrefix.$threeYears", threeYears),
       (s"$messageKeyPrefix.$fourYears", fourYears),

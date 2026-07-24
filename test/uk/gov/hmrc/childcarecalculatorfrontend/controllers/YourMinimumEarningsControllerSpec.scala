@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.{JsBoolean, JsString}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{LocationId, YourAgeId, YourMinimumEarningsId}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{AgeEnum, Location}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.{Age, Location}
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, Utils}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourMinimumEarnings
@@ -37,7 +37,7 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
 
   val mockUtils = mock[Utils]
 
-  val location               = Location.ENGLAND
+  val location               = Location.England
   val locationMap            = LocationId.toString -> JsString(location.toString)
   val cacheMapWithLocation   = new CacheMap("id", Map(LocationId.toString -> JsString(location.toString)))
   val getDataWithLocationSet = new FakeDataRetrievalAction(Some(cacheMapWithLocation))
@@ -63,8 +63,8 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
 
     "return OK and the correct view for a GET" in {
       val validData = Map(
-        YourAgeId.toString  -> JsString(AgeEnum.UNDER18.toString),
-        LocationId.toString -> JsString(Location.ENGLAND.toString)
+        YourAgeId.toString  -> JsString(Age.UnderEighteen.toString),
+        LocationId.toString -> JsString(Location.England.toString)
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
@@ -77,9 +77,9 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Map(
-        YourAgeId.toString             -> JsString(AgeEnum.UNDER18.toString),
+        YourAgeId.toString             -> JsString(Age.UnderEighteen.toString),
         YourMinimumEarningsId.toString -> JsBoolean(true),
-        LocationId.toString            -> JsString(Location.ENGLAND.toString)
+        LocationId.toString            -> JsString(Location.England.toString)
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))

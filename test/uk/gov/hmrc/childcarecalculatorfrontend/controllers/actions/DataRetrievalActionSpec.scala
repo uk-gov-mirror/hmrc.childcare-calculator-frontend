@@ -17,13 +17,13 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions
 
 import org.mockito.ArgumentMatchers
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.RecoverMethods
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Request
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.OptionalDataRequest
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
@@ -32,8 +32,8 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with RecoverMethods {
 
-  class Harness(dataCacheConnector: DataCacheConnector)
-      extends DataRetrievalActionImpl(dataCacheConnector, mcc, frontendAppConfig) {
+  class Harness(dataCacheService: DataCacheService)
+      extends DataRetrievalActionImpl(dataCacheService, mcc, frontendAppConfig) {
     def callTransform[A](request: Request[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
@@ -41,7 +41,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
     "there is no data in the cache" must {
       "set userAnswers to 'None' in the request" in {
-        val dataCacheConnector = mock[DataCacheConnector]
+        val dataCacheConnector = mock[DataCacheService]
         when(dataCacheConnector.fetch(ArgumentMatchers.any())).thenReturn(Future(None))
         val action = new Harness(dataCacheConnector)
 
@@ -53,7 +53,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
     "there is data in the cache" must {
       "build a userAnswers object and add it to the request" in {
-        val dataCacheConnector = mock[DataCacheConnector]
+        val dataCacheConnector = mock[DataCacheService]
         when(dataCacheConnector.fetch(ArgumentMatchers.any())).thenReturn(Future(Some(new CacheMap("id", Map()))))
         val action = new Harness(dataCacheConnector)
 
@@ -65,7 +65,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
     "there is no session Id in the request" must {
       "throw an exception" in {
-        val dataCacheConnector = mock[DataCacheConnector]
+        val dataCacheConnector = mock[DataCacheService]
         val action             = new Harness(dataCacheConnector)
 
         recoverToSucceededIf[IllegalStateException] {

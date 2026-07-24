@@ -18,7 +18,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.views
 
 import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ChildcarePayFrequencyForm
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildcarePayFrequency
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequency
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewViewBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.childcarePayFrequency
 
@@ -29,7 +29,7 @@ class ChildcarePayFrequencyViewSpec extends NewViewBehaviours {
 
   def createView = () => view(frontendAppConfig, ChildcarePayFrequencyForm("Foo"), 0, "Foo")(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[ChildcarePayFrequency.Value]) =>
+  def createViewUsingForm = (form: Form[ChildcarePayFrequency]) =>
     view(frontendAppConfig, form, 0, "Foo")(fakeRequest, messages)
 
   val cardinal = messages("nth.0")

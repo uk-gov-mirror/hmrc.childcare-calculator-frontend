@@ -20,9 +20,9 @@ import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json.JsValueWrapper
 import play.api.libs.json.{JsValue, Json}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhichChildrenBlindForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{AboutYourChildId, WhichChildrenBlindId}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.AboutYourChild
@@ -130,7 +130,7 @@ class WhichChildrenBlindControllerSpec extends ControllerSpecBase with OptionVal
   val defaultValues = Map("Foo" -> "0", "Bar" -> "1")
 
   def viewAsString(
-      form: Form[_] = WhichChildrenBlindForm(0, 1),
+      form: Form[?] = WhichChildrenBlindForm(0, 1),
       values: Map[String, String] = defaultValues
   ) =
     view(frontendAppConfig, form, values.toSeq)(fakeRequest, messages).toString
@@ -139,7 +139,7 @@ class WhichChildrenBlindControllerSpec extends ControllerSpecBase with OptionVal
     AboutYourChildId.toString -> Json.obj(
       values.map { case (name, v) =>
         v -> (Json.toJson(AboutYourChild(name, LocalDate.now)): JsValueWrapper)
-      }.toSeq: _*
+      }.toSeq*
     )
   )
 

@@ -20,23 +20,24 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.{FormErrorHelper, ParentEmploymentIncomeCYForm}
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.ParentEmploymentIncomeCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.parentEmploymentIncomeInvalidMaxEarningsErrorKey
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{TaxYearInfo, UserAnswers}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.parentEmploymentIncomeCY
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class ParentEmploymentIncomeCYController @Inject() (
     appConfig: FrontendAppConfig,
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -53,7 +54,7 @@ class ParentEmploymentIncomeCYController @Inject() (
       case None        => form()
       case Some(value) => form().fill(value)
     }
-    Ok(parentEmploymentIncomeCY(appConfig, preparedForm, taxYearInfo))
+    Ok(parentEmploymentIncomeCY(preparedForm, taxYearInfo))
   }
 
   def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
@@ -62,10 +63,10 @@ class ParentEmploymentIncomeCYController @Inject() (
 
     validateForm(maxEarnings, boundForm).fold(
       (formWithErrors: Form[BigDecimal]) =>
-        Future.successful(BadRequest(parentEmploymentIncomeCY(appConfig, formWithErrors, taxYearInfo))),
+        Future.successful(BadRequest(parentEmploymentIncomeCY(formWithErrors, taxYearInfo))),
       value =>
-        dataCacheConnector
-          .save[BigDecimal](request.sessionId, ParentEmploymentIncomeCYId.toString, value)
+        dataCacheService
+          .save(ParentEmploymentIncomeCYId, value)
           .map(cacheMap => Redirect(navigator.nextPage(ParentEmploymentIncomeCYId)(new UserAnswers(cacheMap))))
     )
   }

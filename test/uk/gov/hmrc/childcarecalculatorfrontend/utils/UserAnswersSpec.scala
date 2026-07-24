@@ -18,10 +18,10 @@ package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
 import org.scalatest.OptionValues
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json._
-import uk.gov.hmrc.childcarecalculatorfrontend.DataGenerator._
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models._
+import play.api.libs.json.*
+import uk.gov.hmrc.childcarecalculatorfrontend.DataGenerator.*
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 
 import java.time.LocalDate
 
@@ -35,7 +35,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
   private val ageOfExactly16: LocalDate     = ageExactly16Relative(testDate)
 
   def cacheMap(answers: (String, JsValue)*): CacheMap =
-    CacheMap("", Map(answers: _*))
+    CacheMap("", Map(answers*))
 
   def helper(map: CacheMap = cacheMap()): UserAnswers =
     new UserAnswers(map) {
@@ -606,10 +606,10 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
   "hasApprovedCosts" must {
 
-    import uk.gov.hmrc.childcarecalculatorfrontend.models.{YesNoNotYetEnum, YesNoUnsureEnum}
+    import uk.gov.hmrc.childcarecalculatorfrontend.models.{YesNoNotYet, YesNoNotSure}
 
-    val yesNoNotYetPositive: Seq[String] = Seq(YesNoNotYetEnum.YES.toString, YesNoNotYetEnum.NOTYET.toString)
-    val yesNoUnsurePositive: Seq[String] = Seq(YesNoUnsureEnum.YES.toString, YesNoUnsureEnum.NOTSURE.toString)
+    val yesNoNotYetPositive: Seq[String] = Seq(YesNoNotYet.Yes.toString, YesNoNotYet.NotYet.toString)
+    val yesNoUnsurePositive: Seq[String] = Seq(YesNoNotSure.Yes.toString, YesNoNotSure.NotSure.toString)
 
     for {
       costs    <- yesNoNotYetPositive
@@ -628,7 +628,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `false` if a user has no costs" in {
       val answers = helper(
         cacheMap(
-          ChildcareCostsId.toString -> JsString(YesNoNotYetEnum.NO.toString)
+          ChildcareCostsId.toString -> JsString(YesNoNotYet.No.toString)
         )
       )
       answers.hasApprovedCosts.value mustEqual false
@@ -639,7 +639,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
         helper(
           cacheMap(
             ChildcareCostsId.toString   -> JsString(costs),
-            ApprovedProviderId.toString -> JsString(YesNoUnsureEnum.NO.toString)
+            ApprovedProviderId.toString -> JsString(YesNoNotSure.No.toString)
           )
         )
     }
@@ -647,7 +647,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `None` if a user has costs but `approvedProvider` is undefined" in {
       val answers = helper(
         cacheMap(
-          ChildcareCostsId.toString -> JsString(YesNoNotYetEnum.YES.toString)
+          ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
         )
       )
       answers.hasApprovedCosts mustNot be(defined)
@@ -656,7 +656,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `None` if a user `childcareCosts` is undefined" in {
       val answers = helper(
         cacheMap(
-          ApprovedProviderId.toString -> JsString(YesNoUnsureEnum.YES.toString)
+          ApprovedProviderId.toString -> JsString(YesNoNotSure.Yes.toString)
         )
       )
       answers.hasApprovedCosts mustNot be(defined)

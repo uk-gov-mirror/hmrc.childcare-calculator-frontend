@@ -17,10 +17,11 @@
 package uk.gov.hmrc.childcarecalculatorfrontend
 
 import java.time.LocalDate
-import play.api.libs.json._
+import play.api.libs.json.*
 
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{AboutYourChild, ChildcarePayFrequency, DisabilityBenefits}
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{ChildcarePayFrequency, DisabilityBenefit}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.AboutYourChild
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, SubCascadeUpsert}
 
 case class DataGenerator(sample: CacheMap) extends SubCascadeUpsert {
@@ -58,8 +59,8 @@ object DataGenerator {
   val ageExactly15Relative: LocalDate => LocalDate = (date: LocalDate) =>
     LocalDate.of(date.minusYears(15).getYear, 6, 1)
 
-  lazy val disabilityBenefits: String           = DisabilityBenefits.DISABILITY_BENEFITS.toString
-  lazy val higherRateDisabilityBenefits: String = DisabilityBenefits.HIGHER_DISABILITY_BENEFITS.toString
+  lazy val disabilityBenefits: String           = DisabilityBenefit.DISABILITY_BENEFITS.toString
+  lazy val higherRateDisabilityBenefits: String = DisabilityBenefit.HIGHER_DISABILITY_BENEFITS.toString
 
   lazy val weekly: String  = ChildcarePayFrequency.WEEKLY.toString
   lazy val monthly: String = ChildcarePayFrequency.MONTHLY.toString

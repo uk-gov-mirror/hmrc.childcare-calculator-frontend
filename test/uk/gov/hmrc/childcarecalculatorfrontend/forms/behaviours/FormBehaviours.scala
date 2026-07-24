@@ -28,7 +28,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
 
   val minValue: BigDecimal = 1
 
-  val form: Form[_]
+  val form: Form[?]
 
   private def minimumValue(field: String): Assertion = {
     val data          = validData + (field -> (minValue - 1).toString())
@@ -68,7 +68,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
   def formWithMandatoryTextFieldWithErrorMsgs(
       field: String,
       errorKeyRequired: String = "error.required",
-      errorKeyBlank: String = "error.blank"
+      missingErrorKey: String = "error.blank"
   ) = {
 
     s"fail to bind when $field is omitted" in {
@@ -79,7 +79,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
 
     s"fail to bind when $field is blank" in {
       val data          = validData + (field -> "")
-      val expectedError = error(field, errorKeyBlank)
+      val expectedError = error(field, missingErrorKey)
       checkForError(form, data, expectedError)
     }
 
@@ -130,7 +130,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
     }
 
   def formWithOptionField(field: String, validValues: String*) =
-    formWithOptionFieldError(field, "error.required", validValues: _*)
+    formWithOptionFieldError(field, "error.required", validValues*)
 
   def formWithOptionFieldError(formError: FormError, validValues: String*): Unit = {
     for (validValue <- validValues)
@@ -153,7 +153,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
   }
 
   def formWithOptionFieldError(field: String, errorMessage: String, validValues: String*): Unit =
-    formWithOptionFieldError(FormError(field, errorMessage), validValues: _*)
+    formWithOptionFieldError(FormError(field, errorMessage), validValues*)
 
   def formWithDateField(field: String) = {
     s"fail to bind when $field day is omitted" in {

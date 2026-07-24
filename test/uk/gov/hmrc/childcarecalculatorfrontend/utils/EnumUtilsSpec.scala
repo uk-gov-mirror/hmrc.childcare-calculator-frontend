@@ -30,9 +30,9 @@ class EnumUtilsSpec extends PlaySpec {
                               | "enum" : "something"
                               |}
         """.stripMargin)
-      json.validate[Location.Value] match {
+      json.validate[Location] match {
         case JsSuccess(v, _) =>
-          !v.isInstanceOf[Location.Value]
+          !v.isInstanceOf[Location]
         case JsError(errors) =>
           errors.head._2.head.message mustBe "String value expected"
       }
@@ -42,9 +42,9 @@ class EnumUtilsSpec extends PlaySpec {
       val json = Json.parse("""
                               |"something"
         """.stripMargin)
-      json.validate[Location.Value] match {
+      json.validate[Location] match {
         case JsSuccess(v, _) =>
-          !v.isInstanceOf[Location.Value]
+          !v.isInstanceOf[Location]
         case JsError(errors) =>
           errors.head._2.head.message mustBe
             "Enumeration expected of type: 'class uk.gov.hmrc.childcarecalculatorfrontend.models.Location$', but it does not appear to contain the value: 'something'"
@@ -55,16 +55,16 @@ class EnumUtilsSpec extends PlaySpec {
       val json = Json.parse("""
                               |"england"
         """.stripMargin)
-      json.validate[Location.Value] match {
+      json.validate[Location] match {
         case JsSuccess(v, _) =>
-          v.isInstanceOf[Location.Value] mustBe true
+          v.isInstanceOf[Location] mustBe true
         case JsError(errors) =>
           errors.head._2.head.message mustBe ""
       }
     }
 
     "return valid json when the object is written" in {
-      val res: JsValue = Json.toJson(Location.ENGLAND)
+      val res: JsValue = Json.toJson(Location.England)
       res.toString() mustBe "\"england\""
     }
 

@@ -21,7 +21,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.audit.DefaultAuditConnector
-import uk.gov.hmrc.play.audit.AuditExtensions._
+import uk.gov.hmrc.play.audit.AuditExtensions.*
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,7 +35,7 @@ sealed class SplunkSubmissionEvent @Inject() (data: Map[String, String])(implici
       auditSource = "Childcare-Calculator",
       auditType = "childcare-calculator-feedback-survey",
       tags = hc.toAuditTags("Childcare Calculator Submission Service", "/survey/childcare-support"),
-      detail = hc.toAuditDetails(data.toSeq: _*)
+      detail = hc.toAuditDetails(data.toSeq*)
     )
 
 trait SplunkSubmissionServiceInterface {

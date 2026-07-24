@@ -16,6 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object PartnerChildcareVouchersId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object PartnerChildcareVouchersId extends Identifier with CacheKey {
   override def toString: String = "partnerChildcareVouchers"
+
+  override type CacheValue = Boolean
 }

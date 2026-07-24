@@ -20,7 +20,7 @@ import org.scalatest.OptionValues
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.Call
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 
 class NavigatorSpec extends PlaySpec with OptionValues {

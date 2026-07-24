@@ -17,31 +17,24 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.format.Formatter
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoUnsureEnum
+import uk.gov.hmrc.childcarecalculatorfrontend.forms.formatters.EnumFormatter
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YesNo
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.InputOption
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
 
 object YourChildcareVouchersForm extends FormErrorHelper {
 
-  def YourChildcareVouchersFormatter = new Formatter[String] {
-    def bind(key: String, data: Map[String, String]) = data.get(key) match {
-      case Some(s) if optionIsValid(s) => Right(s)
-      case None                        => produceError(key, yourChildcareVoucherErrorKey)
-      case _                           => produceError(key, unknownErrorKey)
-    }
+  private val YourChildcareVouchersFormatter: Formatter[YesNo] =
+    EnumFormatter[YesNo](missingErrorKey = yourChildcareVoucherErrorKey, unknownValueErrorKey = unknownErrorKey)
 
-    def unbind(key: String, value: String) = Map(key -> value)
-  }
-
-  def apply(): Form[String] =
+  def apply(): Form[YesNo] =
     Form(single("value" -> of(YourChildcareVouchersFormatter)))
 
-  def options = Seq(
-    InputOption("yourChildcareVouchers", YesNoUnsureEnum.YES.toString),
-    InputOption("yourChildcareVouchers", YesNoUnsureEnum.NO.toString)
+  val options: Seq[InputOption] = Seq(
+    InputOption("yourChildcareVouchers", YesNo.Yes.toString),
+    InputOption("yourChildcareVouchers", YesNo.No.toString)
   )
 
-  def optionIsValid(value: String) = options.exists(o => o.value == value)
 }

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.navigation
 
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsBoolean, JsNumber, JsValue, Json}
@@ -28,7 +28,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.DataGenerator.{
 }
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.AboutYourChild
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers, Utils}
 

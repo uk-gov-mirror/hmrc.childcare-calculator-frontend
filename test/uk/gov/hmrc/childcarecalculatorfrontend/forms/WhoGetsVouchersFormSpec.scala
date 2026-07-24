@@ -33,7 +33,7 @@ class WhoGetsVouchersFormSpec extends FormBehaviours {
       formWithOptionFieldError(
         "value",
         "whoGetsVouchers.error.notCompleted",
-        WhoGetsVouchersForm.options.map(x => x.value): _*
+        WhoGetsVouchersForm.options.map(x => x.value)*
       )
     )
   }

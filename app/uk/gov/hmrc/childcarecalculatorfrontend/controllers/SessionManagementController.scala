@@ -18,21 +18,21 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.DataRetrievalAction
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.SessionDataClearId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class SessionManagementController @Inject() (
-    val appConfig: FrontendAppConfig,
+    val
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction
 )(implicit ec: ExecutionContext)
@@ -45,8 +45,8 @@ class SessionManagementController @Inject() (
 
   def clearSessionData: Action[AnyContent] = getData.async { implicit request =>
     // value has been hard coded as "sessionData" as there is no form associated with this controller
-    dataCacheConnector
-      .save[String](request.sessionId, SessionDataClearId.toString, "sessionData")
+    dataCacheService
+      .save(SessionDataClearId, "sessionData")
       .map(cacheMap => Redirect(navigator.nextPage(SessionDataClearId)(new UserAnswers(cacheMap))))
   }
 

@@ -16,6 +16,11 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object LocationId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object LocationId extends Identifier with CacheKey {
   override def toString: String = "location"
+
+  override type CacheValue = Location
 }

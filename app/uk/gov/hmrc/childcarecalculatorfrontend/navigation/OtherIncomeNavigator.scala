@@ -18,8 +18,8 @@ package uk.gov.hmrc.childcarecalculatorfrontend.navigation
 
 import play.api.mvc.Call
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{both, partner, you}
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBoth
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
 
 import javax.inject.{Inject, Singleton}
@@ -53,18 +53,18 @@ private[navigation] class OtherIncomeNavigator @Inject() (utils: Utils) extends 
 
   private def whoGetsOtherIncomeRouteCY(answers: UserAnswers) =
     utils.getCall(answers.whoGetsOtherIncomeCY) {
-      case `you`     => routes.YourOtherIncomeAmountCYController.onPageLoad()
-      case `partner` => routes.PartnerOtherIncomeAmountCYController.onPageLoad()
-      case `both`    => routes.OtherIncomeAmountCYController.onPageLoad()
+      case YouPartnerBoth.You     => routes.YourOtherIncomeAmountCYController.onPageLoad()
+      case YouPartnerBoth.Partner => routes.PartnerOtherIncomeAmountCYController.onPageLoad()
+      case YouPartnerBoth.Both    => routes.OtherIncomeAmountCYController.onPageLoad()
     }
 
-  private def howMuchYourOtherIncomeRouteCY(answers: UserAnswers) =
+  private def howMuchYourOtherIncomeRouteCY(_answers: UserAnswers) =
     routes.ResultController.onPageLoad()
 
-  private def howMuchPartnerOtherIncomeRouteCY(answers: UserAnswers) =
+  private def howMuchPartnerOtherIncomeRouteCY(_answers: UserAnswers) =
     routes.ResultController.onPageLoad()
 
-  private def howMuchBothOtherIncomeRouteCY(answers: UserAnswers) =
+  private def howMuchBothOtherIncomeRouteCY(_answers: UserAnswers) =
     routes.ResultController.onPageLoad()
 
 }

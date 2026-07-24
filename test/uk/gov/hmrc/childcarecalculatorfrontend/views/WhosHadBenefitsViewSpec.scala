@@ -28,7 +28,7 @@ class WhosHadBenefitsViewSpec extends NewViewBehaviours {
 
   def createView = () => view(frontendAppConfig, WhosHadBenefitsForm())(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[_]) => view(frontendAppConfig, form)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[?]) => view(frontendAppConfig, form)(fakeRequest, messages)
 
   "WhosHadBenefits view" must {
     behave.like(normalPage(createView, messageKeyPrefix))

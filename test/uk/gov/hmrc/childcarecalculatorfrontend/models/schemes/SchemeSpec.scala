@@ -24,6 +24,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 trait SchemeSpec extends PlaySpec {
 
   def helper(answers: (String, JsValue)*): UserAnswers =
-    new UserAnswers(CacheMap("", Map(answers: _*)))
+    new UserAnswers(CacheMap("", Map(answers*)))
 
 }

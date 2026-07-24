@@ -35,7 +35,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 trait NewViewSpecBase extends SpecBase {
 
@@ -64,7 +64,7 @@ trait NewViewSpecBase extends SpecBase {
 
   def assertPageTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*) = {
     val headers = doc.getElementsByTag("h1")
-    headers.first.text.replaceAll("\u00a0", " ") mustBe messages(expectedMessageKey, args: _*).replaceAll("&nbsp;", " ")
+    headers.first.text.replaceAll("\u00a0", " ") mustBe messages(expectedMessageKey, args*).replaceAll("&nbsp;", " ")
   }
 
   def assertPageTitleEqualsString(doc: Document, expectedMessage: String) = {

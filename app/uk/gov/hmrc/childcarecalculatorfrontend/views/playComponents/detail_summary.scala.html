@@ -14,14 +14,18 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.*
 
-@this(govukDetails : GovukDetails)
+@this(
+    govukDetails : GovukDetails,
+)
 
 @(
     summary: String,
-    id: Option[String] = None
-)(content: Html)
+    id: Option[String] = None,
+)(
+    content: Html,
+)
 
 <details class="govuk-details" data-module="govuk-details" @if(id.isDefined) {id="@id"}>
     <summary class="govuk-details__summary">

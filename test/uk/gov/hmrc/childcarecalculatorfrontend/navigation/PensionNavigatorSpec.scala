@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.navigation
 
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers, Utils}
 
 class PensionNavigatorSpec extends SpecBase with MockitoSugar {
@@ -30,7 +30,7 @@ class PensionNavigatorSpec extends SpecBase with MockitoSugar {
   val navigator = new PensionNavigator(new Utils)
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers =
-    new UserAnswers(CacheMap("", Map(answers: _*)))
+    new UserAnswers(CacheMap("", Map(answers*)))
 
   "Current Year Pension Route Navigation" when {
     "in Normal mode" must {

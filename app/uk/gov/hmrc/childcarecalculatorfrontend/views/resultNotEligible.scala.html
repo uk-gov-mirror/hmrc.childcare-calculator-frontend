@@ -18,12 +18,16 @@
 @import uk.gov.hmrc.childcarecalculatorfrontend.models.views.{ResultsViewModel, SchemeResultModel}
 
 @this(
-        schemeResult: playComponents.scheme_result,
-        heading: playComponents.heading,
-        govukInsetText: GovukInsetText
+    schemeResult: playComponents.scheme_result,
+    heading: playComponents.heading,
+    govukInsetText: GovukInsetText,
 )
 
-@(model: ResultsViewModel)(implicit messages: Messages)
+@(
+    model: ResultsViewModel,
+)(
+    implicit messages: Messages,
+)
 
 @if(model.freeChildcareWorkingParentsEligibilityMsg.isDefined) {
     @schemeResult(SchemeResultModel(

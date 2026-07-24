@@ -18,7 +18,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions
 
 import java.time.LocalDate
 import play.api.Application
-import play.api.mvc.{Request, _}
+import play.api.mvc.{Request, *}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.OptionalDataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap

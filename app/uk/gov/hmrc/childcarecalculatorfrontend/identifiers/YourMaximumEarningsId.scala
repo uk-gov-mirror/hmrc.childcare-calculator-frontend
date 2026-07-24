@@ -16,6 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object YourMaximumEarningsId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object YourMaximumEarningsId extends Identifier with CacheKey {
   override def toString: String = "yourMaximumEarnings"
+
+  override type CacheValue = Boolean
 }

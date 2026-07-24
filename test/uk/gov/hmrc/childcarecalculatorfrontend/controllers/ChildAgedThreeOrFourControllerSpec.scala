@@ -18,9 +18,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.libs.json.{JsBoolean, JsString}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{ChildAgedThreeOrFourId, LocationId}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
@@ -33,7 +33,7 @@ class ChildAgedThreeOrFourControllerSpec extends ControllerSpecBase {
   val view        = application.injector.instanceOf[childAgedThreeOrFour]
   def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
 
-  val location = Location.ENGLAND
+  val location = Location.England
 
   val cacheMapWithLocation = new CacheMap("id", Map(LocationId.toString -> JsString(location.toString)))
 

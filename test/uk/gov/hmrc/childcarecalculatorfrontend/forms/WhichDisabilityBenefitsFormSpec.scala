@@ -17,11 +17,11 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.CheckboxBehaviours
-import uk.gov.hmrc.childcarecalculatorfrontend.models.DisabilityBenefits
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.DisabilityBenefit
 
-class WhichDisabilityBenefitsFormSpec extends CheckboxBehaviours[DisabilityBenefits.Value] {
+class WhichDisabilityBenefitsFormSpec extends CheckboxBehaviours[DisabilityBenefit] {
 
-  override val validOptions: Set[DisabilityBenefits.Value] = DisabilityBenefits.values
+  override val validOptions: Set[DisabilityBenefit] = DisabilityBenefit.values
 
   override val fieldName = "value"
 

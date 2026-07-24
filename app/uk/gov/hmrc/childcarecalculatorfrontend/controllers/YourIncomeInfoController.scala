@@ -18,7 +18,6 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.TaxYearInfo
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourIncomeInfo
@@ -28,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class YourIncomeInfoController @Inject() (
-    val appConfig: FrontendAppConfig,
+    val
     mcc: MessagesControllerComponents,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -38,6 +37,6 @@ class YourIncomeInfoController @Inject() (
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    getData.andThen(requireData)(implicit request => Ok(yourIncomeInfo(appConfig, taxYearInfo)))
+    getData.andThen(requireData)(implicit request => Ok(yourIncomeInfo(taxYearInfo)))
 
 }

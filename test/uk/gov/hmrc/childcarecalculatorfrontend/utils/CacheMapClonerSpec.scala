@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 
 class CacheMapClonerSpec extends SpecBase {

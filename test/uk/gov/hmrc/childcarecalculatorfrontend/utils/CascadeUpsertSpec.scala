@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
-import play.api.libs.json._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoUnsureEnum
+import play.api.libs.json.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoNotSure
 import uk.gov.hmrc.childcarecalculatorfrontend.{CascadeUpsertBase, SpecBase}
 
 class CascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
-  lazy val no: String = YesNoUnsureEnum.NO.toString
+  lazy val no: String = YesNoNotSure.No.toString
 
   "using the apply method for a key that has no special function" when {
     "the key doesn't already exists" must {

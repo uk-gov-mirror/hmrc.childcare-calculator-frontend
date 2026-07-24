@@ -22,8 +22,8 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefits._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{Eligible, ParentsBenefits}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.{Eligible, ParentsBenefit}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers}
 
 class TaxFreeChildcareSpec extends PlaySpec with Matchers with BeforeAndAfterEach {
@@ -46,7 +46,7 @@ class TaxFreeChildcareSpec extends PlaySpec with Matchers with BeforeAndAfterEac
 
       taxFreeChildcare.eligibility(userAnswers)
 
-      val expectedEligibleBenefits: Set[ParentsBenefits] = Set(
+      val expectedEligibleBenefits: Set[ParentsBenefit] = Set(
         CarersAllowance,
         IncapacityBenefit,
         SevereDisablementAllowance,

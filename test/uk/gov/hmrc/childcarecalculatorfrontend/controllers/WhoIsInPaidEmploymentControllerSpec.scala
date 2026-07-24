@@ -18,9 +18,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.libs.json.JsString
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhoIsInPaidEmploymentForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{LocationId, WhoIsInPaidEmploymentId}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
@@ -46,9 +46,9 @@ class WhoIsInPaidEmploymentControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[String] = WhoIsInPaidEmploymentForm()) =
-    view(frontendAppConfig, form, Location.ENGLAND)(fakeRequest, messages).toString
+    view(frontendAppConfig, form, Location.England)(fakeRequest, messages).toString
 
-  val location = LocationId.toString -> JsString(Location.ENGLAND.toString)
+  val location = LocationId.toString -> JsString(Location.England.toString)
 
   "WhoIsInPaidEmployment Controller" must {
 

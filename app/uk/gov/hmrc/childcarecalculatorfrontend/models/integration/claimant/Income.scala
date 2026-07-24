@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
+package uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant
 
-case object YouPaidPensionCYId extends Identifier {
-  override def toString: String = "YouPaidPensionCY"
+import play.api.libs.json.{Json, OFormat}
+
+case class Income(
+    employmentIncome: Option[BigDecimal] = None,
+    pension: Option[BigDecimal] = None,
+    otherIncome: Option[BigDecimal] = None,
+    benefits: Option[BigDecimal] = None,
+    taxCode: Option[String] = None
+)
+
+object Income {
+  implicit val formatIncome: OFormat[Income] = Json.format[Income]
 }

@@ -14,7 +14,9 @@
  * limitations under the License.
  *@
 
-@this(govukCheckboxes : GovukCheckboxes)
+@this(
+    govukCheckboxes : GovukCheckboxes
+)
 
 @(
     field: Field,
@@ -23,8 +25,10 @@
     legendClass: Option[String] = None,
     hint: Option[String] = None,
     trackGa: Boolean = false,
-    inputs: Seq[CheckboxItem]
-)(implicit messages: Messages)
+    inputs: Seq[CheckboxItem],
+)(
+    implicit messages: Messages,
+)
 
 
 @govukCheckboxes(

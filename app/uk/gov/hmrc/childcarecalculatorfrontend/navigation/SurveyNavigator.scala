@@ -42,5 +42,5 @@ private[navigation] class SurveyNavigator @Inject() (utils: Utils, appConfig: Fr
       case true  => Call("", appConfig.surveyThankYouUrl)
     }
 
-  private def reasonsForNotUnderstanding(answers: UserAnswers) = Call("", appConfig.surveyThankYouUrl)
+  private def reasonsForNotUnderstanding(_answers: UserAnswers) = Call("", appConfig.surveyThankYouUrl)
 }

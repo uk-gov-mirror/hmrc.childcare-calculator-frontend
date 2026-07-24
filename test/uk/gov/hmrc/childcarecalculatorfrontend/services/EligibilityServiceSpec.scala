@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.services
 
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
 import play.api.mvc.Request
 import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.connectors.EligibilityConnector
-import uk.gov.hmrc.childcarecalculatorfrontend.models._
+import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.SchemeSpec
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers, Utils}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -34,13 +34,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EligibilityServiceSpec extends SchemeSpec with MockitoSugar with ScalaFutures {
 
-  def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers: _*)))
+  def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers*)))
   val frontendAppConfig: FrontendAppConfig                  = mock[FrontendAppConfig]
   val utils: Utils                                          = mock[Utils]
   val connector: EligibilityConnector                       = mock[EligibilityConnector]
   implicit val hc: HeaderCarrier                            = HeaderCarrier()
   implicit val ec: ExecutionContext                         = ExecutionContext.global
-  implicit val req: Request[_]                              = mock[Request[_]]
+  implicit val req: Request[?]                              = mock[Request[_]]
 
   def eligibilityService: EligibilityService = new EligibilityService(frontendAppConfig, utils, connector)
   val todaysDate: LocalDate                  = LocalDate.now()
@@ -51,7 +51,7 @@ class EligibilityServiceSpec extends SchemeSpec with MockitoSugar with ScalaFutu
       val schemeResults = SchemeResults(schemes = Nil)
       val answers       = spy(userAnswers())
 
-      when(answers.location).thenReturn(Some(Location.ENGLAND))
+      when(answers.location).thenReturn(Some(Location.England))
       when(connector.getEligibility(any())(any())).thenReturn(Future(schemeResults))
 
       val futureResult = eligibilityService.eligibility(answers)
@@ -62,7 +62,7 @@ class EligibilityServiceSpec extends SchemeSpec with MockitoSugar with ScalaFutu
       val schemeResults = SchemeResults(schemes = Nil)
       val answers       = spy(userAnswers())
 
-      when(answers.location).thenReturn(Some(Location.ENGLAND))
+      when(answers.location).thenReturn(Some(Location.England))
       when(answers.childAgedThreeOrFour).thenReturn(Some(true))
       when(connector.getEligibility(any())(any())).thenReturn(Future(schemeResults))
 

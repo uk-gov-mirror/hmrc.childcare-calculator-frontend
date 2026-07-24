@@ -18,12 +18,12 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.libs.json.{JsArray, JsString}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.DoYouGetAnyBenefitsForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.DoYouGetAnyBenefitsId
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefits
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.doYouGetAnyBenefits
@@ -48,7 +48,7 @@ class DoYouGetAnyBenefitsControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[Set[ParentsBenefits]] = DoYouGetAnyBenefitsForm()) =
+  def viewAsString(form: Form[Set[ParentsBenefit]] = DoYouGetAnyBenefitsForm()) =
     view(frontendAppConfig, form)(fakeRequest, messages).toString
 
   "DoYouGetAnyBenefits Controller" must {
@@ -62,18 +62,18 @@ class DoYouGetAnyBenefitsControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Map(
-        DoYouGetAnyBenefitsId.toString -> JsArray(Seq(JsString(ParentsBenefits.CarersCredit.toString)))
+        DoYouGetAnyBenefitsId.toString -> JsArray(Seq(JsString(ParentsBenefit.CarersCredit.toString)))
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(DoYouGetAnyBenefitsForm().fill(Set(ParentsBenefits.CarersCredit)))
+      contentAsString(result) mustBe viewAsString(DoYouGetAnyBenefitsForm().fill(Set(ParentsBenefit.CarersCredit)))
     }
 
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest
-        .withFormUrlEncodedBody((s"${DoYouGetAnyBenefitsForm.formId}[0]", ParentsBenefits.CarersAllowance.toString))
+        .withFormUrlEncodedBody((s"${DoYouGetAnyBenefitsForm.formId}[0]", ParentsBenefit.CarersAllowance.toString))
         .withMethod("POST")
 
       val result = controller().onSubmit()(postRequest)

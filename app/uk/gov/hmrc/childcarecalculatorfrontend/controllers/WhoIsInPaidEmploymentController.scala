@@ -19,23 +19,24 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhoIsInPaidEmploymentForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.WhoIsInPaidEmploymentId
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBothNeither
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whoIsInPaidEmployment
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class WhoIsInPaidEmploymentController @Inject() (
-    appConfig: FrontendAppConfig,
+
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -53,7 +54,7 @@ class WhoIsInPaidEmploymentController @Inject() (
           case None        => WhoIsInPaidEmploymentForm()
           case Some(value) => WhoIsInPaidEmploymentForm().fill(value)
         }
-        Ok(whoIsInPaidEmployment(appConfig, preparedForm, location))
+        Ok(whoIsInPaidEmployment(preparedForm, location))
     }
   }
 
@@ -65,11 +66,11 @@ class WhoIsInPaidEmploymentController @Inject() (
         WhoIsInPaidEmploymentForm()
           .bindFromRequest()
           .fold(
-            (formWithErrors: Form[String]) =>
-              Future.successful(BadRequest(whoIsInPaidEmployment(appConfig, formWithErrors, location))),
+            (formWithErrors: Form[YouPartnerBothNeither]) =>
+              Future.successful(BadRequest(whoIsInPaidEmployment(formWithErrors, location))),
             value =>
-              dataCacheConnector
-                .save[String](request.sessionId, WhoIsInPaidEmploymentId.toString, value)
+              dataCacheService
+                .save(WhoIsInPaidEmploymentId, value)
                 .map(cacheMap => Redirect(navigator.nextPage(WhoIsInPaidEmploymentId)(new UserAnswers(cacheMap))))
           )
     }

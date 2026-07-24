@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 
 object CacheMapCloner {
 
@@ -34,7 +34,7 @@ object CacheMapCloner {
             complexObjectsMapper.get(sectionToClone._1) match {
               case Some(data) =>
                 data.foldLeft(Json.obj())((clonedResult, property) =>
-                  clonedResult + (jsonObjectsMapper.get(property).getOrElse(mappingError) -> (dataToClone \ property)
+                  clonedResult + (jsonObjectsMapper.getOrElse(property, mappingError) -> (dataToClone \ property)
                     .getOrElse(Json.toJson(mappingError)))
                 )
               case _ => dataToClone

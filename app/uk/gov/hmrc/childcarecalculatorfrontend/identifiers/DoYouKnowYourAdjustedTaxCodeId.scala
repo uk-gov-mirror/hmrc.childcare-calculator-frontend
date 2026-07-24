@@ -16,6 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object DoYouKnowYourAdjustedTaxCodeId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object DoYouKnowYourAdjustedTaxCodeId extends Identifier with CacheKey {
   override def toString: String = "doYouKnowYourAdjustedTaxCode"
+
+  override type CacheValue = String
 }

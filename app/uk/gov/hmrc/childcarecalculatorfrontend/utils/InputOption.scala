@@ -16,7 +16,19 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
-case class InputOption(id: String, value: String, messageKey: String)
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+
+case class InputOption(id: String, value: String, messageKey: String) {
+
+  def toRadioItem(using messages: Messages): RadioItem = RadioItem(
+    id = Some(id),
+    value = Some(value),
+    content = HtmlContent(messages(messageKey))
+  )
+
+}
 
 object InputOption {
 

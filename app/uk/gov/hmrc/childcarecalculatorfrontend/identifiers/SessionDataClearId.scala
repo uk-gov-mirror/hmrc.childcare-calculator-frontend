@@ -16,6 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object SessionDataClearId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object SessionDataClearId extends Identifier with CacheKey {
   override def toString: String = "sessionDataClear"
+
+  override type CacheValue = String
 }

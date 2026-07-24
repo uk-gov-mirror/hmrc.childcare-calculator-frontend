@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
-import play.api.libs.json._
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{ChildcarePayFrequency, DisabilityBenefits}
+import play.api.libs.json.*
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{ChildcarePayFrequency, DisabilityBenefit}
 import uk.gov.hmrc.childcarecalculatorfrontend.{CascadeUpsertBase, DataGenerator, SpecBase}
 
 class ChildrenCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
-  lazy val disabilityBenefits: String           = DisabilityBenefits.DISABILITY_BENEFITS.toString
-  lazy val higherRateDisabilityBenefits: String = DisabilityBenefits.HIGHER_DISABILITY_BENEFITS.toString
+  lazy val disabilityBenefits: String           = DisabilityBenefit.DISABILITY_BENEFITS.toString
+  lazy val higherRateDisabilityBenefits: String = DisabilityBenefit.HIGHER_DISABILITY_BENEFITS.toString
 
   lazy val weekly: String  = ChildcarePayFrequency.WEEKLY.toString
   lazy val monthly: String = ChildcarePayFrequency.MONTHLY.toString

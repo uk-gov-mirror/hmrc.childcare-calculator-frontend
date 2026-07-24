@@ -18,6 +18,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
 import play.api.Configuration
 import play.api.mvc.Call
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Age
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
   ccDateFormat,
   nmwConfigFileAbbreviation,
@@ -26,7 +27,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
 
 import java.text.SimpleDateFormat
 import java.time.{LocalDate, ZoneId}
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 class Utils {
 
@@ -67,8 +68,10 @@ class Utils {
     * @param ageRange
     * @return
     */
-  def getEarningsForAgeRange(configuration: Configuration, currentDate: LocalDate, ageRange: Option[String]): Int =
-    getOrException(getNMWConfig(configuration, currentDate).getOptional[Int](ageRange.getOrElse("non-existent-age")))
+  def getEarningsForAgeRange(configuration: Configuration, currentDate: LocalDate, ageRange: Option[Age]): Int =
+    getOrException(
+      getNMWConfig(configuration, currentDate).getOptional[Int](ageRange.map(_.toString).getOrElse("non-existent-age"))
+    )
 
   /** @param currentDate
     * @return

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.childcarecalculatorfrontend.models.integration
+package uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child
 
-import java.time.LocalDate
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.DisabilityBenefits
-import uk.gov.hmrc.childcarecalculatorfrontend.models.DisabilityBenefits.{
-  DISABILITY_BENEFITS,
-  HIGHER_DISABILITY_BENEFITS
-}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.PeriodEnum.PeriodEnum
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.DisabilityBenefit
 
 case class Disability(
     disabled: Boolean = false,
@@ -36,7 +30,7 @@ object Disability {
 
   def populateFromRawData(
       currentChildIndex: Int,
-      disabilities: Option[Map[Int, Set[DisabilityBenefits.Value]]],
+      disabilities: Option[Map[Int, Set[DisabilityBenefit]]],
       blindChildren: Option[Boolean] = None
   ): Option[Disability] =
     disabilities match {
@@ -57,7 +51,7 @@ object Disability {
   private def checkIfChildHasDisabilities(
       currentChildIndex: Int,
       blindChildren: Option[Boolean],
-      childrenWithDisabilities: Map[Int, Set[DisabilityBenefits.Value]]
+      childrenWithDisabilities: Map[Int, Set[DisabilityBenefit]]
   ) =
     childrenWithDisabilities.get(currentChildIndex) match {
       case Some(disabilities) => checkDisabilities(disabilities, blindChildren, currentChildIndex)
@@ -65,7 +59,7 @@ object Disability {
     }
 
   private def checkDisabilities(
-      disabilities: Set[DisabilityBenefits.Value],
+      disabilities: Set[DisabilityBenefit],
       blindChildren: Option[Boolean],
       currentChildIndex: Int
   ) =
@@ -74,52 +68,19 @@ object Disability {
     )
 
   private def checkDisabilityType(
-      disabilityType: DisabilityBenefits.Value,
+      disabilityType: DisabilityBenefit,
       childDisabilities: Disability,
       blindChildren: Option[Boolean]
   ): Disability = {
     val disabilities = disabilityType match {
-      case DISABILITY_BENEFITS        => childDisabilities.copy(disabled = true)
-      case HIGHER_DISABILITY_BENEFITS => childDisabilities.copy(severelyDisabled = true)
-      case _                          => childDisabilities
+      case DisabilityBenefit.DisabilityBenefits       => childDisabilities.copy(disabled = true)
+      case DisabilityBenefit.HigherDisabilityBenefits => childDisabilities.copy(severelyDisabled = true)
     }
 
     blindChildren match {
-      case Some(true)  => disabilities.copy(blind = true)
-      case Some(false) => disabilities
-      case None        => disabilities
+      case Some(true) => disabilities.copy(blind = true)
+      case _       => disabilities
     }
   }
 
-}
-
-case class ChildCareCost(
-    amount: Option[BigDecimal] = None,
-    period: Option[PeriodEnum] = None
-)
-
-object ChildCareCost {
-  implicit val formatChildCareCost: OFormat[ChildCareCost] = Json.format[ChildCareCost]
-}
-
-case class Education(
-    inEducation: Boolean = false,
-    startDate: Option[LocalDate] = None
-)
-
-object Education {
-  implicit val formatEducation: OFormat[Education] = Json.format[Education]
-}
-
-case class Child(
-    id: Short,
-    name: String,
-    dob: LocalDate,
-    disability: Option[Disability] = None,
-    childcareCost: Option[ChildCareCost] = None,
-    education: Option[Education] = None
-)
-
-object Child {
-  implicit val formatChild: OFormat[Child] = Json.format[Child]
 }

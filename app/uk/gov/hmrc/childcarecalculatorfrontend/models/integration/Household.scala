@@ -17,11 +17,13 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.models.integration
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.CreditsEnum.CreditsEnum
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Credits
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child.Child
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.Claimant
 
 case class Household(
-    credits: Option[CreditsEnum] = None,
+    credits: Option[Credits] = None,
     location: Location,
     children: List[Child] = List.empty,
     parent: Claimant = Claimant(),

@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
-import org.mockito.ArgumentMatchers._
-import org.mockito.Mockito._
+import org.mockito.ArgumentMatchers.*
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Lang
 import play.api.libs.json.JsString
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{
   DataRequiredAction,
   DataRetrievalAction,
@@ -43,7 +43,7 @@ class ResultControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   implicit val l: Lang = mock[Lang]
 
-  val location = Location.ENGLAND
+  val location = Location.England
 
   val cacheMapWithLocation = new CacheMap("id", Map(LocationId.toString -> JsString(location.toString)))
 

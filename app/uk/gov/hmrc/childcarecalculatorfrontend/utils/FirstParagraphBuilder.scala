@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
-import javax.inject.Inject
 import play.api.i18n.Messages
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{ChildcarePayFrequency, YouPartnerBothEnum}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{ChildcarePayFrequency, YouPartnerBothNeither}
 
+import javax.inject.{Inject, Singleton}
+
+@Singleton
 class FirstParagraphBuilder @Inject() (utils: Utils) {
 
   def buildFirstParagraph(answers: UserAnswers)(implicit messages: Messages): List[String] = {
@@ -27,13 +29,13 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
     val yearlyChildcareCosts = buildSecondSection(answers)
     val whoAreYouLivingWith  = buildThirdSection(answers)
     val areYouInPaidWork     = buildFourthSection(answers)
-    val firstPararagraph = List(
+    val firstParagraph = List(
       doYouHaveChildren,
       yearlyChildcareCosts,
       whoAreYouLivingWith,
       areYouInPaidWork
     ).filter(_.nonEmpty)
-    firstPararagraph
+    firstParagraph
   }
 
   private def buildFirstSection(answers: UserAnswers)(implicit messages: Messages) =
@@ -95,15 +97,11 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
     }
 
   private def checkWhoIsInPaidEmployment(answers: UserAnswers)(implicit messages: Messages) = {
-    val You     = YouPartnerBothEnum.YOU.toString
-    val Partner = YouPartnerBothEnum.PARTNER.toString
-    val Both    = YouPartnerBothEnum.BOTH.toString
-
     answers.whoIsInPaidEmployment.fold("") {
-      case You     => Messages("results.firstParagraph.onlyYouInPaidWork")
-      case Partner => Messages("results.firstParagraph.onlyPartnerInPaidWork")
-      case Both    => Messages("results.firstParagraph.youAndPartnerInPaidWork")
-      case _       => Messages("results.firstParagraph.neitherInPaidWork")
+      case YouPartnerBothNeither.You     => Messages("results.firstParagraph.onlyYouInPaidWork")
+      case YouPartnerBothNeither.Partner => Messages("results.firstParagraph.onlyPartnerInPaidWork")
+      case YouPartnerBothNeither.Both    => Messages("results.firstParagraph.youAndPartnerInPaidWork")
+      case _                             => Messages("results.firstParagraph.neitherInPaidWork")
     }
   }
 
@@ -116,9 +114,9 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
     answers.childcarePayFrequency.fold(costs) { frequencies =>
       val frequency = frequencies.get(elements._1)
       frequency.getOrElse(costs) match {
-        case ChildcarePayFrequency.WEEKLY =>
+        case ChildcarePayFrequency.Weekly =>
           costs + (elements._2 * 52)
-        case ChildcarePayFrequency.MONTHLY =>
+        case ChildcarePayFrequency.Monthly =>
           costs + (elements._2 * 12)
         case _ => costs
       }

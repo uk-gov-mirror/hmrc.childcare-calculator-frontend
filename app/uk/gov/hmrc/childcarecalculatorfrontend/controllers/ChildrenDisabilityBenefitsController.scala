@@ -18,26 +18,26 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.*
 import play.twirl.api.Html
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.ChildrenDisabilityBenefitsId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{SessionExpiredRouter, UserAnswers}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.{childDisabilityBenefits, childrenDisabilityBenefits}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class ChildrenDisabilityBenefitsController @Inject() (
-    appConfig: FrontendAppConfig,
+
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -53,7 +53,7 @@ class ChildrenDisabilityBenefitsController @Inject() (
         case None        => BooleanForm()
         case Some(value) => BooleanForm().fill(value)
       }
-      Future.successful(Ok(view(appConfig, preparedForm, name, noOfChildren)))
+      Future.successful(Ok(view(preparedForm, name, noOfChildren)))
     }
   }
 
@@ -62,11 +62,10 @@ class ChildrenDisabilityBenefitsController @Inject() (
       BooleanForm("childrenDisabilityBenefits.error.notCompleted")
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[Boolean]) =>
-            Future.successful(BadRequest(view(appConfig, formWithErrors, name, noOfChildren))),
+          (formWithErrors: Form[Boolean]) => Future.successful(BadRequest(view(formWithErrors, name, noOfChildren))),
           value =>
-            dataCacheConnector
-              .save[Boolean](request.sessionId, ChildrenDisabilityBenefitsId.toString, value)
+            dataCacheService
+              .save(ChildrenDisabilityBenefitsId, value)
               .map(cacheMap => Redirect(navigator.nextPage(ChildrenDisabilityBenefitsId)(new UserAnswers(cacheMap))))
         )
     }
@@ -83,13 +82,13 @@ class ChildrenDisabilityBenefitsController @Inject() (
     )
   )
 
-  private def view(appConfig: FrontendAppConfig, form: Form[Boolean], name: String, noOfChildren: Int)(
-      implicit request: Request[_]
+  private def view(form: Form[Boolean], name: String, noOfChildren: Int)(
+      implicit request: Request[?]
   ): Html =
     if (noOfChildren == 1) {
-      childDisabilityBenefits(appConfig, form, name)
+      childDisabilityBenefits(form, name)
     } else {
-      childrenDisabilityBenefits(appConfig, form)
+      childrenDisabilityBenefits(form)
     }
 
 }

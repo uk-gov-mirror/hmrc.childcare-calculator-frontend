@@ -16,6 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object ParentPaidWorkCYId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object ParentPaidWorkCYId extends Identifier with CacheKey {
   override def toString: String = "parentPaidWorkCY"
+
+  override type CacheValue = Boolean
 }

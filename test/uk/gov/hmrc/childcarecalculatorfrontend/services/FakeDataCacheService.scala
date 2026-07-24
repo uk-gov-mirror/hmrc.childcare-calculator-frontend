@@ -17,12 +17,12 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.services
 
 import play.api.libs.json.Format
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 
 import scala.concurrent.{ExecutionContext, Future}
 
-object FakeDataCacheService extends DataCacheConnector {
+object FakeDataCacheService extends DataCacheService {
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 

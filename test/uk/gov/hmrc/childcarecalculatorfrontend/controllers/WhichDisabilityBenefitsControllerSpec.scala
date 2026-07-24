@@ -20,12 +20,13 @@ import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json.JsValueWrapper
 import play.api.libs.json.{JsBoolean, JsNumber, JsValue, Json}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhichDisabilityBenefitsForm
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{AboutYourChild, DisabilityBenefits}
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.AboutYourChild
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.DisabilityBenefit
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whichDisabilityBenefits
@@ -48,7 +49,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
     cases.foreach { case (index, name) =>
 
       s"return OK and the correct view for a GET, for index: $index, name: $name" in {
-        val result = controller(getRequiredData(cases: _*)).onPageLoad(index)(fakeRequest)
+        val result = controller(getRequiredData(cases*)).onPageLoad(index)(fakeRequest)
         status(result) mustEqual OK
         contentAsString(result) mustEqual viewAsString(index = index, name = name)
       }
@@ -57,8 +58,8 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
         val validData = requiredData(cases) + (
           WhichDisabilityBenefitsId.toString -> Json.obj(
             cases.map { case (i, _) =>
-              i.toString -> (Seq(DisabilityBenefits(0).toString): JsValueWrapper)
-            }: _*
+              i.toString -> (Seq(DisabilityBenefit(0).toString): JsValueWrapper)
+            }*
           )
         )
         val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
@@ -66,7 +67,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
         val result = controller(getRelevantData).onPageLoad(index)(fakeRequest)
 
         contentAsString(result) mustEqual viewAsString(
-          WhichDisabilityBenefitsForm(name).fill(Set(DisabilityBenefits(0))),
+          WhichDisabilityBenefitsForm(name).fill(Set(DisabilityBenefit(0))),
           index,
           name
         )
@@ -74,9 +75,9 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
 
       s"redirect to the next page when valid data is submitted, for index: $index, name: $name" in {
         val postRequest =
-          fakeRequest.withFormUrlEncodedBody("value[0]" -> DisabilityBenefits(0).toString).withMethod("POST")
+          fakeRequest.withFormUrlEncodedBody("value[0]" -> DisabilityBenefit(0).toString).withMethod("POST")
 
-        val result = controller(getRequiredData(cases: _*)).onSubmit(index)(postRequest)
+        val result = controller(getRequiredData(cases*)).onSubmit(index)(postRequest)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual onwardRoute.url
@@ -101,7 +102,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
     }
 
     "redirect to Session Expired for a POST if no existing cacheMap is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> DisabilityBenefits(0).toString).withMethod("POST")
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> DisabilityBenefit(0).toString).withMethod("POST")
       val result      = controller(dontGetAnyData).onSubmit(0)(postRequest)
 
       status(result) mustEqual SEE_OTHER
@@ -116,7 +117,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
     }
 
     "redirect to Session Expired for a POST if required data is missing" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> DisabilityBenefits(0).toString).withMethod("POST")
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> DisabilityBenefit(0).toString).withMethod("POST")
       val result      = controller().onSubmit(0)(postRequest)
 
       status(result) mustEqual SEE_OTHER
@@ -131,7 +132,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
     }
 
     "redirect to Session Expired for a POST if index is negative" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> DisabilityBenefits(0).toString).withMethod("POST")
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> DisabilityBenefit(0).toString).withMethod("POST")
       val result      = controller(getRequiredData(0 -> "Foo")).onSubmit(-1)(postRequest)
 
       status(result) mustEqual SEE_OTHER
@@ -146,7 +147,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
     }
 
     "redirect to Session Expired for a POST if index is out of bounds" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> DisabilityBenefits(0).toString).withMethod("POST")
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> DisabilityBenefit(0).toString).withMethod("POST")
       val result      = controller(getRequiredData(0 -> "Foo")).onSubmit(1)(postRequest)
 
       status(result) mustEqual SEE_OTHER
@@ -167,7 +168,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
       view
     )
 
-  def viewAsString(form: Form[Set[DisabilityBenefits.Value]]): String =
+  def viewAsString(form: Form[Set[DisabilityBenefit]]): String =
     viewAsString(form, 0, "Foo")
 
   def viewAsString(
@@ -176,7 +177,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
   ): String = viewAsString(WhichDisabilityBenefitsForm(name), index, name)
 
   def viewAsString(
-      form: Form[Set[DisabilityBenefits.Value]],
+      form: Form[Set[DisabilityBenefit]],
       index: Int,
       name: String
   ): String =
@@ -197,7 +198,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
         AboutYourChildId.toString -> Json.obj(
           cases.map { case (index, name) =>
             index.toString -> (Json.toJson(AboutYourChild(name, LocalDate.now)): JsValueWrapper)
-          }: _*
+          }*
         )
       )
     }

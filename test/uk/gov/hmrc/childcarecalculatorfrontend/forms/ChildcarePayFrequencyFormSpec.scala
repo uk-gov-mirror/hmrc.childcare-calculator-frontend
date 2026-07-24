@@ -18,7 +18,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import play.api.data.FormError
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildcarePayFrequency
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequency
 
 class ChildcarePayFrequencyFormSpec extends FormBehaviours {
 
@@ -30,12 +30,12 @@ class ChildcarePayFrequencyFormSpec extends FormBehaviours {
 
   "ChildcarePayFrequency form" must {
 
-    behave.like(questionForm[ChildcarePayFrequency.Value](ChildcarePayFrequency(0)))
+    behave.like(questionForm[ChildcarePayFrequency](ChildcarePayFrequency(0)))
 
     behave.like(
       formWithOptionFieldError(
         FormError("value", "childcarePayFrequency.error.notCompleted", Seq("Foo")),
-        ChildcarePayFrequencyForm.options.map(_.value): _*
+        ChildcarePayFrequencyForm.options.map(_.value)*
       )
     )
   }

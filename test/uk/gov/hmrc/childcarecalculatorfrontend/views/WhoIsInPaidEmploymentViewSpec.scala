@@ -36,7 +36,7 @@ class WhoIsInPaidEmploymentViewSpec extends NewViewBehaviours with BeforeAndAfte
   def constructView(
       appConfig: FrontendAppConfig = frontendAppConfig,
       form: Form[String] = WhoIsInPaidEmploymentForm(),
-      location: Location.Value = Location.ENGLAND
+      location: Location = Location.England
   ) = view(appConfig, form, location)(fakeRequest, messages)
 
   "WhoIsInPaidEmployment view" must {
@@ -46,19 +46,19 @@ class WhoIsInPaidEmploymentViewSpec extends NewViewBehaviours with BeforeAndAfte
 
     "include bereaved partner's paternity leave on page" when {
       "the location is England" in {
-        constructView(location = Location.ENGLAND).toString must include(
+        constructView(location = Location.England).toString must include(
           bereavedPartnersPaternityLeave
         )
       }
 
       "the location is Scotland" in {
-        constructView(location = Location.SCOTLAND).toString must include(
+        constructView(location = Location.Scotland).toString must include(
           bereavedPartnersPaternityLeave
         )
       }
 
       "the location is Wales" in {
-        constructView(location = Location.WALES).toString must include(
+        constructView(location = Location.Wales).toString must include(
           bereavedPartnersPaternityLeave
         )
       }
@@ -66,7 +66,7 @@ class WhoIsInPaidEmploymentViewSpec extends NewViewBehaviours with BeforeAndAfte
 
     "NOT include bereaved partner's paternity leave on page" when {
       "the location is Northern Ireland" in
-        (constructView(location = Location.NORTHERN_IRELAND).toString must not)
+        (constructView(location = Location.NorthernIreland).toString must not)
           .include(bereavedPartnersPaternityLeave)
     }
   }

@@ -16,6 +16,15 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
+import uk.gov.hmrc.childcarecalculatorfrontend.models.AboutYourChild
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
 case class AboutYourChildId(id: Int) extends Identifier {
   override def toString: String = "aboutYourChild"
+}
+
+object AboutYourChildId extends CacheKey {
+  override def toString: String = "aboutYourChild"
+
+  override type CacheValue = Map[Int, AboutYourChild]
 }

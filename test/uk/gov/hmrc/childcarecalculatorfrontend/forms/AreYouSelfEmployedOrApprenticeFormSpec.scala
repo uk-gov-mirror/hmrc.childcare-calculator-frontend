@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class AreYouSelfEmployedOrApprenticeFormSpec extends FormBehaviours {
 
@@ -34,7 +34,7 @@ class AreYouSelfEmployedOrApprenticeFormSpec extends FormBehaviours {
       formWithOptionFieldError(
         "value",
         selfEmployedOrApprenticeErrorKey,
-        AreYouSelfEmployedOrApprenticeForm.options.map(x => x.value): _*
+        AreYouSelfEmployedOrApprenticeForm.options.map(x => x.value)*
       )
     )
   }

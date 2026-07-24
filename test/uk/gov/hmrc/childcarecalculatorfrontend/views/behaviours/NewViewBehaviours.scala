@@ -69,7 +69,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
       expectedGuidanceKeys: String*
   ): Unit = {
 
-    normalPage(view, messageKeyPrefix, expectedGuidanceKeys: _*)
+    normalPage(view, messageKeyPrefix, expectedGuidanceKeys*)
 
     "behave like a currency symbol page" when {
       "rendered" must {
@@ -108,7 +108,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
 
         "display the correct page title" in {
           val doc = asDocument(view())
-          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading$messageKeyPostfix", args: _*)
+          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading$messageKeyPostfix", args*)
         }
 
         "display the correct guidance" in {
@@ -150,14 +150,14 @@ trait NewViewBehaviours extends NewViewSpecBase {
           assertEqualsValue(
             doc,
             "title",
-            messages(s"$messageKeyPrefix.title", titleArgs: _*) + " - " + messages("site.service_name") + " - GOV.UK"
+            messages(s"$messageKeyPrefix.title", titleArgs*) + " - " + messages("site.service_name") + " - GOV.UK"
           )
           assertNotContainsValue(doc, "title", "{}")
         }
 
         "display the correct page title" in {
           val doc = asDocument(view())
-          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading$messageKeyPostfix", args: _*)
+          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading$messageKeyPostfix", args*)
         }
 
         "display the correct guidance" in {

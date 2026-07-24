@@ -19,15 +19,13 @@ package uk.gov.hmrc.childcarecalculatorfrontend.views
 import play.api.data.Form
 import play.twirl.api.Html
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhichDisabilityBenefitsForm
-import uk.gov.hmrc.childcarecalculatorfrontend.models.DisabilityBenefits
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.DisabilityBenefit
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.{NewCheckboxViewBehaviours, NewViewBehaviours}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whichDisabilityBenefits
 
 import scala.util.Random
 
-class WhichDisabilityBenefitsViewSpec
-    extends NewViewBehaviours
-    with NewCheckboxViewBehaviours[DisabilityBenefits.Value] {
+class WhichDisabilityBenefitsViewSpec extends NewViewBehaviours with NewCheckboxViewBehaviours[DisabilityBenefit] {
 
   val view             = application.injector.instanceOf[whichDisabilityBenefits]
   val messageKeyPrefix = "whichDisabilityBenefits"
@@ -36,12 +34,12 @@ class WhichDisabilityBenefitsViewSpec
 
   val values: Seq[(String, String)] = WhichDisabilityBenefitsForm.options
 
-  def form: Form[Set[DisabilityBenefits.Value]] = WhichDisabilityBenefitsForm("Foo")
+  def form: Form[Set[DisabilityBenefit]] = WhichDisabilityBenefitsForm("Foo")
 
-  def createView(form: Form[Set[DisabilityBenefits.Value]]): Html = createView(form, 0, "Foo")
+  def createView(form: Form[Set[DisabilityBenefit]]): Html = createView(form, 0, "Foo")
 
   def createView(
-      form: Form[Set[DisabilityBenefits.Value]],
+      form: Form[Set[DisabilityBenefit]],
       index: Int,
       name: String
   ): Html =

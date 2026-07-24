@@ -22,7 +22,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefits.{
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.{
   CarersAllowance,
   CarersCredit,
   ContributionBasedEmploymentAndSupportAllowance,
@@ -31,7 +31,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefits.{
   NoneOfThese,
   SevereDisablementAllowance
 }
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{Eligible, NotDetermined, NotEligible, ParentsBenefits}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.{Eligible, NotDetermined, NotEligible, ParentsBenefit}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.tfc.{
   JointHousehold,
   ModelFactory,
@@ -53,7 +53,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
 
   private val userAnswers: UserAnswers = new UserAnswers(CacheMap("test-id", Map.empty))
 
-  private val eligibleBenefits: Set[ParentsBenefits] = Set(
+  private val eligibleBenefits: Set[ParentsBenefit] = Set(
     CarersAllowance,
     IncapacityBenefit,
     SevereDisablementAllowance
@@ -286,7 +286,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
         "parent earns between minimum and maximum earnings and partner is unemployed" when {
 
           "partner gets NO benefits" in {
-            val benefits: Set[ParentsBenefits] = Set(NoneOfThese)
+            val benefits: Set[ParentsBenefit] = Set(NoneOfThese)
             val household = JointHousehold(
               parent = Parent(
                 earnsAboveMinEarnings = true,
@@ -309,7 +309,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
           }
 
           "partner gets one benefit and it is NOT eligible one" in {
-            val benefits: Set[ParentsBenefits] = Set(ContributionBasedEmploymentAndSupportAllowance)
+            val benefits: Set[ParentsBenefit] = Set(ContributionBasedEmploymentAndSupportAllowance)
             val household = JointHousehold(
               parent = Parent(
                 earnsAboveMinEarnings = true,
@@ -332,7 +332,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
           }
 
           "partner gets several benefits, but NONE of them are eligible benefits" in {
-            val benefits: Set[ParentsBenefits] = Set(NICreditsForIncapacityOrLimitedCapabilityForWork, CarersCredit)
+            val benefits: Set[ParentsBenefit] = Set(NICreditsForIncapacityOrLimitedCapabilityForWork, CarersCredit)
             val household = JointHousehold(
               parent = Parent(
                 earnsAboveMinEarnings = true,
@@ -358,7 +358,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
         "partner earns between minimum and maximum earnings and parent is unemployed" when {
 
           "parent gets NO benefits" in {
-            val benefits: Set[ParentsBenefits] = Set(NoneOfThese)
+            val benefits: Set[ParentsBenefit] = Set(NoneOfThese)
             val household = JointHousehold(
               parent = Parent(
                 earnsAboveMinEarnings = false,
@@ -381,7 +381,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
           }
 
           "parent gets one benefit and it is NOT eligible one" in {
-            val benefits: Set[ParentsBenefits] = Set(ContributionBasedEmploymentAndSupportAllowance)
+            val benefits: Set[ParentsBenefit] = Set(ContributionBasedEmploymentAndSupportAllowance)
             val household = JointHousehold(
               parent = Parent(
                 earnsAboveMinEarnings = false,
@@ -404,7 +404,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
           }
 
           "parent gets several benefits, but NONE of them are eligible benefits" in {
-            val benefits: Set[ParentsBenefits] = Set(NICreditsForIncapacityOrLimitedCapabilityForWork, CarersCredit)
+            val benefits: Set[ParentsBenefit] = Set(NICreditsForIncapacityOrLimitedCapabilityForWork, CarersCredit)
             val household = JointHousehold(
               parent = Parent(
                 earnsAboveMinEarnings = false,
@@ -543,7 +543,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
         "parent earns between minimum and maximum earnings and partner is unemployed" when {
 
           "partner gets one of eligible benefits" in {
-            val benefits: Set[ParentsBenefits] = Set(CarersAllowance)
+            val benefits: Set[ParentsBenefit] = Set(CarersAllowance)
             val household = JointHousehold(
               parent = Parent(
                 earnsAboveMinEarnings = true,
@@ -566,7 +566,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
           }
 
           "partner gets several benefits, but some of them are eligible benefits" in {
-            val benefits: Set[ParentsBenefits] =
+            val benefits: Set[ParentsBenefit] =
               Set(CarersAllowance, NICreditsForIncapacityOrLimitedCapabilityForWork, CarersCredit)
             val household = JointHousehold(
               parent = Parent(
@@ -593,7 +593,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
         "partner earns between minimum and maximum earnings and parent is unemployed" when {
 
           "parent gets one of eligible benefits" in {
-            val benefits: Set[ParentsBenefits] = Set(CarersAllowance)
+            val benefits: Set[ParentsBenefit] = Set(CarersAllowance)
             val household = JointHousehold(
               parent = Parent(
                 earnsAboveMinEarnings = false,
@@ -616,7 +616,7 @@ class FreeChildcareEligibilityCalculatorSpec extends PlaySpec with Matchers with
           }
 
           "parent gets several benefits, but some of them are eligible benefits" in {
-            val benefits: Set[ParentsBenefits] =
+            val benefits: Set[ParentsBenefit] =
               Set(CarersAllowance, NICreditsForIncapacityOrLimitedCapabilityForWork, CarersCredit)
             val household = JointHousehold(
               parent = Parent(

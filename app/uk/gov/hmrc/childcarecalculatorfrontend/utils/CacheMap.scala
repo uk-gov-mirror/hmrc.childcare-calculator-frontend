@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class CacheMap(id: String, data: Map[String, JsValue]) {
 
-  def getEntry[T](key: String)(implicit fjs: Reads[T]): Option[T] =
+  def getEntry(key: CacheKey)(implicit fjs: Reads[key.CacheValue]): Option[key.CacheValue] =
     data
-      .get(key)
+      .get(key.cacheKey)
       .map(json =>
         json
-          .validate[T]
+          .validate[key.CacheValue]
           .fold(
-            errors => throw new CacheEntryValidationException(key, json, CacheMap.getClass, errors),
+            errors => throw new CacheEntryValidationException(key.cacheKey, json, CacheMap.getClass, errors),
             valid => valid
           )
       )

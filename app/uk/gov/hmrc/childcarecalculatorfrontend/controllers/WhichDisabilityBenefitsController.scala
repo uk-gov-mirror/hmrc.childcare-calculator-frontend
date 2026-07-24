@@ -17,26 +17,26 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.i18n.I18nSupport
-import play.api.mvc._
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
+import play.api.mvc.*
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhichDisabilityBenefitsForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.WhichDisabilityBenefitsId
-import uk.gov.hmrc.childcarecalculatorfrontend.models.DisabilityBenefits
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.DisabilityBenefit
 import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{MapFormats, SessionExpiredRouter, UserAnswers}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whichDisabilityBenefits
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class WhichDisabilityBenefitsController @Inject() (
-    appConfig: FrontendAppConfig,
+
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -54,7 +54,7 @@ class WhichDisabilityBenefitsController @Inject() (
           case None        => WhichDisabilityBenefitsForm(name)
           case Some(value) => WhichDisabilityBenefitsForm(name).fill(value)
         }
-        Future.successful(Ok(whichDisabilityBenefits(appConfig, preparedForm, childIndex, name)))
+        Future.successful(Ok(whichDisabilityBenefits(preparedForm, childIndex, name)))
       }
     }
 
@@ -63,13 +63,11 @@ class WhichDisabilityBenefitsController @Inject() (
       WhichDisabilityBenefitsForm(name)
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(whichDisabilityBenefits(appConfig, formWithErrors, childIndex, name))),
+          formWithErrors => Future.successful(BadRequest(whichDisabilityBenefits(formWithErrors, childIndex, name))),
           value =>
-            dataCacheConnector
-              .saveInMap[Int, Set[DisabilityBenefits.Value]](
-                request.sessionId,
-                WhichDisabilityBenefitsId.toString,
+            dataCacheService
+              .saveInMap[Int, Set[DisabilityBenefit]](
+                WhichDisabilityBenefitsId,
                 childIndex,
                 value
               )

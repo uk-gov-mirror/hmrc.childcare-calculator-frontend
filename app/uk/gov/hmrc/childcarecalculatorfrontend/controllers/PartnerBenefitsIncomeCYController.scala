@@ -19,24 +19,24 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.connectors.DataCacheConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.PartnerBenefitsIncomeCYForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.PartnerBenefitsIncomeCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
+import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.partnerBenefitsIncomeCYRequiredErrorKey
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerBenefitsIncomeCY
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class PartnerBenefitsIncomeCYController @Inject() (
-    appConfig: FrontendAppConfig,
+
     mcc: MessagesControllerComponents,
-    dataCacheConnector: DataCacheConnector,
+    dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -50,18 +50,17 @@ class PartnerBenefitsIncomeCYController @Inject() (
       case None        => PartnerBenefitsIncomeCYForm()
       case Some(value) => PartnerBenefitsIncomeCYForm().fill(value)
     }
-    Ok(partnerBenefitsIncomeCY(appConfig, preparedForm))
+    Ok(partnerBenefitsIncomeCY(preparedForm))
   }
 
   def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
     PartnerBenefitsIncomeCYForm(partnerBenefitsIncomeCYRequiredErrorKey)
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[BigDecimal]) =>
-          Future.successful(BadRequest(partnerBenefitsIncomeCY(appConfig, formWithErrors))),
+        (formWithErrors: Form[BigDecimal]) => Future.successful(BadRequest(partnerBenefitsIncomeCY(formWithErrors))),
         value =>
-          dataCacheConnector
-            .save[BigDecimal](request.sessionId, PartnerBenefitsIncomeCYId.toString, value)
+          dataCacheService
+            .save(PartnerBenefitsIncomeCYId, value)
             .map(cacheMap => Redirect(navigator.nextPage(PartnerBenefitsIncomeCYId)(new UserAnswers(cacheMap))))
       )
   }

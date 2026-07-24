@@ -16,6 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object UniversalCreditId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object UniversalCreditId extends Identifier with CacheKey {
   override def toString: String = "universalCredit"
+
+  override type CacheValue = Boolean
 }

@@ -17,15 +17,15 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.libs.json.{JsBoolean, JsString}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{
   DataRequiredAction,
   DataRetrievalAction,
   FakeDataRetrievalAction
 }
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YouPartnerBothEnum
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.YouPartnerBoth
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerIncomeInfo
 
@@ -52,7 +52,7 @@ class PartnerIncomeInfoControllerSpec extends ControllerSpecBase {
 
       val validData = Map(
         DoYouLiveWithPartnerId.toString  -> JsBoolean(true),
-        WhoIsInPaidEmploymentId.toString -> JsString(YouPartnerBothEnum.YOU.toString)
+        WhoIsInPaidEmploymentId.toString -> JsString(YouPartnerBoth.You.toString)
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))

@@ -18,9 +18,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.libs.json.{JsBoolean, JsString}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{AreYouInPaidWorkId, LocationId}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
@@ -45,10 +45,10 @@ class AreYouInPaidWorkControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[Boolean] = BooleanForm(), location: Location.Value = Location.ENGLAND) =
+  def viewAsString(form: Form[Boolean] = BooleanForm(), location: Location = Location.England) =
     view(frontendAppConfig, form, location)(fakeRequest, messages).toString
 
-  val location = LocationId.toString -> JsString(Location.ENGLAND.toString)
+  val location = LocationId.toString -> JsString(Location.England.toString)
 
   "AreYouInPaidWork Controller" must {
 

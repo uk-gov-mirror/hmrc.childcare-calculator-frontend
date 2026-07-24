@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.models.schemes
 
-import org.mockito.Mockito._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{Eligible, NotEligible, YesNoNotYetEnum}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import org.mockito.Mockito.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.{Eligible, NotEligible, YesNoNotYet}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 
 class EmploymentSupportedChildcareSpec extends SchemeSpec {
@@ -32,7 +32,7 @@ class EmploymentSupportedChildcareSpec extends SchemeSpec {
 
       when(answers.doYouLiveWithPartner).thenReturn(Some(false))
       when(answers.areYouInPaidWork).thenReturn(Some(true))
-      when(answers.childcareCosts).thenReturn(Some(YesNoNotYetEnum.YES.toString))
+      when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes.toString))
       when(answers.yourChildcareVouchers).thenReturn(Some(true))
 
       esc.eligibility(answers: UserAnswers) mustBe Eligible
@@ -42,7 +42,7 @@ class EmploymentSupportedChildcareSpec extends SchemeSpec {
 
       when(answers.doYouLiveWithPartner).thenReturn(Some(false))
       when(answers.areYouInPaidWork).thenReturn(Some(true))
-      when(answers.childcareCosts).thenReturn(Some(NO))
+      when(answers.childcareCosts).thenReturn(Some(No))
       when(answers.yourChildcareVouchers).thenReturn(Some(true))
 
       esc.eligibility(answers: UserAnswers) mustBe NotEligible
@@ -52,7 +52,7 @@ class EmploymentSupportedChildcareSpec extends SchemeSpec {
 
       when(answers.doYouLiveWithPartner).thenReturn(Some(true))
       when(answers.whoIsInPaidEmployment).thenReturn(Some(You))
-      when(answers.childcareCosts).thenReturn(Some(YesNoNotYetEnum.YES.toString))
+      when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes.toString))
       when(answers.yourChildcareVouchers).thenReturn(Some(true))
 
       esc.eligibility(answers: UserAnswers) mustBe Eligible
@@ -62,7 +62,7 @@ class EmploymentSupportedChildcareSpec extends SchemeSpec {
 
       when(answers.doYouLiveWithPartner).thenReturn(Some(true))
       when(answers.whoIsInPaidEmployment).thenReturn(Some(Partner))
-      when(answers.childcareCosts).thenReturn(Some(YesNoNotYetEnum.YES.toString))
+      when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes.toString))
       when(answers.partnerChildcareVouchers).thenReturn(Some(true))
 
       esc.eligibility(answers: UserAnswers) mustBe Eligible
@@ -72,7 +72,7 @@ class EmploymentSupportedChildcareSpec extends SchemeSpec {
 
       when(answers.doYouLiveWithPartner).thenReturn(Some(true))
       when(answers.whoIsInPaidEmployment).thenReturn(Some(Partner))
-      when(answers.childcareCosts).thenReturn(Some(YesNoNotYetEnum.NOTYET.toString))
+      when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.NotYet.toString))
       when(answers.partnerChildcareVouchers).thenReturn(Some(true))
 
       esc.eligibility(answers: UserAnswers) mustBe Eligible
@@ -82,7 +82,7 @@ class EmploymentSupportedChildcareSpec extends SchemeSpec {
 
       when(answers.doYouLiveWithPartner).thenReturn(Some(true))
       when(answers.whoIsInPaidEmployment).thenReturn(Some(Both))
-      when(answers.childcareCosts).thenReturn(Some(YesNoNotYetEnum.YES.toString))
+      when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes.toString))
       when(answers.whoGetsVouchers).thenReturn(Some(Partner))
 
       esc.eligibility(answers: UserAnswers) mustBe Eligible
@@ -92,7 +92,7 @@ class EmploymentSupportedChildcareSpec extends SchemeSpec {
 
       when(answers.doYouLiveWithPartner).thenReturn(Some(true))
       when(answers.whoIsInPaidEmployment).thenReturn(Some(Both))
-      when(answers.childcareCosts).thenReturn(Some(YesNoNotYetEnum.YES.toString))
+      when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes.toString))
       when(answers.whoGetsVouchers).thenReturn(Some(Both))
 
       esc.eligibility(answers: UserAnswers) mustBe Eligible
@@ -102,7 +102,7 @@ class EmploymentSupportedChildcareSpec extends SchemeSpec {
 
       when(answers.doYouLiveWithPartner).thenReturn(Some(false))
       when(answers.areYouInPaidWork).thenReturn(Some(true))
-      when(answers.childcareCosts).thenReturn(Some(YesNoNotYetEnum.YES.toString))
+      when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes.toString))
       when(answers.yourChildcareVouchers).thenReturn(Some(false))
 
       esc.eligibility(answers: UserAnswers) mustBe NotEligible
@@ -112,7 +112,7 @@ class EmploymentSupportedChildcareSpec extends SchemeSpec {
 
       when(answers.doYouLiveWithPartner).thenReturn(Some(true))
       when(answers.whoIsInPaidEmployment).thenReturn(Some(Partner))
-      when(answers.childcareCosts).thenReturn(Some(YesNoNotYetEnum.YES.toString))
+      when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes.toString))
       when(answers.partnerChildcareVouchers).thenReturn(Some(false))
 
       esc.eligibility(answers: UserAnswers) mustBe NotEligible

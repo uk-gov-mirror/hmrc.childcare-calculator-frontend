@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class WhoPaysIntoPensionFormSpec extends FormBehaviours {
 
@@ -34,7 +34,7 @@ class WhoPaysIntoPensionFormSpec extends FormBehaviours {
       formWithOptionFieldError(
         "value",
         whoPaysIntoPensionErrorKey,
-        WhoPaysIntoPensionForm.options.map(x => x.value): _*
+        WhoPaysIntoPensionForm.options.map(x => x.value)*
       )
     )
   }

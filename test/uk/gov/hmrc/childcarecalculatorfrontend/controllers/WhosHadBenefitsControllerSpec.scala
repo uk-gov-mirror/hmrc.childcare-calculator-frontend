@@ -18,12 +18,12 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
 import play.api.libs.json.JsString
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhosHadBenefitsForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.WhosHadBenefitsId
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YouPartnerBothEnum
+import uk.gov.hmrc.childcarecalculatorfrontend.models.YouPartnerBoth
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whosHadBenefits
@@ -45,7 +45,7 @@ class WhosHadBenefitsControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[_] = WhosHadBenefitsForm()) =
+  def viewAsString(form: Form[?] = WhosHadBenefitsForm()) =
     view(frontendAppConfig, form)(fakeRequest, messages).toString
 
   "WhosHadBenefits Controller" must {
@@ -63,7 +63,7 @@ class WhosHadBenefitsControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(WhosHadBenefitsForm().fill(YouPartnerBothEnum.YOU))
+      contentAsString(result) mustBe viewAsString(WhosHadBenefitsForm().fill(YouPartnerBoth.You))
     }
 
     "redirect to the next page when valid data is submitted" in {

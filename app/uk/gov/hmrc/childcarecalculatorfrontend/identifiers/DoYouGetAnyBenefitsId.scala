@@ -16,6 +16,11 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-case object DoYouGetAnyBenefitsId extends Identifier {
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+
+case object DoYouGetAnyBenefitsId extends Identifier with CacheKey {
   override def toString: String = "doYouGetAnyBenefits"
+
+  override type CacheValue = Set[ParentsBenefit]
 }

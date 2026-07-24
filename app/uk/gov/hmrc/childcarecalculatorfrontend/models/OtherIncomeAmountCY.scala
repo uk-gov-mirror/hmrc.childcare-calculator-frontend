@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class OtherIncomeAmountCY(parentOtherIncome: BigDecimal, partnerOtherIncome: BigDecimal)
 

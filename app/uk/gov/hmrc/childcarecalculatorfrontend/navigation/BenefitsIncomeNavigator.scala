@@ -18,8 +18,8 @@ package uk.gov.hmrc.childcarecalculatorfrontend.navigation
 
 import play.api.mvc.Call
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YouPartnerBothEnum._
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBoth
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
 
 import javax.inject.{Inject, Singleton}
@@ -56,9 +56,9 @@ private[navigation] class BenefitsIncomeNavigator @Inject() (utils: Utils) exten
 
   private def whosHadBenefitsRouteCY(answers: UserAnswers) =
     utils.getCall(answers.whosHadBenefits) {
-      case YOU     => routes.YouBenefitsIncomeCYController.onPageLoad()
-      case PARTNER => routes.PartnerBenefitsIncomeCYController.onPageLoad()
-      case BOTH    => routes.BenefitsIncomeCYController.onPageLoad()
+      case YouPartnerBoth.You     => routes.YouBenefitsIncomeCYController.onPageLoad()
+      case YouPartnerBoth.Partner => routes.PartnerBenefitsIncomeCYController.onPageLoad()
+      case YouPartnerBoth.Both    => routes.BenefitsIncomeCYController.onPageLoad()
     }
 
   private def yourBenefitsIncomeRouteCY(answers: UserAnswers) = utils.getCall(answers.doYouLiveWithPartner) {
@@ -66,7 +66,7 @@ private[navigation] class BenefitsIncomeNavigator @Inject() (utils: Utils) exten
     case false => routes.YourOtherIncomeThisYearController.onPageLoad()
   }
 
-  private def partnerBenefitsIncomeRouteCY(answers: UserAnswers) =
+  private def partnerBenefitsIncomeRouteCY(_answers: UserAnswers) =
     routes.BothOtherIncomeThisYearController.onPageLoad()
 
   private def bothBenefitsIncomeRouteCY(answers: UserAnswers) =

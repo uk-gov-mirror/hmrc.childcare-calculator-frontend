@@ -17,18 +17,17 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
 import play.api.libs.json.{JsArray, JsBoolean, JsString, JsValue}
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildAgeGroup._
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{Location, YesNoNotYetEnum, YesNoUnsureEnum}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, SubCascadeUpsert}
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildAgeGroup
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{Location, YesNoNotSure, YesNoNotYet}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
-class MinimumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
-  lazy val No: String = YesNoNotYetEnum.NO.toString
+@Singleton
+class MinimumHoursCascadeUpsert @Inject() extends SubCascadeUpsert {
 
-  val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
+  override val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
     Map(
       LocationId.toString         -> ((v, cm) => storeLocation(v, cm)),
       ChildcareCostsId.toString   -> ((v, cm) => storeChildcareCosts(v, cm)),
@@ -36,9 +35,9 @@ class MinimumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
     )
 
   private def storeLocation(value: JsValue, cacheMap: CacheMap): CacheMap = {
-    val mapToStore = if (value == JsString(Location.ENGLAND.toString)) {
+    val mapToStore = if (value == JsString(Location.England.toString)) {
       cacheMap.copy(data = cacheMap.data - ChildAgedTwoId.toString - ChildAgedThreeOrFourId.toString)
-    } else if (value == JsString(Location.NORTHERN_IRELAND.toString) || value == JsString(Location.WALES.toString)) {
+    } else if (value == JsString(Location.NorthernIreland.toString) || value == JsString(Location.Wales.toString)) {
       cacheMap.copy(data = cacheMap.data - ChildAgedTwoId.toString - ChildrenAgeGroupsId.toString)
     } else {
       cacheMap.copy(data = cacheMap.data - ChildrenAgeGroupsId.toString)
@@ -49,22 +48,22 @@ class MinimumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
 
   private def storeChildcareCosts(value: JsValue, cacheMap: CacheMap): CacheMap = {
 
-    val locationValue             = cacheMap.data.getOrElse(LocationId.toString, JsString(Location.ENGLAND.toString))
+    val locationValue             = cacheMap.data.getOrElse(LocationId.toString, JsString(Location.England.toString))
     val childAgedTwoValue         = cacheMap.data.getOrElse(ChildAgedTwoId.toString, JsBoolean(false))
     val childAgedThreeOrFourValue = cacheMap.data.getOrElse(ChildAgedThreeOrFourId.toString, JsBoolean(false))
     val childrenAgeGroupsValue =
-      cacheMap.data.getOrElse(ChildrenAgeGroupsId.toString, JsArray(Seq(JsString(noneOfThese))))
+      cacheMap.data.getOrElse(ChildrenAgeGroupsId.toString, JsArray(Seq(JsString(ChildAgeGroup.NoneOfThese.toString))))
 
     val existingChildCareCostValue = cacheMap.data.get(ChildcareCostsId.toString)
 
     val mapToStore = value match {
-      case JsString(No)
+      case JsString(YesNoNotYet.No.toString)
           if !existingChildCareCostValue
-            .contains(JsString(NO)) && locationValue == JsString(Location.ENGLAND.toString) =>
+            .contains(JsString(YesNoNotYet.No.toString)) && locationValue == JsString(Location.England.toString) =>
         cacheMap.copy(data =
           Map(LocationId.toString -> locationValue, ChildrenAgeGroupsId.toString -> childrenAgeGroupsValue)
         )
-      case JsString(No) if !existingChildCareCostValue.contains(JsString(NO)) =>
+      case JsString(YesNoNotYet.No.toString) if !existingChildCareCostValue.contains(JsString(YesNoNotYet.No.toString)) =>
         cacheMap.copy(data =
           Map(
             LocationId.toString             -> locationValue,
@@ -81,21 +80,21 @@ class MinimumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
 
   private def storeApprovedProvider(value: JsValue, cacheMap: CacheMap): CacheMap = {
 
-    val locationValue             = cacheMap.data.getOrElse(LocationId.toString, JsString(Location.ENGLAND.toString))
+    val locationValue             = cacheMap.data.getOrElse(LocationId.toString, JsString(Location.England.toString))
     val childAgedTwoValue         = cacheMap.data.getOrElse(ChildAgedTwoId.toString, JsBoolean(false))
     val childAgedThreeOrFourValue = cacheMap.data.getOrElse(ChildAgedThreeOrFourId.toString, JsBoolean(false))
     val childrenAgeGroupsValue =
-      cacheMap.data.getOrElse(ChildrenAgeGroupsId.toString, JsArray(Seq(JsString(noneOfThese))))
-    val childCareCostValue = cacheMap.data.getOrElse(ChildcareCostsId.toString, JsString(No))
+      cacheMap.data.getOrElse(ChildrenAgeGroupsId.toString, JsArray(Seq(JsString(ChildAgeGroup.NoneOfThese.toString))))
+    val childCareCostValue = cacheMap.data.getOrElse(ChildcareCostsId.toString, JsString(YesNoNotYet.No.toString))
 
     val existingApprovedProviderValue = cacheMap.data.get(ApprovedProviderId.toString)
 
-    val NO: String = YesNoUnsureEnum.NO.toString
+    val YesNoNotSureNo: String = YesNoNotSure.No.toString
 
     val mapToStore = value match {
-      case JsString(NO)
+      case JsString(YesNoNotSureNo)
           if !existingApprovedProviderValue
-            .contains(JsString(NO)) && locationValue == JsString(Location.ENGLAND.toString) =>
+            .contains(JsString(YesNoNotSureNo)) && locationValue == JsString(Location.England.toString) =>
         cacheMap.copy(data =
           Map(
             LocationId.toString          -> locationValue,
@@ -103,7 +102,7 @@ class MinimumHoursCascadeUpsert @Inject() () extends SubCascadeUpsert {
             ChildcareCostsId.toString    -> childCareCostValue
           )
         )
-      case JsString(NO) if !existingApprovedProviderValue.contains(JsString(NO)) =>
+      case JsString(YesNoNotSureNo) if !existingApprovedProviderValue.contains(JsString(YesNoNotSureNo)) =>
         cacheMap.copy(data =
           Map(
             LocationId.toString             -> locationValue,

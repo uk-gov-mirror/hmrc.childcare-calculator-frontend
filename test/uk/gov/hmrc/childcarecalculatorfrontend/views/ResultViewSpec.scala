@@ -19,7 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.views
 import org.scalatestplus.mockito.MockitoSugar
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{Location, _}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.{Location, *}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.views.ResultsViewModel
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.Utils
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewViewBehaviours
@@ -29,15 +29,15 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
 
   val resultView: result = application.injector.instanceOf[result]
 
-  val locationEngland: Location.Value  = Location.ENGLAND
-  val locationScotland: Location.Value = Location.SCOTLAND
-  val locationWales: Location.Value    = Location.WALES
+  val locationEngland: Location  = Location.England
+  val locationScotland: Location = Location.Scotland
+  val locationWales: Location    = Location.Wales
 
   def createView(): () => HtmlFormat.Appendable = () =>
     resultView(
       frontendAppConfig: FrontendAppConfig,
       ResultsViewModel(
-        location = Location.ENGLAND,
+        location = Location.England,
         hasChildcareCosts = true,
         hasCostsWithApprovedProvider = true,
         isAnyoneInPaidEmployment = true,
@@ -55,7 +55,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         esc = Some(30),
         tfc = None,
         freeHours = Some(15),
-        location = Location.SCOTLAND,
+        location = Location.Scotland,
         hasChildcareCosts = true,
         hasCostsWithApprovedProvider = true,
         isAnyoneInPaidEmployment = true,
@@ -343,7 +343,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
       "user lives in Scotland" in {
         val model = ResultsViewModel(
           freeHours = Some(15),
-          location = Location.SCOTLAND,
+          location = Location.Scotland,
           childrenAgeGroups = Set(TwoYears),
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
@@ -383,7 +383,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
       "user lives in Wales" in {
         val model = ResultsViewModel(
           freeHours = Some(15),
-          location = Location.WALES,
+          location = Location.Wales,
           childrenAgeGroups = Set(TwoYears),
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
@@ -405,7 +405,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
       "user does not live in England" in {
         val model = ResultsViewModel(
           freeHours = Some(15),
-          location = Location.NORTHERN_IRELAND,
+          location = Location.NorthernIreland,
           childrenAgeGroups = Set(TwoYears),
           hasChildcareCosts = true,
           hasCostsWithApprovedProvider = true,
@@ -468,7 +468,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
             freeHours = None,
             tfc = None,
             esc = None,
-            location = Location.SCOTLAND,
+            location = Location.Scotland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
@@ -509,7 +509,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
             freeHours = None,
             tfc = None,
             esc = None,
-            location = Location.WALES,
+            location = Location.Wales,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
@@ -534,7 +534,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
       "eligible for 22 free hours for scotland and not eligible for other schemes" in {
         val model = ResultsViewModel(
           freeHours = Some(22),
-          location = Location.SCOTLAND,
+          location = Location.Scotland,
           isAnyoneInPaidEmployment = true,
           hasChildcareCosts = false,
           livesWithPartner = false,
@@ -548,7 +548,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
       "eligible for 10 free hours for wales and not eligible for other schemes" in {
         val model = ResultsViewModel(
           freeHours = Some(10),
-          location = Location.WALES,
+          location = Location.Wales,
           isAnyoneInPaidEmployment = true,
           hasChildcareCosts = false,
           livesWithPartner = false,
@@ -562,7 +562,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
       "eligible for 12.5 free hours for northern-ireland and not eligible for other schemes" in {
         val model = ResultsViewModel(
           freeHours = Some(12.5),
-          location = Location.NORTHERN_IRELAND,
+          location = Location.NorthernIreland,
           isAnyoneInPaidEmployment = true,
           hasChildcareCosts = false,
           livesWithPartner = false,
@@ -576,7 +576,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
       "eligible for 15 free hours for England and not eligible for other schemes" in {
         val model = ResultsViewModel(
           freeHours = Some(15),
-          location = Location.ENGLAND,
+          location = Location.England,
           isAnyoneInPaidEmployment = true,
           hasChildcareCosts = false,
           livesWithPartner = false,
@@ -591,7 +591,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "user reaches the results page" in {
           val model = ResultsViewModel(
             freeHours = Some(15),
-            location = Location.NORTHERN_IRELAND,
+            location = Location.NorthernIreland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
@@ -608,7 +608,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user is unemployed" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.SCOTLAND,
+            location = Location.Scotland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
@@ -622,13 +622,13 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user earns less than the national minimum wage" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.SCOTLAND,
+            location = Location.Scotland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
             isAnyoneInPaidEmployment = true,
             livesWithPartner = false,
-            yourEarnings = Some(EarningsEnum.LessThanMinimum)
+            yourEarnings = Some(Earnings.LessThanMinimum)
           )
           val view = asDocument(resultView(frontendAppConfig, model, new Utils)(fakeRequest, messages))
           assertContainsMessages(view, "freeHoursResult.info.extraHelp.scotland.li.1")
@@ -637,13 +637,13 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user earns more than the national minimum wage and less than £100,000" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.SCOTLAND,
+            location = Location.Scotland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
             isAnyoneInPaidEmployment = true,
             livesWithPartner = false,
-            yourEarnings = Some(EarningsEnum.BetweenMinimumAndMaximum)
+            yourEarnings = Some(Earnings.BetweenMinimumAndMaximum)
           )
           val view = asDocument(resultView(frontendAppConfig, model, new Utils)(fakeRequest, messages))
           assertContainsMessages(view, "freeHoursResult.info.extraHelp.scotland.li.1")
@@ -652,13 +652,13 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user earns more than £100,000" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.SCOTLAND,
+            location = Location.Scotland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
             isAnyoneInPaidEmployment = true,
             livesWithPartner = false,
-            yourEarnings = Some(EarningsEnum.GreaterThanMaximum)
+            yourEarnings = Some(Earnings.GreaterThanMaximum)
           )
           val view = asDocument(resultView(frontendAppConfig, model, new Utils)(fakeRequest, messages))
           assertContainsMessages(view, "freeHoursResult.info.extraHelp.scotland.li.1")
@@ -670,7 +670,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user is unemployed" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.WALES,
+            location = Location.Wales,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
@@ -683,13 +683,13 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user earns less than the national minimum wage" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.WALES,
+            location = Location.Wales,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
             isAnyoneInPaidEmployment = true,
             livesWithPartner = false,
-            yourEarnings = Some(EarningsEnum.LessThanMinimum)
+            yourEarnings = Some(Earnings.LessThanMinimum)
           )
           val view = asDocument(resultView(frontendAppConfig, model, new Utils)(fakeRequest, messages))
           assertNotContainsText(view, messages("freeHoursResult.info.extraHelp.heading"))
@@ -697,13 +697,13 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user earns more than the national minimum wage and less than £100,000" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.WALES,
+            location = Location.Wales,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
             isAnyoneInPaidEmployment = true,
             livesWithPartner = false,
-            yourEarnings = Some(EarningsEnum.BetweenMinimumAndMaximum)
+            yourEarnings = Some(Earnings.BetweenMinimumAndMaximum)
           )
           val view = asDocument(resultView(frontendAppConfig, model, new Utils)(fakeRequest, messages))
           assertContainsMessages(view, "freeHoursResult.info.extraHelp.wales.li.1.working")
@@ -711,13 +711,13 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user earns more than £100,000" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.WALES,
+            location = Location.Wales,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
             isAnyoneInPaidEmployment = true,
             livesWithPartner = false,
-            yourEarnings = Some(EarningsEnum.GreaterThanMaximum)
+            yourEarnings = Some(Earnings.GreaterThanMaximum)
           )
           val view = asDocument(resultView(frontendAppConfig, model, new Utils)(fakeRequest, messages))
           assertNotContainsText(view, messages("freeHoursResult.info.extraHelp.heading"))
@@ -728,7 +728,7 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user is unemployed" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.NORTHERN_IRELAND,
+            location = Location.NorthernIreland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
@@ -741,13 +741,13 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user earns less than the national minimum wage" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.NORTHERN_IRELAND,
+            location = Location.NorthernIreland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
             isAnyoneInPaidEmployment = true,
             livesWithPartner = false,
-            yourEarnings = Some(EarningsEnum.LessThanMinimum)
+            yourEarnings = Some(Earnings.LessThanMinimum)
           )
           val view = asDocument(resultView(frontendAppConfig, model, new Utils)(fakeRequest, messages))
           assertContainsMessages(view, "freeHoursResult.info.extraHelp.northern-ireland.li.1")
@@ -755,13 +755,13 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user earns more than the national minimum wage and less than £100,000" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.NORTHERN_IRELAND,
+            location = Location.NorthernIreland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
             isAnyoneInPaidEmployment = true,
             livesWithPartner = false,
-            yourEarnings = Some(EarningsEnum.BetweenMinimumAndMaximum)
+            yourEarnings = Some(Earnings.BetweenMinimumAndMaximum)
           )
           val view = asDocument(resultView(frontendAppConfig, model, new Utils)(fakeRequest, messages))
           assertContainsMessages(view, "freeHoursResult.info.extraHelp.northern-ireland.li.1")
@@ -769,13 +769,13 @@ class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
         "the user earns more than £100,000" in {
           val model = ResultsViewModel(
             freeHours = None,
-            location = Location.NORTHERN_IRELAND,
+            location = Location.NorthernIreland,
             childrenAgeGroups = Set(TwoYears),
             hasChildcareCosts = true,
             hasCostsWithApprovedProvider = true,
             isAnyoneInPaidEmployment = true,
             livesWithPartner = false,
-            yourEarnings = Some(EarningsEnum.GreaterThanMaximum)
+            yourEarnings = Some(Earnings.GreaterThanMaximum)
           )
           val view = asDocument(resultView(frontendAppConfig, model, new Utils)(fakeRequest, messages))
           assertContainsMessages(view, "freeHoursResult.info.extraHelp.northern-ireland.li.1")

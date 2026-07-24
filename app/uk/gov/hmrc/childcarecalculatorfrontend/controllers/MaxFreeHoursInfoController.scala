@@ -18,7 +18,6 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.{EmploymentSupportedChildcare, TaxFreeChildcare}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.maxFreeHoursInfo
@@ -28,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class MaxFreeHoursInfoController @Inject() (
-    val appConfig: FrontendAppConfig,
+    val
     mcc: MessagesControllerComponents,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
@@ -41,7 +40,6 @@ class MaxFreeHoursInfoController @Inject() (
   def onPageLoad: Action[AnyContent] = getData.andThen(requireData) { implicit request =>
     Ok(
       maxFreeHoursInfo(
-        appConfig,
         tfc.eligibility(request.userAnswers),
         esc.eligibility(request.userAnswers),
         request.userAnswers

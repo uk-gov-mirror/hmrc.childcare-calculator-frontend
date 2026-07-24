@@ -16,14 +16,15 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
-import javax.inject.Inject
-import play.api.libs.json._
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers._
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, SubCascadeUpsert}
+import javax.inject.{Inject, Singleton}
+import play.api.libs.json.*
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 
-class ChildrenCascadeUpsert @Inject() () extends SubCascadeUpsert {
+@Singleton
+class ChildrenCascadeUpsert @Inject() extends SubCascadeUpsert {
 
-  val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
+  override val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
     Map(
       NoOfChildrenId.toString               -> ((v, cm) => storeNoOfChildren(v, cm)),
       AboutYourChildId.toString             -> ((v, cm) => storeAboutYourChild(v, cm)),
@@ -114,7 +115,12 @@ class ChildrenCascadeUpsert @Inject() () extends SubCascadeUpsert {
     store(WhoHasChildcareCostsId.toString, value, updatedExpectedChildCareCosts)
   }
 
-  def removeChildcareDependencies(value: JsValue, cacheMap: CacheMap, parentKey: String, elementToDeleteKey: String) =
+  private def removeChildcareDependencies(
+      value: JsValue,
+      cacheMap: CacheMap,
+      parentKey: String,
+      elementToDeleteKey: String
+  ): CacheMap =
     value
       .validate[Set[Int]]
       .fold(

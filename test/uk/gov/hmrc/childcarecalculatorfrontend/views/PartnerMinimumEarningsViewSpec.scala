@@ -40,7 +40,7 @@ class PartnerMinimumEarningsViewSpec extends NewYesNoViewBehaviours with BeforeA
       appConfig: FrontendAppConfig = frontendAppConfig,
       form: Form[Boolean] = this.form,
       amount: BigDecimal = 0,
-      location: Location.Value = Location.ENGLAND
+      location: Location = Location.England
   ): HtmlFormat.Appendable = view(appConfig, form, amount, location)(fakeRequest, messages)
 
   "PartnerMinimumEarnings view" must {
@@ -70,19 +70,19 @@ class PartnerMinimumEarningsViewSpec extends NewYesNoViewBehaviours with BeforeA
 
     "include bereaved partner's paternity leave on page" when {
       "the location is England" in {
-        constructView(location = Location.ENGLAND).toString must include(
+        constructView(location = Location.England).toString must include(
           bereavedPartnersPaternityLeave
         )
       }
 
       "the location is Scotland" in {
-        constructView(location = Location.SCOTLAND).toString must include(
+        constructView(location = Location.Scotland).toString must include(
           bereavedPartnersPaternityLeave
         )
       }
 
       "the location is Wales" in {
-        constructView(location = Location.WALES).toString must include(
+        constructView(location = Location.Wales).toString must include(
           bereavedPartnersPaternityLeave
         )
       }
@@ -90,7 +90,7 @@ class PartnerMinimumEarningsViewSpec extends NewYesNoViewBehaviours with BeforeA
 
     "NOT include bereaved partner's paternity leave on page" when {
       "the location is Northern Ireland" in
-        (constructView(location = Location.NORTHERN_IRELAND).toString must not)
+        (constructView(location = Location.NorthernIreland).toString must not)
           .include(bereavedPartnersPaternityLeave)
 
     }
@@ -112,7 +112,7 @@ class PartnerMinimumEarningsViewSpec extends NewYesNoViewBehaviours with BeforeA
 
     "display the correct guidance text" when {
       "the location is Northern Ireland" in {
-        val view1 = constructView(location = Location.NORTHERN_IRELAND)
+        val view1 = constructView(location = Location.NorthernIreland)
         val doc   = asDocument(view1)
 
         assertContainsText(doc, messages(s"$averageWeeklyEarningsKeyPrefix.heading"))

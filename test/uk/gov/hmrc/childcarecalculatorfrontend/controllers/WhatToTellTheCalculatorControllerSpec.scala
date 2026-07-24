@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whatToTellTheCalculator
 
 class WhatToTellTheCalculatorControllerSpec extends ControllerSpecBase {

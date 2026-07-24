@@ -28,13 +28,15 @@
     smallText: Boolean = false,
     largeText: Boolean = true,
     shortAnswer: Boolean = false,
-    field: Field
-)(implicit messages: Messages)
+    field: Field,
+)(
+    implicit messages: Messages,
+)
 
 @hint = @{
-    (Seq(hintLine1, hintLine2).flatten.mkString(" ")) match {
+    Seq(hintLine1, hintLine2).flatten.mkString(" ") match {
         case ""           => None
-        case (hintString) => Some(hintString)
+        case hintString => Some(hintString)
     }
 }
 

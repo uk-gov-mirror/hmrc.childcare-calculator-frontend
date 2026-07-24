@@ -17,40 +17,33 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.format.Formatter
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.forms.formatters.EnumFormatter
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.InputOption
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
 
 object LocationForm extends FormErrorHelper {
 
-  def apply(): Form[Location.Value] =
+  def apply(): Form[Location] =
     Form(single("value" -> of(LocationFormatter)))
 
   def options: Seq[InputOption] = Seq(
-    locationInputOption(Location.ENGLAND.toString, "value"),
-    locationInputOption(Location.SCOTLAND.toString, "value-2"),
-    locationInputOption(Location.WALES.toString, "value-3"),
-    locationInputOption(Location.NORTHERN_IRELAND.toString, "value-4")
+    locationInputOption(Location.England),
+    locationInputOption(Location.Scotland),
+    locationInputOption(Location.Wales),
+    locationInputOption(Location.NorthernIreland)
   )
 
-  private def locationInputOption(option: String, id: String) =
-    new InputOption(
-      id = id,
-      value = option,
-      messageKey = s"location.$option"
+  private def locationInputOption(location: Location) =
+    InputOption(
+      id = location.valueId,
+      value = location.toString,
+      messageKey = s"location.$location"
     )
 
-  private def LocationFormatter = new Formatter[Location.Value] {
-    def bind(key: String, data: Map[String, String]) = data.get(key) match {
-      case Some(s) if optionIsValid(s) => Right(Location.withName(s))
-      case None                        => produceError(key, locationErrorKey)
-      case _                           => produceError(key, unknownErrorKey)
-    }
+  private def LocationFormatter: Formatter[Location] =
+    EnumFormatter[Location](missingErrorKey = locationErrorKey, unknownValueErrorKey = unknownErrorKey)
 
-    def unbind(key: String, value: Location.Value) = Map(key -> value.toString)
-  }
-
-  private def optionIsValid(value: String) = options.exists(o => o.value == value)
 }

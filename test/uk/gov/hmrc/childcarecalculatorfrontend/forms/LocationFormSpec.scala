@@ -18,7 +18,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class LocationFormSpec extends FormBehaviours {
 
@@ -30,9 +30,9 @@ class LocationFormSpec extends FormBehaviours {
 
   "Location form" must {
 
-    behave.like(questionForm[Location.Value](Location(0)))
+    behave.like(questionForm[Location](Location(0)))
 
-    behave.like(formWithOptionFieldError("value", locationErrorKey, LocationForm.options.map(x => x.value): _*))
+    behave.like(formWithOptionFieldError("value", locationErrorKey, LocationForm.options.map(x => x.value)*))
   }
 
 }

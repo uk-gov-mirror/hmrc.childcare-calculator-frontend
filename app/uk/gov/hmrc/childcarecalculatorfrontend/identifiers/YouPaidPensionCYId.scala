@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.tfc
+package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefits
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
 
-sealed trait Household
-case class SingleHousehold(parent: Parent)                 extends Household
-case class JointHousehold(parent: Parent, partner: Parent) extends Household
+case object YouPaidPensionCYId extends Identifier with CacheKey {
+  override def toString: String = "YouPaidPensionCY"
 
-case class Parent(
-    earnsAboveMinEarnings: Boolean,
-    earnsAboveMaxEarnings: Boolean,
-    selfEmployed: Boolean,
-    apprentice: Boolean,
-    benefits: Set[ParentsBenefits]
-)
+  override type CacheValue = Boolean
+}

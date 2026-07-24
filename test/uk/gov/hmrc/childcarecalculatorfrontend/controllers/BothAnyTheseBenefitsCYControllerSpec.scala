@@ -19,9 +19,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.data.Form
 import play.api.libs.json.{JsBoolean, JsString, Json}
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
-import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions._
+import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
   BothAnyTheseBenefitsCYId,
@@ -31,7 +31,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
 }
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants._
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.bothAnyTheseBenefitsCY
 
@@ -41,7 +41,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
   val view              = application.injector.instanceOf[bothAnyTheseBenefitsCY]
   def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
-  val location               = Location.ENGLAND
+  val location               = Location.England
   val cacheMapWithLocation   = new CacheMap("id", Map(LocationId.toString -> JsString(location.toString)))
   def getDataWithLocationSet = new FakeDataRetrievalAction(Some(cacheMapWithLocation))
 
@@ -101,7 +101,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
     "return a Bad Request and errors when parent answered they get carers allowance and on current page they select 'No' for non scottish users" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
-      val location = Location.ENGLAND
+      val location = Location.England
       val carerAllowance = Map(
         LocationId.toString                      -> JsString(location.toString),
         DoYouGetAnyBenefitsId.toString           -> Json.toJson(Seq("CarersAllowance")),
@@ -120,7 +120,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       "on current page they select 'No' for scottish users for scottish users" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
-        val location = Location.SCOTLAND
+        val location = Location.Scotland
         val scottishCarersAllowance = Map(
           LocationId.toString                      -> JsString(location.toString),
           DoYouGetAnyBenefitsId.toString           -> Json.toJson(Seq("CarersAllowance")),
@@ -138,7 +138,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
     "return a Bad Request and errors when partner answered they get carers allowance and on current page they select 'No' for non scottish users" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
-      val location = Location.ENGLAND
+      val location = Location.England
       val carerAllowance = Map(
         LocationId.toString                      -> JsString(location.toString),
         DoYouGetAnyBenefitsId.toString           -> Json.toJson(Seq("CarersAllowance")),
@@ -157,7 +157,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
-        val location = Location.SCOTLAND
+        val location = Location.Scotland
         val scottishCarersAllowance = Map(
           LocationId.toString                      -> JsString(location.toString),
           DoYouGetAnyBenefitsId.toString           -> Json.toJson(Seq("CarersAllowance")),
@@ -176,7 +176,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       "                                                               page they select 'No' for non scottish users" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
-        val location = Location.ENGLAND
+        val location = Location.England
         val carerAllowance = Map(
           LocationId.toString                      -> JsString(location.toString),
           DoYouGetAnyBenefitsId.toString           -> Json.toJson(Seq("CarersAllowance")),
@@ -195,7 +195,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       "carer support system and on current page they select 'No' for scottish users" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
-        val location = Location.SCOTLAND
+        val location = Location.Scotland
         val scottishCarersAllowance = Map(
           LocationId.toString                      -> JsString(location.toString),
           DoYouGetAnyBenefitsId.toString           -> Json.toJson(Seq("CarersAllowance")),
@@ -213,7 +213,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
     "redirect to next page when parent or partner or both answered they get carers allowance and they select 'Yes' for non scottish users" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
 
-      val location = Location.ENGLAND
+      val location = Location.England
       val carerAllowance = Map(
         LocationId.toString                      -> JsString(location.toString),
         DoYouGetAnyBenefitsId.toString           -> Json.toJson(Seq("CarersAllowance")),
@@ -232,7 +232,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       "and they select 'Yes' for scottish users" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
 
-        val location = Location.SCOTLAND
+        val location = Location.Scotland
         val scottishCarersAllowance = Map(
           LocationId.toString                      -> JsString(location.toString),
           DoYouGetAnyBenefitsId.toString           -> Json.toJson(Seq("CarersAllowance")),

@@ -25,7 +25,7 @@ import scala.util.Try
 package object forms {
 
   private val defaultLocalDateMapping: Mapping[(Int, Int, Int)] = {
-    import play.api.data.Forms._
+    import play.api.data.Forms.*
     tuple(
       "day"   -> number(min = 1, max = 31),
       "month" -> number(min = 1, max = 12),
@@ -73,7 +73,7 @@ package object forms {
         override def withPrefix(prefix: String): Mapping[A] =
           mapping.withPrefix(prefix).replaceError(error.withPrefix(prefix), newError.withPrefix(prefix))
         override def verifying(constraints: Constraint[A]*): Mapping[A] =
-          mapping.verifying(constraints: _*).replaceError(error, newError)
+          mapping.verifying(constraints*).replaceError(error, newError)
 
         private def mapErrors(errors: Seq[FormError]): Seq[FormError] = {
           val index = errors.indexWhere(e => e.key == error.key && e.message == error.message)

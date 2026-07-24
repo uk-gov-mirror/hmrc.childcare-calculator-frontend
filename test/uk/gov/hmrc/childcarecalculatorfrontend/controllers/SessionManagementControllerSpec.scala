@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.mvc.Call
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.DataRetrievalAction
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
