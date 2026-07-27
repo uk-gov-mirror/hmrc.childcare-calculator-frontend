@@ -29,5 +29,4 @@ class TaxYearInfo @Inject() {
   lazy val currentTaxYearEndDate: LocalDate = currentTaxYear.finishes
   lazy val currentTaxYearEnd: String        = currentTaxYearEndDate.getYear.toString
 
-  private lazy val previousTaxYear: TaxYear = currentTaxYear.previous
 }

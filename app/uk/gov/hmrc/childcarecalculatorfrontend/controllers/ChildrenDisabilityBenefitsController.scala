@@ -35,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ChildrenDisabilityBenefitsController @Inject() (
-
     mcc: MessagesControllerComponents,
     dataCacheService: DataCacheService,
     navigator: Navigator,

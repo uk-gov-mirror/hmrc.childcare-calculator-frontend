@@ -57,7 +57,7 @@ class YourSelfEmployedControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData       = Map(YourSelfEmployedId.toString -> JsBoolean(true))
+      val validData       = Map(YourSelfEmployedId.of(true))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)

@@ -21,7 +21,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.YouAnyTheseBenefitsIdCY
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.YouAnyTheseBenefitsCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.CarersAllowance
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class YouAnyTheseBenefitsCYController @Inject() (
-
     mcc: MessagesControllerComponents,
     dataCacheService: DataCacheService,
     navigator: Navigator,
@@ -74,8 +73,8 @@ class YouAnyTheseBenefitsCYController @Inject() (
               .successful(BadRequest(youAnyTheseBenefitsCY(formWithErrors, taxYearInfo, location))),
           value =>
             dataCacheService
-              .save(YouAnyTheseBenefitsIdCY, value)
-              .map(cacheMap => Redirect(navigator.nextPage(YouAnyTheseBenefitsIdCY)(new UserAnswers(cacheMap))))
+              .save(YouAnyTheseBenefitsCYId, value)
+              .map(cacheMap => Redirect(navigator.nextPage(YouAnyTheseBenefitsCYId)(new UserAnswers(cacheMap))))
         )
     }
   }

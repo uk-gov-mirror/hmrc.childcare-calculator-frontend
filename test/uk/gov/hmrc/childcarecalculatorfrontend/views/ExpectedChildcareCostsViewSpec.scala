@@ -19,7 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.views
 import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ExpectedChildcareCostsForm
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildcarePayFrequency.WEEKLY
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildcarePayFrequency.Weekly
 import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoNotYet.*
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewBigDecimalViewBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.expectedChildcareCosts
@@ -31,21 +31,21 @@ class ExpectedChildcareCostsViewSpec extends NewBigDecimalViewBehaviours {
   val view              = application.injector.instanceOf[expectedChildcareCosts]
 
   def createView = () =>
-    view(frontendAppConfig, ExpectedChildcareCostsForm(WEEKLY, "Foo"), Yes, 0, WEEKLY, "Foo")(
+    view(frontendAppConfig, ExpectedChildcareCostsForm(Weekly, "Foo"), Yes, 0, Weekly, "Foo")(
       fakeRequest,
       messages
     )
 
   def createViewNotYet = () =>
-    view(frontendAppConfig, ExpectedChildcareCostsForm(WEEKLY, "Foo"), NotYet, 0, WEEKLY, "Foo")(
+    view(frontendAppConfig, ExpectedChildcareCostsForm(Weekly, "Foo"), NotYet, 0, Weekly, "Foo")(
       fakeRequest,
       messages
     )
 
   def createViewUsingForm = (form: Form[BigDecimal]) =>
-    view(frontendAppConfig, form, Yes, 0, WEEKLY, "Foo")(fakeRequest, messages)
+    view(frontendAppConfig, form, Yes, 0, Weekly, "Foo")(fakeRequest, messages)
 
-  val form     = ExpectedChildcareCostsForm(WEEKLY, "Foo")
+  val form     = ExpectedChildcareCostsForm(Weekly, "Foo")
   val cardinal = messages("nth.0")
 
   "ExpectedChildcareCosts view" must {
@@ -57,8 +57,8 @@ class ExpectedChildcareCostsViewSpec extends NewBigDecimalViewBehaviours {
           messageKeyPrefix,
           messageKeyPostfix = "",
           Seq("info"),
-          args = Seq(WEEKLY.toString, "Foo"),
-          titleArgs = Seq(WEEKLY.toString, cardinal)
+          args = Seq(Weekly.toString, "Foo"),
+          titleArgs = Seq(Weekly.toString, cardinal)
         )
       )
 
@@ -69,8 +69,8 @@ class ExpectedChildcareCostsViewSpec extends NewBigDecimalViewBehaviours {
           messageKeyPrefix,
           messageKeyPostfix,
           Seq(s"info$messageKeyPostfix"),
-          args = Seq(WEEKLY.toString, "Foo"),
-          titleArgs = Seq(WEEKLY.toString, cardinal)
+          args = Seq(Weekly.toString, "Foo"),
+          titleArgs = Seq(Weekly.toString, cardinal)
         )
       )
 
@@ -81,7 +81,7 @@ class ExpectedChildcareCostsViewSpec extends NewBigDecimalViewBehaviours {
         createViewUsingForm,
         messageKeyPrefix,
         routes.ExpectedChildcareCostsController.onSubmit(0).url,
-        Some(messages(s"$messageKeyPrefix.heading", WEEKLY, "Foo"))
+        Some(messages(s"$messageKeyPrefix.heading", Weekly, "Foo"))
       )
     )
   }

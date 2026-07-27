@@ -54,7 +54,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
     "there is data in the cache" must {
       "build a userAnswers object and add it to the request" in {
         val dataCacheConnector = mock[DataCacheService]
-        when(dataCacheConnector.fetch(ArgumentMatchers.any())).thenReturn(Future(Some(new CacheMap("id", Map()))))
+        when(dataCacheConnector.fetch(ArgumentMatchers.any())).thenReturn(Future(Some(CacheMap.of(()))))
         val action = new Harness(dataCacheConnector)
 
         val futureResult = action.callTransform(fakeRequest.withSession(SessionKeys.sessionId -> "id"))

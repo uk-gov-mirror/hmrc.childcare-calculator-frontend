@@ -19,9 +19,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant
 import play.api.libs.json.{Json, OFormat}
 
 case class MinimumEarnings(
-                            amount: BigDecimal = 0.00,
-                            employmentStatus: Option[BackendEmploymentStatus] = None,
-                            selfEmployedIn12Months: Option[Boolean] = None
+    amount: BigDecimal = 0.00,
+    employmentStatus: Option[BackendEmploymentStatus] = None,
+    selfEmployedIn12Months: Option[Boolean] = None
 )
 
 object MinimumEarnings {

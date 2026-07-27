@@ -186,15 +186,15 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
   def requiredData(cases: Seq[(Int, String)]): Map[String, JsValue] =
     if (cases.size == 1) {
       Map(
-        NoOfChildrenId.toString               -> JsNumber(1),
-        ChildrenDisabilityBenefitsId.toString -> JsBoolean(true),
+        NoOfChildrenId.of(1),
+        ChildrenDisabilityBenefitsId.of(true),
         AboutYourChildId.toString -> Json.obj(
           cases.head._1.toString -> (Json.toJson(AboutYourChild(cases.head._2, LocalDate.now)): JsValueWrapper)
         )
       )
     } else {
       Map(
-        WhichChildrenDisabilityId.toString -> Json.toJson(cases.map(_._1)),
+        WhichChildrenDisabilityId.of(cases.map(_._1)),
         AboutYourChildId.toString -> Json.obj(
           cases.map { case (index, name) =>
             index.toString -> (Json.toJson(AboutYourChild(name, LocalDate.now)): JsValueWrapper)

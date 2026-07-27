@@ -33,7 +33,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HowMuchPartnerPayPensionController @Inject() (
-
     mcc: MessagesControllerComponents,
     dataCacheService: DataCacheService,
     navigator: Navigator,

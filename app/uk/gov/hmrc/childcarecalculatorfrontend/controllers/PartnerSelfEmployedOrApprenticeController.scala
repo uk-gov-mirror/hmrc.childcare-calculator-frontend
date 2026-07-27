@@ -34,7 +34,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PartnerSelfEmployedOrApprenticeController @Inject() (
-
     mcc: MessagesControllerComponents,
     dataCacheService: DataCacheService,
     navigator: Navigator,

@@ -44,25 +44,25 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
   "First Paragraph Builder" must {
     "Loading the Do You Have Children section" when {
       "You have two children" in {
-        val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(2))))
+        val answers = new UserAnswers(CacheMap.of((NoOfChildrenId.of(2))))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain("you have 2 children")
       }
 
       "You don’t have children" in {
-        val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(0))))
+        val answers = new UserAnswers(CacheMap.of((NoOfChildrenId.of(0))))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain("you don’t have children")
       }
 
       "The number of children field is empty" in {
-        val answers = new UserAnswers(new CacheMap("id", Map()))
+        val answers = new UserAnswers(CacheMap.of(()))
 
         paragraphBuilder.buildFirstParagraph(answers) mustBe List.empty
       }
 
       "You have one child" in {
-        val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(1))))
+        val answers = new UserAnswers(CacheMap.of((NoOfChildrenId.of(1))))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain("you have one child")
       }
@@ -72,11 +72,9 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
 
       "We have childcare costs at monthly aggregation" in {
         val answers = new UserAnswers(
-          new CacheMap(
-            "id",
-            Map(
-              NoOfChildrenId.toString           -> JsNumber(2),
-              ChildcarePayFrequencyId.toString  -> Json.obj("1" -> JsString(ChildcarePayFrequency.MONTHLY.toString)),
+          (CacheMap.of(
+              NoOfChildrenId.of(2),
+              ChildcarePayFrequencyId.toString  -> Json.obj("1" -> JsString(ChildcarePayFrequency.Monthly.toString)),
               ExpectedChildcareCostsId.toString -> Json.obj("1" -> JsNumber(25))
             )
           )
@@ -87,14 +85,12 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
 
       "We have more than one childcare cost at monthly aggregation" in {
         val answers = new UserAnswers(
-          new CacheMap(
-            "id",
-            Map(
-              NoOfChildrenId.toString -> JsNumber(2),
+          (CacheMap.of(
+              NoOfChildrenId.of(2),
               ChildcarePayFrequencyId.toString -> Json.obj(
-                "1" -> JsString(ChildcarePayFrequency.MONTHLY.toString),
-                "2" -> JsString(ChildcarePayFrequency.MONTHLY.toString),
-                "3" -> JsString(ChildcarePayFrequency.MONTHLY.toString)
+                "1" -> JsString(ChildcarePayFrequency.Monthly.toString),
+                "2" -> JsString(ChildcarePayFrequency.Monthly.toString),
+                "3" -> JsString(ChildcarePayFrequency.Monthly.toString)
               ),
               ExpectedChildcareCostsId.toString -> Json.obj(
                 "1" -> JsNumber(20),
@@ -110,11 +106,9 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
 
       "We have one childcare cost at weekly aggregation" in {
         val answers = new UserAnswers(
-          new CacheMap(
-            "id",
-            Map(
-              NoOfChildrenId.toString           -> JsNumber(2),
-              ChildcarePayFrequencyId.toString  -> Json.obj("1" -> JsString(ChildcarePayFrequency.WEEKLY.toString)),
+          (CacheMap.of(
+              NoOfChildrenId.of(2),
+              ChildcarePayFrequencyId.toString  -> Json.obj("1" -> JsString(ChildcarePayFrequency.Weekly.toString)),
               ExpectedChildcareCostsId.toString -> Json.obj("1" -> JsNumber(4))
             )
           )
@@ -125,14 +119,12 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
 
       "We have one childcare cost at weekly aggregation and one childcare cost at monthly aggregation" in {
         val answers = new UserAnswers(
-          new CacheMap(
-            "id",
-            Map(
-              NoOfChildrenId.toString -> JsNumber(2),
+          (CacheMap.of(
+              NoOfChildrenId.of(2),
               ChildcarePayFrequencyId.toString -> Json.obj(
-                "1" -> JsString(ChildcarePayFrequency.MONTHLY.toString),
-                "2" -> JsString(ChildcarePayFrequency.MONTHLY.toString),
-                "3" -> JsString(ChildcarePayFrequency.WEEKLY.toString)
+                "1" -> JsString(ChildcarePayFrequency.Monthly.toString),
+                "2" -> JsString(ChildcarePayFrequency.Monthly.toString),
+                "3" -> JsString(ChildcarePayFrequency.Weekly.toString)
               ),
               ExpectedChildcareCostsId.toString -> Json.obj(
                 "1" -> JsNumber(20),
@@ -147,19 +139,19 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
       }
 
       "We have children but no childcare costs" in {
-        val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(1))))
+        val answers = new UserAnswers(CacheMap.of((NoOfChildrenId.of(1))))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain("you have one child")
       }
 
       "You have 0 children and no childcare costs" in {
-        val answers = new UserAnswers(new CacheMap("id", Map(NoOfChildrenId.toString -> JsNumber(0))))
+        val answers = new UserAnswers(CacheMap.of((NoOfChildrenId.of(0))))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain("you don’t have children")
       }
 
       "There is no data about children or childcare costs" in {
-        val answers = new UserAnswers(new CacheMap("id", Map()))
+        val answers = new UserAnswers(CacheMap.of(()))
 
         paragraphBuilder.buildFirstParagraph(answers) mustBe List.empty
       }
@@ -167,19 +159,19 @@ class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase
 
     "Loading the Your Living Status section" when {
       "You live on your own" in {
-        val answers = new UserAnswers(new CacheMap("id", Map(DoYouLiveWithPartnerId.toString -> JsBoolean(false))))
+        val answers = new UserAnswers(CacheMap.of((DoYouLiveWithPartnerId.of(false))))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain("you live on your own")
       }
 
       "You live with your partner" in {
-        val answers = new UserAnswers(new CacheMap("id", Map(DoYouLiveWithPartnerId.toString -> JsBoolean(true))))
+        val answers = new UserAnswers(CacheMap.of((DoYouLiveWithPartnerId.of(true))))
 
         paragraphBuilder.buildFirstParagraph(answers) must contain("you live with your partner")
       }
 
       "We have no data to establish whether if they live on their own or with partner" in {
-        val answers = new UserAnswers(new CacheMap("id", Map()))
+        val answers = new UserAnswers(CacheMap.of(()))
         val values  = paragraphBuilder.buildFirstParagraph(answers)
 
         values mustNot contain("you live with your partner")

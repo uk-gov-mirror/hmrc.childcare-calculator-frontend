@@ -96,14 +96,13 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
       ""
     }
 
-  private def checkWhoIsInPaidEmployment(answers: UserAnswers)(implicit messages: Messages) = {
+  private def checkWhoIsInPaidEmployment(answers: UserAnswers)(implicit messages: Messages) =
     answers.whoIsInPaidEmployment.fold("") {
       case YouPartnerBothNeither.You     => Messages("results.firstParagraph.onlyYouInPaidWork")
       case YouPartnerBothNeither.Partner => Messages("results.firstParagraph.onlyPartnerInPaidWork")
       case YouPartnerBothNeither.Both    => Messages("results.firstParagraph.youAndPartnerInPaidWork")
       case _                             => Messages("results.firstParagraph.neitherInPaidWork")
     }
-  }
 
   private def CalculateChildcareCosts(answers: UserAnswers) =
     answers.expectedChildcareCosts.fold(BigDecimal(0))(costs =>

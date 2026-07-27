@@ -104,7 +104,7 @@ class UserAnswers(val cacheMap: CacheMap) extends MapFormats with DateTimeUtils 
 
   def bothAnyTheseBenefitsCY: Option[Boolean] = cacheMap.getEntry(BothAnyTheseBenefitsCYId)
 
-  def youAnyTheseBenefits: Option[Boolean] = cacheMap.getEntry(YouAnyTheseBenefitsIdCY)
+  def youAnyTheseBenefits: Option[Boolean] = cacheMap.getEntry(YouAnyTheseBenefitsCYId)
 
   def partnerEmploymentIncomeCY: Option[BigDecimal] =
     cacheMap.getEntry(PartnerEmploymentIncomeCYId)

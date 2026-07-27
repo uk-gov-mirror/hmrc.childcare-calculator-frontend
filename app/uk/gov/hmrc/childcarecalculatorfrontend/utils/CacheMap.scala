@@ -20,7 +20,7 @@ import play.api.libs.json.*
 
 case class CacheMap(id: String, data: Map[String, JsValue]) {
 
-  def getEntry(key: CacheKey)(implicit fjs: Reads[key.CacheValue]): Option[key.CacheValue] =
+  def getEntry(key: CacheKey)(using Reads[key.CacheValue]): Option[key.CacheValue] =
     data
       .get(key.cacheKey)
       .map(json =>
@@ -31,6 +31,20 @@ case class CacheMap(id: String, data: Map[String, JsValue]) {
             valid => valid
           )
       )
+
+  def updated[A](key: CacheKey, value: A)(using Writes[A]): CacheMap =
+    copy(
+      data = data.updated(key.cacheKey, Json.toJson(value))
+    )
+
+  def removed(key: CacheKey): CacheMap = copy(
+    data = data.removed(key.cacheKey)
+  )
+
+  def removedAll(keys: CacheKey*): CacheMap =
+    copy(
+      data = data.removedAll(keys.map(_.cacheKey))
+    )
 
 }
 

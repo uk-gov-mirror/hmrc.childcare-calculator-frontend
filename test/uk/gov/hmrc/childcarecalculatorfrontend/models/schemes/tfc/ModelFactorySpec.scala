@@ -19,7 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.tfc
 import org.mockito.Mockito.*
 import org.scalatest.OptionValues
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit
-import uk.gov.hmrc.childcarecalculatorfrontend.models.SelfEmployedOrApprenticeOrNeither.{Apprentice, SelfEmployed}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.EmploymentStatus.{Apprentice, SelfEmployed}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.SchemeSpec
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 

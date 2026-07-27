@@ -40,7 +40,7 @@ class DataCacheServiceImpl @Inject() (val sessionRepository: SessionRepository, 
 
     sessionRepository().get(cacheId).flatMap { optionalCacheMap =>
       val updatedCacheMap =
-        cascadeUpsert(cacheKey.cacheKey, value, optionalCacheMap.getOrElse(new CacheMap(cacheId, Map())))
+        cascadeUpsert(cacheKey, value, optionalCacheMap.getOrElse(new CacheMap(cacheId, Map())))
       sessionRepository().upsert(updatedCacheMap).map(_ => updatedCacheMap)
     }
   }
@@ -48,7 +48,7 @@ class DataCacheServiceImpl @Inject() (val sessionRepository: SessionRepository, 
   def remove(key: CacheKey)(using request: SessionIdProvider): Future[Boolean] =
     sessionRepository().get(request.sessionId).flatMap { optionalCacheMap =>
       optionalCacheMap.fold(Future(false)) { cacheMap =>
-        val newCacheMap = cacheMap.copy(data = cacheMap.data - key.cacheKey)
+        val newCacheMap = cacheMap.removed(key)
         sessionRepository().upsert(newCacheMap)
       }
     }

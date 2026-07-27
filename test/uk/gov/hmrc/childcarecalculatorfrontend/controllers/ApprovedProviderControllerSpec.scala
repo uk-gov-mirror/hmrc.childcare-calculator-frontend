@@ -67,7 +67,7 @@ class ApprovedProviderControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when we have NOT YET on childcare costs" in {
-      val validData       = Map(ChildcareCostsId.toString -> JsString(YesNoNotYet.NotYet.toString))
+      val validData       = Map(ChildcareCostsId.of(YesNoNotYet.NotYet))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
@@ -79,7 +79,7 @@ class ApprovedProviderControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when we have selected YES on childcare costs" in {
-      val validData       = Map(ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString))
+      val validData       = Map(ChildcareCostsId.of(YesNoNotYet.Yes))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)

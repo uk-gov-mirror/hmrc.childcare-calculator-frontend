@@ -25,97 +25,100 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class MinimumHoursCascadeUpsert @Inject() extends SubCascadeUpsert {
+class MinimumHoursCascadeUpsert @Inject() {
 
-  override val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
+  val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] =
     Map(
-      LocationId.toString         -> ((v, cm) => storeLocation(v, cm)),
-      ChildcareCostsId.toString   -> ((v, cm) => storeChildcareCosts(v, cm)),
-      ApprovedProviderId.toString -> ((v, cm) => storeApprovedProvider(v, cm))
+      LocationId.cacheKey         -> ((v, cm) => storeLocation(v, cm)),
+      ChildcareCostsId.cacheKey   -> ((v, cm) => storeChildcareCosts(v, cm)),
+      ApprovedProviderId.cacheKey -> ((v, cm) => storeApprovedProvider(v, cm))
     )
 
   private def storeLocation(value: JsValue, cacheMap: CacheMap): CacheMap = {
-    val mapToStore = if (value == JsString(Location.England.toString)) {
-      cacheMap.copy(data = cacheMap.data - ChildAgedTwoId.toString - ChildAgedThreeOrFourId.toString)
-    } else if (value == JsString(Location.NorthernIreland.toString) || value == JsString(Location.Wales.toString)) {
-      cacheMap.copy(data = cacheMap.data - ChildAgedTwoId.toString - ChildrenAgeGroupsId.toString)
-    } else {
-      cacheMap.copy(data = cacheMap.data - ChildrenAgeGroupsId.toString)
-    }
+    val mapToStore =
+      value match {
+        case JsString(Location.England.toString) =>
+          cacheMap.removedAll(ChildAgedTwoId, ChildAgedThreeOrFourId)
+        case JsString(Location.NorthernIreland.toString) | JsString(Location.Wales.toString) =>
+          cacheMap.removedAll(ChildAgedTwoId, ChildrenAgeGroupsId)
+        case _ =>
+          cacheMap.removed(ChildrenAgeGroupsId)
+      }
 
-    store(LocationId.toString, value, mapToStore)
+    mapToStore.updated(LocationId, value)
   }
 
   private def storeChildcareCosts(value: JsValue, cacheMap: CacheMap): CacheMap = {
 
-    val locationValue             = cacheMap.data.getOrElse(LocationId.toString, JsString(Location.England.toString))
-    val childAgedTwoValue         = cacheMap.data.getOrElse(ChildAgedTwoId.toString, JsBoolean(false))
-    val childAgedThreeOrFourValue = cacheMap.data.getOrElse(ChildAgedThreeOrFourId.toString, JsBoolean(false))
+    val locationValue             = cacheMap.data.getOrElse(LocationId.cacheKey, JsString(Location.England.toString))
+    val childAgedTwoValue         = cacheMap.data.getOrElse(ChildAgedTwoId.cacheKey, JsBoolean(false))
+    val childAgedThreeOrFourValue = cacheMap.data.getOrElse(ChildAgedThreeOrFourId.cacheKey, JsBoolean(false))
     val childrenAgeGroupsValue =
-      cacheMap.data.getOrElse(ChildrenAgeGroupsId.toString, JsArray(Seq(JsString(ChildAgeGroup.NoneOfThese.toString))))
+      cacheMap.data.getOrElse(ChildrenAgeGroupsId.cacheKey, JsArray(Seq(JsString(ChildAgeGroup.NoneOfThese.toString))))
 
-    val existingChildCareCostValue = cacheMap.data.get(ChildcareCostsId.toString)
+    val existingChildCareCostValue = cacheMap.data.get(ChildcareCostsId.cacheKey)
 
-    val mapToStore = value match {
-      case JsString(YesNoNotYet.No.toString)
-          if !existingChildCareCostValue
-            .contains(JsString(YesNoNotYet.No.toString)) && locationValue == JsString(Location.England.toString) =>
-        cacheMap.copy(data =
-          Map(LocationId.toString -> locationValue, ChildrenAgeGroupsId.toString -> childrenAgeGroupsValue)
-        )
-      case JsString(YesNoNotYet.No.toString) if !existingChildCareCostValue.contains(JsString(YesNoNotYet.No.toString)) =>
-        cacheMap.copy(data =
-          Map(
-            LocationId.toString             -> locationValue,
-            ChildAgedTwoId.toString         -> childAgedTwoValue,
-            ChildAgedThreeOrFourId.toString -> childAgedThreeOrFourValue
+    val mapToStore =
+      value match {
+        case JsString(YesNoNotYet.No.toString)
+            if !existingChildCareCostValue
+              .contains(JsString(YesNoNotYet.No.toString)) && locationValue == JsString(Location.England.toString) =>
+          cacheMap.copy(data =
+            Map(LocationId.cacheKey -> locationValue, ChildrenAgeGroupsId.cacheKey -> childrenAgeGroupsValue)
           )
-        )
-      case _ =>
-        cacheMap
-    }
+        case JsString(YesNoNotYet.No.toString)
+            if !existingChildCareCostValue.contains(JsString(YesNoNotYet.No.toString)) =>
+          cacheMap.copy(data =
+            Map(
+              LocationId.cacheKey             -> locationValue,
+              ChildAgedTwoId.cacheKey         -> childAgedTwoValue,
+              ChildAgedThreeOrFourId.cacheKey -> childAgedThreeOrFourValue
+            )
+          )
+        case _ =>
+          cacheMap
+      }
 
-    store(ChildcareCostsId.toString, value, mapToStore)
+    mapToStore.updated(ChildcareCostsId, value)
   }
 
   private def storeApprovedProvider(value: JsValue, cacheMap: CacheMap): CacheMap = {
 
-    val locationValue             = cacheMap.data.getOrElse(LocationId.toString, JsString(Location.England.toString))
-    val childAgedTwoValue         = cacheMap.data.getOrElse(ChildAgedTwoId.toString, JsBoolean(false))
-    val childAgedThreeOrFourValue = cacheMap.data.getOrElse(ChildAgedThreeOrFourId.toString, JsBoolean(false))
+    val locationValue             = cacheMap.data.getOrElse(LocationId.cacheKey, JsString(Location.England.toString))
+    val childAgedTwoValue         = cacheMap.data.getOrElse(ChildAgedTwoId.cacheKey, JsBoolean(false))
+    val childAgedThreeOrFourValue = cacheMap.data.getOrElse(ChildAgedThreeOrFourId.cacheKey, JsBoolean(false))
     val childrenAgeGroupsValue =
-      cacheMap.data.getOrElse(ChildrenAgeGroupsId.toString, JsArray(Seq(JsString(ChildAgeGroup.NoneOfThese.toString))))
-    val childCareCostValue = cacheMap.data.getOrElse(ChildcareCostsId.toString, JsString(YesNoNotYet.No.toString))
+      cacheMap.data.getOrElse(ChildrenAgeGroupsId.cacheKey, JsArray(Seq(JsString(ChildAgeGroup.NoneOfThese.toString))))
+    val childCareCostValue = cacheMap.data.getOrElse(ChildcareCostsId.cacheKey, JsString(YesNoNotYet.No.toString))
 
-    val existingApprovedProviderValue = cacheMap.data.get(ApprovedProviderId.toString)
-
-    val YesNoNotSureNo: String = YesNoNotSure.No.toString
+    val existingApprovedProviderValue = cacheMap.data.get(ApprovedProviderId.cacheKey)
 
     val mapToStore = value match {
-      case JsString(YesNoNotSureNo)
+      case JsString(YesNoNotSure.No.toString)
           if !existingApprovedProviderValue
-            .contains(JsString(YesNoNotSureNo)) && locationValue == JsString(Location.England.toString) =>
+            .contains(JsString(YesNoNotSure.No.toString)) && locationValue == JsString(Location.England.toString) =>
         cacheMap.copy(data =
           Map(
-            LocationId.toString          -> locationValue,
-            ChildrenAgeGroupsId.toString -> childrenAgeGroupsValue,
-            ChildcareCostsId.toString    -> childCareCostValue
+            LocationId.cacheKey          -> locationValue,
+            ChildrenAgeGroupsId.cacheKey -> childrenAgeGroupsValue,
+            ChildcareCostsId.cacheKey    -> childCareCostValue
           )
         )
-      case JsString(YesNoNotSureNo) if !existingApprovedProviderValue.contains(JsString(YesNoNotSureNo)) =>
+      case JsString(YesNoNotSure.No.toString)
+          if !existingApprovedProviderValue.contains(JsString(YesNoNotSure.No.toString)) =>
         cacheMap.copy(data =
           Map(
-            LocationId.toString             -> locationValue,
-            ChildAgedTwoId.toString         -> childAgedTwoValue,
-            ChildAgedThreeOrFourId.toString -> childAgedThreeOrFourValue,
-            ChildcareCostsId.toString       -> childCareCostValue
+            LocationId.cacheKey             -> locationValue,
+            ChildAgedTwoId.cacheKey         -> childAgedTwoValue,
+            ChildAgedThreeOrFourId.cacheKey -> childAgedThreeOrFourValue,
+            ChildcareCostsId.cacheKey       -> childCareCostValue
           )
         )
       case _ =>
         cacheMap
     }
 
-    store(ApprovedProviderId.toString, value, mapToStore)
+    mapToStore.updated(ApprovedProviderId, value)
   }
 
 }

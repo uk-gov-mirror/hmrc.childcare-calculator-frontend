@@ -50,7 +50,7 @@ object WhichDisabilityBenefitsForm extends FormErrorHelper {
     )
 
   def options: Seq[InputOption] =
-    DisabilityBenefit.values.map(disabilityBenefitsInputOption)
+    DisabilityBenefit.values.toSeq.map(disabilityBenefitsInputOption)
 
   private def disabilityBenefitsInputOption(disabilityBenefit: DisabilityBenefit): InputOption =
     InputOption(

@@ -71,8 +71,8 @@ class WhoHasChildcareCostsControllerSpec extends ControllerSpecBase with OptionV
         "2" -> Json.toJson(AboutYourChild("Under16_2", ageOfExactly15)),
         "3" -> Json.toJson(AboutYourChild("exact16WithBirthdayBefore31stAugust", ageOf16Before31Aug))
       )) +
-        (WhichChildrenBlindId.toString      -> Json.toJson(Seq(2))) +
-        (WhichChildrenDisabilityId.toString -> Json.toJson(Seq(0, 3)))
+        (WhichChildrenBlindId.of(Seq(2))) +
+        (WhichChildrenDisabilityId.of(Seq(0, 3)))
 
       val getRelevantData =
         new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, dataWithOneChildOver16)), Some(testDate))
@@ -94,7 +94,7 @@ class WhoHasChildcareCostsControllerSpec extends ControllerSpecBase with OptionV
 
       s"populate the view correctly on a GET when the question has previously been answered $i" in {
         val validData = requiredData(values) + (
-          WhoHasChildcareCostsId.toString -> Json.toJson(Seq(value.toInt))
+          WhoHasChildcareCostsId.of(Seq(value.toInt))
         )
         val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)), Some(testDate))
 

@@ -48,7 +48,7 @@ class WhoIsInPaidEmploymentControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[String] = WhoIsInPaidEmploymentForm()) =
     view(frontendAppConfig, form, Location.England)(fakeRequest, messages).toString
 
-  val location = LocationId.toString -> JsString(Location.England.toString)
+  val location = LocationId.of(Location.England)
 
   "WhoIsInPaidEmployment Controller" must {
 

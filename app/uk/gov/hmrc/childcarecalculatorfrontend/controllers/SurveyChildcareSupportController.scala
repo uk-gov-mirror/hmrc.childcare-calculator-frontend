@@ -24,7 +24,12 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequired
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.SurveyChildcareSupportId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
-import uk.gov.hmrc.childcarecalculatorfrontend.services.{DataCacheService, SplunkSubmissionServiceInterface, SubmissionFailed, SubmissionSuccessful}
+import uk.gov.hmrc.childcarecalculatorfrontend.services.{
+  DataCacheService,
+  SplunkSubmissionServiceInterface,
+  SubmissionFailed,
+  SubmissionSuccessful
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.surveyChildcareSupportErrorKey
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.surveyChildcareSupport
@@ -35,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SurveyChildcareSupportController @Inject() (
-
     mcc: MessagesControllerComponents,
     dataCacheService: DataCacheService,
     navigator: Navigator,

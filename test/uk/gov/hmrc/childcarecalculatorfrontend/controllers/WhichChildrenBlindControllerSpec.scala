@@ -54,7 +54,7 @@ class WhichChildrenBlindControllerSpec extends ControllerSpecBase with OptionVal
 
       s"populate the view correctly on a GET when the question has previously been answered, $i" in {
         val validData = requiredData(values) + (
-          WhichChildrenBlindId.toString -> Json.toJson(Seq(value.toInt))
+          WhichChildrenBlindId.of(Seq(value.toInt))
         )
         val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 

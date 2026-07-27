@@ -30,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 private[navigation] class BenefitsIncomeNavigator @Inject() (utils: Utils) extends SubNavigator {
 
   override protected def routeMap: Map[Identifier, UserAnswers => Call] = Map(
-    YouAnyTheseBenefitsIdCY   -> yourBenefitsRouteCY,
+    YouAnyTheseBenefitsCYId   -> yourBenefitsRouteCY,
     BothAnyTheseBenefitsCYId  -> bothBenefitsRouteCY,
     WhosHadBenefitsId         -> whosHadBenefitsRouteCY,
     YouBenefitsIncomeCYId     -> yourBenefitsIncomeRouteCY,

@@ -23,7 +23,7 @@ class CacheMapClonerSpec extends SpecBase {
 
   "Cache map cloner" should {
     "mirror a cachemap property as boolean" in {
-      val data = new CacheMap("id", Map("property1" -> JsBoolean(true)))
+      val data = CacheMap.of(("property1" -> JsBoolean(true)))
 
       val result = CacheMapCloner.cloneSection(data, Map("property1" -> "property2"))
 
@@ -31,7 +31,7 @@ class CacheMapClonerSpec extends SpecBase {
     }
 
     "mirror two boolean property" in {
-      val data = new CacheMap("id", Map("property1" -> JsBoolean(true), "property2" -> JsBoolean(true)))
+      val data = CacheMap.of(("property1" -> JsBoolean(true), "property2" -> JsBoolean(true)))
 
       val result = CacheMapCloner.cloneSection(data, Map("property1" -> "property3", "property2" -> "property4"))
 
@@ -40,9 +40,7 @@ class CacheMapClonerSpec extends SpecBase {
     }
 
     "mirror three properties with different types" in {
-      val data = new CacheMap(
-        "id",
-        Map(
+      val data = (CacheMap.of(
           "property1" -> JsBoolean(true),
           "property2" -> JsBoolean(true),
           "property3" -> JsNumber(2),
@@ -67,7 +65,7 @@ class CacheMapClonerSpec extends SpecBase {
     }
 
     "be able to handle complex objects" in {
-      val data = new CacheMap("id", Map("property1" -> Json.obj("0" -> Json.toJson(4), "1" -> JsBoolean(true))))
+      val data = CacheMap.of(("property1" -> Json.obj("0" -> Json.toJson(4), "1" -> JsBoolean(true))))
 
       val result = CacheMapCloner.cloneSection(data, Map("property1" -> "property2"))
 
@@ -75,7 +73,7 @@ class CacheMapClonerSpec extends SpecBase {
     }
 
     "be able to handle not existing data" in {
-      val data = new CacheMap("id", Map("property1" -> JsBoolean(true)))
+      val data = CacheMap.of(("property1" -> JsBoolean(true)))
 
       val result = CacheMapCloner.cloneSection(data, Map("property2" -> "property3"))
 
@@ -83,9 +81,7 @@ class CacheMapClonerSpec extends SpecBase {
     }
 
     "be able to overwrite already existing data" in {
-      val data = new CacheMap(
-        "id",
-        Map("property1" -> JsBoolean(true), "property2" -> Json.obj("0" -> Json.toJson(4), "1" -> JsBoolean(true)))
+      val data = (CacheMap.of("property1" -> JsBoolean(true), "property2" -> Json.obj("0" -> Json.toJson(4), "1" -> JsBoolean(true)))
       )
 
       val result = CacheMapCloner.cloneSection(data, Map("property1" -> "property2"))
@@ -94,7 +90,7 @@ class CacheMapClonerSpec extends SpecBase {
     }
 
     "be able to handle custom mappings" in {
-      val data = new CacheMap("id", Map("property1" -> JsBoolean(true)))
+      val data = CacheMap.of(("property1" -> JsBoolean(true)))
 
       val result =
         CacheMapCloner.cloneSection(data, Map("property1" -> "property2"), Some(Map("property4" -> JsBoolean(true))))

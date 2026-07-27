@@ -56,7 +56,7 @@ class DataRetrievalActionImpl @Inject() (
         dataCacheService.fetch()(using sessionIdProvider(sessionId)).map {
           case None       => OptionalDataRequest(request, sessionId.toString, None)
           case Some(data) =>
-            //TODO remove before merging
+            // TODO remove before merging
             logger.warn(data.data.toString)
             OptionalDataRequest(request, sessionId.toString, Some(new UserAnswers(data)))
         }

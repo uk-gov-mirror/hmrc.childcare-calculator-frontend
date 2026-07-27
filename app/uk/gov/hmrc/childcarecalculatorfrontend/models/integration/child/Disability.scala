@@ -79,7 +79,7 @@ object Disability {
 
     blindChildren match {
       case Some(true) => disabilities.copy(blind = true)
-      case _       => disabilities
+      case _          => disabilities
     }
   }
 

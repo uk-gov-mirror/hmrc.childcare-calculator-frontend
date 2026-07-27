@@ -58,10 +58,10 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(
-      form: Form[BigDecimal] = ExpectedChildcareCostsForm(WEEKLY, "Foo"),
+      form: Form[BigDecimal] = ExpectedChildcareCostsForm(Weekly, "Foo"),
       hasCosts: YesNoNotYet,
       id: Int = 0,
-      frequency: ChildcarePayFrequency = WEEKLY,
+      frequency: ChildcarePayFrequency = Weekly,
       name: String = "Foo"
   ): String =
     view(frontendAppConfig, form, hasCosts, id, frequency, name)(fakeRequest, messages).toString
@@ -74,10 +74,10 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
       "1" -> Json.toJson(AboutYourChild("Bar", testDate))
     ),
     ChildcarePayFrequencyId.toString -> Json.obj(
-      "0" -> JsString(WEEKLY.toString),
-      "1" -> JsString(MONTHLY.toString)
+      "0" -> JsString(Weekly.toString),
+      "1" -> JsString(Monthly.toString)
     ),
-    ChildcareCostsId.toString -> JsString(hasCosts.toString)
+    ChildcareCostsId.of(hasCosts)
   )
 
   def getRequiredData(hasCosts: YesNoNotYet): DataRetrievalAction =
@@ -89,8 +89,8 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
   "ExpectedChildcareCosts Controller" must {
 
     Seq(
-      (Yes, 0, WEEKLY, "Foo"),
-      (NotYet, 1, MONTHLY, "Bar")
+      (Yes, 0, Weekly, "Foo"),
+      (NotYet, 1, Monthly, "Bar")
     ).foreach { case (hasCosts, id, frequency, name) =>
 
       s"return OK and the correct view for a GET, for id: $id" in {
@@ -155,7 +155,7 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
           "0" -> JsString("weekly"),
           "1" -> JsString("monthly")
         ),
-        ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
+        ChildcareCostsId.of(YesNoNotYet.Yes)
       )
       val getData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)), Some(testDate))
       val result  = controller(getData).onPageLoad(0)(fakeRequest)
@@ -168,7 +168,7 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
           "0" -> JsString("weekly"),
           "1" -> JsString("monthly")
         ),
-        ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
+        ChildcareCostsId.of(YesNoNotYet.Yes)
       )
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testNumber.toString)).withMethod("POST")
       val getData     = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)), Some(testDate))
@@ -185,7 +185,7 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
         ChildcarePayFrequency.toString -> Json.obj(
           "1" -> JsString("monthly")
         ),
-        ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
+        ChildcareCostsId.of(YesNoNotYet.Yes)
       )
       val getData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)), Some(testDate))
       val result  = controller(getData).onPageLoad(0)(fakeRequest)
@@ -201,7 +201,7 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
         ChildcarePayFrequency.toString -> Json.obj(
           "1" -> JsString("monthly")
         ),
-        ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
+        ChildcareCostsId.of(YesNoNotYet.Yes)
       )
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testNumber.toString)).withMethod("POST")
       val getData     = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)), Some(testDate))
@@ -216,8 +216,8 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
           "1" -> Json.toJson(AboutYourChild("Bar", testDate))
         ),
         ChildcarePayFrequencyId.toString -> Json.obj(
-          "0" -> JsString(WEEKLY.toString),
-          "1" -> JsString(MONTHLY.toString)
+          "0" -> JsString(Weekly.toString),
+          "1" -> JsString(Monthly.toString)
         )
       )
       val getData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)), Some(testDate))
@@ -232,8 +232,8 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
           "1" -> Json.toJson(AboutYourChild("Bar", testDate))
         ),
         ChildcarePayFrequencyId.toString -> Json.obj(
-          "0" -> JsString(WEEKLY.toString),
-          "1" -> JsString(MONTHLY.toString)
+          "0" -> JsString(Weekly.toString),
+          "1" -> JsString(Monthly.toString)
         )
       )
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", testNumber.toString)).withMethod("POST")

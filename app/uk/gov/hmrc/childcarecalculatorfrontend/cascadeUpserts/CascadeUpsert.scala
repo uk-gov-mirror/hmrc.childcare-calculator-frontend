@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
 import play.api.libs.json.*
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheKey, CacheMap}
 
 import javax.inject.{Inject, Singleton}
 
@@ -29,21 +29,16 @@ class CascadeUpsert @Inject() (
     maxHours: MaximumHoursCascadeUpsert,
     minHours: MinimumHoursCascadeUpsert,
     children: ChildrenCascadeUpsert
-) extends SubCascadeUpsert {
+) {
 
-  override val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] = pensions.funcMap ++ income.funcMap ++
+  private val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] = pensions.funcMap ++ income.funcMap ++
     benefits.funcMap ++ maxHours.funcMap ++ minHours.funcMap ++ children.funcMap
 
-  def apply[A](key: String, value: A, originalCacheMap: CacheMap)(implicit fmt: Writes[A]): CacheMap =
-    funcMap.get(key).fold(store(key, value, originalCacheMap))(fn => fn(Json.toJson(value), originalCacheMap))
-
-}
-
-abstract class SubCascadeUpsert {
-
-  val funcMap: Map[String, (JsValue, CacheMap) => CacheMap]
-
-  protected def store[A](key: String, value: A, cacheMap: CacheMap)(implicit fmt: Writes[A]): CacheMap =
-    cacheMap.copy(data = cacheMap.data + (key -> Json.toJson(value)))
+  def apply[A](key: CacheKey, value: A, originalCacheMap: CacheMap)(implicit fmt: Writes[A]): CacheMap =
+    funcMap
+      .get(key.cacheKey)
+      .fold {
+        originalCacheMap.updated(key, value)
+      }(fn => fn(Json.toJson(value), originalCacheMap))
 
 }

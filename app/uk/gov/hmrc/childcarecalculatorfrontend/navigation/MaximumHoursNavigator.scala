@@ -31,7 +31,7 @@ private[navigation] class MaximumHoursNavigator @Inject() (
     schemes: Schemes,
     freeChildcareWorkingParents: FreeChildcareWorkingParents,
     tfc: TaxFreeChildcare,
-    esc: EmploymentSupportedChildcare,
+    esc: EmploymentSupportedChildcare
 ) extends SubNavigator {
 
   override protected def routeMap: Map[Identifier, UserAnswers => Call] = Map(
@@ -73,10 +73,10 @@ private[navigation] class MaximumHoursNavigator @Inject() (
 
   private def whoIsInPaidWorkRoute(answers: UserAnswers): Call =
     answers.whoIsInPaidEmploymentDefaultYou match {
-      case YouPartnerBothNeither.You =>  routes.YourChildcareVouchersController.onPageLoad()
-      case YouPartnerBothNeither.Partner    => routes.PartnerChildcareVouchersController.onPageLoad()
-      case YouPartnerBothNeither.Both       => routes.WhoGetsVouchersController.onPageLoad()
-      case YouPartnerBothNeither.Neither    => routes.ResultController.onPageLoad()
+      case YouPartnerBothNeither.You     => routes.YourChildcareVouchersController.onPageLoad()
+      case YouPartnerBothNeither.Partner => routes.PartnerChildcareVouchersController.onPageLoad()
+      case YouPartnerBothNeither.Both    => routes.WhoGetsVouchersController.onPageLoad()
+      case YouPartnerBothNeither.Neither => routes.ResultController.onPageLoad()
     }
 
   private def doYouGetAnyBenefitsRoute(answers: UserAnswers): Call = {

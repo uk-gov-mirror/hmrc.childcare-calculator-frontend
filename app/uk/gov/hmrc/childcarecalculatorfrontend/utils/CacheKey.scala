@@ -16,8 +16,14 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
+import play.api.libs.json.{JsValue, Json, Writes}
+
 trait CacheKey {
   val cacheKey: String = toString
 
   type CacheValue
+
+  def of(value: CacheValue)(using Writes[CacheValue]): (String, JsValue) =
+    toString -> Json.toJson(value)
+
 }

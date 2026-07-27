@@ -51,8 +51,8 @@ class PartnerIncomeInfoControllerSpec extends ControllerSpecBase {
     "return OK and the correct view for a GET" in {
 
       val validData = Map(
-        DoYouLiveWithPartnerId.toString  -> JsBoolean(true),
-        WhoIsInPaidEmploymentId.toString -> JsString(YouPartnerBoth.You.toString)
+        DoYouLiveWithPartnerId.of(true),
+        WhoIsInPaidEmploymentId.of(YouPartnerBoth.You)
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))

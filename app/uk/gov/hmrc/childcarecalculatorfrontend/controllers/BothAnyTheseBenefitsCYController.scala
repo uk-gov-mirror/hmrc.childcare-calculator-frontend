@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BothAnyTheseBenefitsCYController @Inject() (
-
     mcc: MessagesControllerComponents,
     dataCacheService: DataCacheService,
     navigator: Navigator,

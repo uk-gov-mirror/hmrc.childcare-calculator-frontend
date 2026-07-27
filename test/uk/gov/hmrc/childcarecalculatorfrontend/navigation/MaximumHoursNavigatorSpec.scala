@@ -55,9 +55,9 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
 
   def navigator: SubNavigator = navigator(new Schemes())
 
-  lazy val selfEmployed: String = SelfEmployedOrApprenticeOrNeither.SelfEmployed.toString
-  lazy val apprentice: String   = SelfEmployedOrApprenticeOrNeither.Apprentice.toString
-  lazy val neither: String      = SelfEmployedOrApprenticeOrNeither.Neither.toString
+  lazy val selfEmployed: String = EmploymentStatus.SelfEmployed.toString
+  lazy val apprentice: String   = EmploymentStatus.Apprentice.toString
+  lazy val neither: String      = EmploymentStatus.Neither.toString
   lazy val yes: String          = YesNoNotSure.Yes.toString
   lazy val no: String           = YesNoNotSure.No.toString
   lazy val notSure: String      = YesNoNotSure.NotSure.toString

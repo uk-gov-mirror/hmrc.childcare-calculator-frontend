@@ -34,7 +34,7 @@ class DisabilitySpec extends PlaySpec {
     "Map correctly from raw data" when {
       "Disability is true for first child" in {
         val rawWhichDisabilityBenefits: Option[Map[Int, Set[DisabilityBenefit]]] =
-          Some(Map(0 -> Set(DisabilityBenefit.DISABILITY_BENEFITS)))
+          Some(Map(0 -> Set(DisabilityBenefit.DisabilityBenefits)))
         val mappedDisability = Disability.populateFromRawData(0, rawWhichDisabilityBenefits)
 
         mappedDisability.get.disabled mustBe true
@@ -42,7 +42,7 @@ class DisabilitySpec extends PlaySpec {
 
       "Disability is true for second child" in {
         val rawWhichDisabilityBenefits: Option[Map[Int, Set[DisabilityBenefit]]] =
-          Some(Map(0 -> Set(DisabilityBenefit.DISABILITY_BENEFITS), 1 -> Set(DisabilityBenefit.DISABILITY_BENEFITS)))
+          Some(Map(0 -> Set(DisabilityBenefit.DisabilityBenefits), 1 -> Set(DisabilityBenefit.DisabilityBenefits)))
         val mappedDisability = Disability.populateFromRawData(1, rawWhichDisabilityBenefits)
 
         mappedDisability.get.disabled mustBe true
@@ -50,7 +50,7 @@ class DisabilitySpec extends PlaySpec {
 
       "First child has no disability" in {
         val rawWhichDisabilityBenefits: Option[Map[Int, Set[DisabilityBenefit]]] =
-          Some(Map(1 -> Set(DisabilityBenefit.DISABILITY_BENEFITS)))
+          Some(Map(1 -> Set(DisabilityBenefit.DisabilityBenefits)))
         val mappedDisability = Disability.populateFromRawData(0, rawWhichDisabilityBenefits)
 
         mappedDisability mustBe None
@@ -58,7 +58,7 @@ class DisabilitySpec extends PlaySpec {
 
       "Child is severely disabled" in {
         val rawWhichDisabilityBenefits: Option[Map[Int, Set[DisabilityBenefit]]] =
-          Some(Map(0 -> Set(DisabilityBenefit.HIGHER_DISABILITY_BENEFITS)))
+          Some(Map(0 -> Set(DisabilityBenefit.HigherDisabilityBenefits)))
         val mappedDisability = Disability.populateFromRawData(0, rawWhichDisabilityBenefits)
 
         mappedDisability.get.severelyDisabled mustBe true
@@ -66,7 +66,7 @@ class DisabilitySpec extends PlaySpec {
 
       "Child is blind and not severely disabled" in {
         val rawWhichDisabilityBenefits: Option[Map[Int, Set[DisabilityBenefit]]] =
-          Some(Map(0 -> Set(DisabilityBenefit.DISABILITY_BENEFITS)))
+          Some(Map(0 -> Set(DisabilityBenefit.DisabilityBenefits)))
         val rawWhichChildBlind: Option[Boolean] = Some(true)
         val mappedDisability = Disability.populateFromRawData(0, rawWhichDisabilityBenefits, rawWhichChildBlind).get
 
@@ -76,7 +76,7 @@ class DisabilitySpec extends PlaySpec {
 
       "Child is disabled, severely disabled and blind" in {
         val rawWhichDisabilityBenefits: Option[Map[Int, Set[DisabilityBenefit]]] =
-          Some(Map(5 -> Set(DisabilityBenefit.HIGHER_DISABILITY_BENEFITS, DisabilityBenefit.DISABILITY_BENEFITS)))
+          Some(Map(5 -> Set(DisabilityBenefit.HigherDisabilityBenefits, DisabilityBenefit.DisabilityBenefits)))
         val rawWhichChildBlind: Option[Boolean] = Some(true)
         val mappedDisability =
           Disability.populateFromRawData(5: Int, rawWhichDisabilityBenefits, rawWhichChildBlind).get

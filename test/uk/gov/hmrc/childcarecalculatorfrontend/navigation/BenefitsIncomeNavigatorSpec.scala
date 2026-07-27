@@ -42,7 +42,7 @@ class BenefitsIncomeNavigatorSpec extends SpecBase with MockitoSugar {
           when(answers.youAnyTheseBenefits).thenReturn(Some(true))
 
           navigator
-            .nextPage(YouAnyTheseBenefitsIdCY)
+            .nextPage(YouAnyTheseBenefitsCYId)
             .value(answers) mustBe routes.YouBenefitsIncomeCYController.onPageLoad()
         }
 
@@ -52,7 +52,7 @@ class BenefitsIncomeNavigatorSpec extends SpecBase with MockitoSugar {
           when(answers.doYouLiveWithPartner).thenReturn(Some(false))
 
           navigator
-            .nextPage(YouAnyTheseBenefitsIdCY)
+            .nextPage(YouAnyTheseBenefitsCYId)
             .value(answers) mustBe routes.YourOtherIncomeThisYearController.onPageLoad()
         }
 
@@ -62,7 +62,7 @@ class BenefitsIncomeNavigatorSpec extends SpecBase with MockitoSugar {
           when(answers.doYouLiveWithPartner).thenReturn(Some(true))
 
           navigator
-            .nextPage(YouAnyTheseBenefitsIdCY)
+            .nextPage(YouAnyTheseBenefitsCYId)
             .value(answers) mustBe routes.BothOtherIncomeThisYearController.onPageLoad()
         }
 
@@ -71,7 +71,7 @@ class BenefitsIncomeNavigatorSpec extends SpecBase with MockitoSugar {
           when(answers.youAnyTheseBenefits).thenReturn(None)
 
           navigator
-            .nextPage(YouAnyTheseBenefitsIdCY)
+            .nextPage(YouAnyTheseBenefitsCYId)
             .value(answers) mustBe routes.SessionExpiredController.onPageLoad
         }
       }

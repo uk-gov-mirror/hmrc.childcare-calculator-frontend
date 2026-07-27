@@ -18,7 +18,8 @@ package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
 import play.api.libs.json.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.YesNoNotSure
-import uk.gov.hmrc.childcarecalculatorfrontend.{CascadeUpsertBase, SpecBase}
+import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
+import uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts.CascadeUpsertBase
 
 class CascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
@@ -27,7 +28,7 @@ class CascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
   "using the apply method for a key that has no special function" when {
     "the key doesn't already exists" must {
       "add the key to the cache map" in {
-        val originalCacheMap = new CacheMap("id", Map())
+        val originalCacheMap = CacheMap.of(())
 
         val result = cascadeUpsert("key", "value", originalCacheMap)
         result.data mustBe Map("key" -> JsString("value"))
@@ -36,7 +37,7 @@ class CascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
     "data already exists for that key" must {
       "replace the value held against the key" in {
-        val originalCacheMap = new CacheMap("id", Map("key" -> JsString("original value")))
+        val originalCacheMap = CacheMap.of(("key" -> JsString("original value")))
 
         val result = cascadeUpsert("key", "new value", originalCacheMap)
         result.data mustBe Map("key" -> JsString("new value"))
@@ -47,7 +48,7 @@ class CascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
   "addRepeatedValue" when {
     "the key doesn't already exist" must {
       "add the key to the cache map and save the value in a sequence" in {
-        val originalCacheMap = new CacheMap("id", Map())
+        val originalCacheMap = CacheMap.of(())
 
         val result = cascadeUpsert.addRepeatedValue("key", "value", originalCacheMap)
         result.data mustBe Map("key" -> Json.toJson(Seq("value")))
@@ -56,7 +57,7 @@ class CascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
     "the key already exists" must {
       "add the new value to the existing sequence" in {
-        val originalCacheMap = new CacheMap("id", Map("key" -> Json.toJson(Seq("value"))))
+        val originalCacheMap = CacheMap.of(("key" -> Json.toJson(Seq("value"))))
 
         val result = cascadeUpsert.addRepeatedValue("key", "new value", originalCacheMap)
         result.data mustBe Map("key" -> Json.toJson(Seq("value", "new value")))

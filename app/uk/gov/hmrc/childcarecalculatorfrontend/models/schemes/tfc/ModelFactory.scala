@@ -138,9 +138,9 @@ class ModelFactory @Inject() {
     }
 
   private def isRecentlySelfEmployedAndNotEarningTheMinimum(
-                                                             minEarnings: Boolean,
-                                                             areYouSelfEmployedOrApprentice: Option[EmploymentStatus],
-                                                             isEmployedForLessThan12Months: Boolean
+      minEarnings: Boolean,
+      areYouSelfEmployedOrApprentice: Option[EmploymentStatus],
+      isEmployedForLessThan12Months: Boolean
   ): Boolean =
     (minEarnings, areYouSelfEmployedOrApprentice) match {
       case (false, Some(EmploymentStatus.SelfEmployed)) => isEmployedForLessThan12Months

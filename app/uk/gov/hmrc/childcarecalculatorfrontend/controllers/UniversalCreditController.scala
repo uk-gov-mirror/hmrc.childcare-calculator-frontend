@@ -24,7 +24,10 @@ import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.UniversalCreditId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{universalCreditErrorKey, universalCreditPartnerErrorKey}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
+  universalCreditErrorKey,
+  universalCreditPartnerErrorKey
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.universalCredit
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -34,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UniversalCreditController @Inject() (
-
     mcc: MessagesControllerComponents,
     dataCacheService: DataCacheService,
     navigator: Navigator,

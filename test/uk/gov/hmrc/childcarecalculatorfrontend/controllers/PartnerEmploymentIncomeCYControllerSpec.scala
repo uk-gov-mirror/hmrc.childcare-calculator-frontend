@@ -111,8 +111,8 @@ class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "100000")).withMethod("POST")
 
       val validData = Map(
-        PartnerMaximumEarningsId.toString    -> JsBoolean(false),
-        PartnerEmploymentIncomeCYId.toString -> Json.toJson("100000")
+        PartnerMaximumEarningsId.of(false),
+        PartnerEmploymentIncomeCYId.of("100000")
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
@@ -127,8 +127,8 @@ class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "1000000")).withMethod("POST")
 
       val validData = Map(
-        PartnerMaximumEarningsId.toString    -> JsBoolean(true),
-        PartnerEmploymentIncomeCYId.toString -> Json.toJson("1000000")
+        PartnerMaximumEarningsId.of(true),
+        PartnerEmploymentIncomeCYId.of("1000000")
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))

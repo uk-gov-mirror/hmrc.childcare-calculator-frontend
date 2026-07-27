@@ -19,9 +19,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.models.enums
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{BindableEnum, EnumFormat}
 
 enum Period(override val toString: String) extends BindableEnum {
-  case Weekly      extends Period("WEEKLY")
+  case Weekly      extends Period("Weekly")
   case Fortnightly extends Period("FORTNIGHTLY")
-  case Monthly     extends Period("MONTHLY")
+  case Monthly     extends Period("Monthly")
   case Quarterly   extends Period("QUARTERLY")
   case Yearly      extends Period("YEARLY")
   case Invalid     extends Period("INVALID")

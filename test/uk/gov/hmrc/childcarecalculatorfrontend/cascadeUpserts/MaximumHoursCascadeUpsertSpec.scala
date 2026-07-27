@@ -18,225 +18,180 @@ package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
 import play.api.libs.json.*
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.IncapacityBenefit
-import uk.gov.hmrc.childcarecalculatorfrontend.models.SelfEmployedOrApprenticeOrNeither.SelfEmployed
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
-import uk.gov.hmrc.childcarecalculatorfrontend.{CascadeUpsertBase, SpecBase}
+import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.*
 
 class MaximumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
-
-  private val yes: String = YesNoNotSure.Yes.toString
-
-  private val under18: String          = Age.UnderEighteen.toString
-  private val eighteenToTwenty: String = Age.EighteenToTwenty.toString
-  private val twentyOneOrOver: String  = Age.TwentyOneOrOver.toString
 
   "saving the doYouLiveWithPartner" when {
 
     "doYouLiveWithPartner is false" must {
 
       "remove data related to both parents in employment" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            WhoIsInPaidEmploymentId.toString                -> JsString(both),
-            HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-            DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-            HasYourTaxCodeBeenAdjustedId.toString           -> JsString(yes),
-            DoYouKnowYourAdjustedTaxCodeId.toString         -> JsBoolean(true),
-            WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-            WhatIsYourTaxCodeId.toString                    -> JsString("1100L"),
-            WhoGetsVouchersId.toString                      -> JsString("you"),
-            PartnerChildcareVouchersId.toString             -> JsString("yes"),
-            YourChildcareVouchersId.toString                -> JsString("yes"),
-            DoYouGetAnyBenefitsId.toString                  -> JsArray(Seq(JsString(IncapacityBenefit.toString))),
-            DoesYourPartnerGetAnyBenefitsId.toString        -> JsArray(Seq(JsString(IncapacityBenefit.toString))),
-            YourPartnersAgeId.toString                      -> JsString("under18"),
-            YourAgeId.toString                              -> JsString("under18"),
-            PartnerMinimumEarningsId.toString               -> JsBoolean(true),
-            YourMinimumEarningsId.toString                  -> JsBoolean(false),
-            AreYouSelfEmployedOrApprenticeId.toString       -> JsString(SelfEmployed.toString),
-            PartnerMaximumEarningsId.toString               -> JsBoolean(true)
+        val originalCacheMap = CacheMap.of(
+            WhoIsInPaidEmploymentId.of(YouPartnerBothNeither.Both),
+            WhatIsYourPartnersTaxCodeId.of("1100L"),
+            WhatIsYourTaxCodeId.of("1100L"),
+            WhoGetsVouchersId.of(YouPartnerBothNeitherNotSure.You),
+            PartnerChildcareVouchersId.of(true),
+            YourChildcareVouchersId.of(true),
+            DoYouGetAnyBenefitsId.of(Set(ParentsBenefit.IncapacityBenefit)),
+            DoesYourPartnerGetAnyBenefitsId.of(Set(ParentsBenefit.IncapacityBenefit)),
+            YourPartnersAgeId.of(Age.UnderEighteen),
+            YourAgeId.of(Age.UnderEighteen),
+            PartnerMinimumEarningsId.of(true),
+            YourMinimumEarningsId.of(false),
+            AreYouSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+            PartnerMaximumEarningsId.of(true)
           )
-        )
 
-        val result = cascadeUpsert(DoYouLiveWithPartnerId.toString, false, originalCacheMap)
+        val result = cascadeUpsert(DoYouLiveWithPartnerId, false, originalCacheMap)
         result.data mustBe Map(
-          DoYouLiveWithPartnerId.toString           -> JsBoolean(false),
-          DoYouKnowYourAdjustedTaxCodeId.toString   -> JsBoolean(true),
-          HasYourTaxCodeBeenAdjustedId.toString     -> JsString(yes),
-          WhatIsYourTaxCodeId.toString              -> JsString("1100L"),
-          YourChildcareVouchersId.toString          -> JsString("yes"),
-          YourAgeId.toString                        -> JsString("under18"),
-          YourMinimumEarningsId.toString            -> JsBoolean(false),
-          AreYouSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployed.toString)
+          DoYouLiveWithPartnerId.of(false),
+          WhatIsYourTaxCodeId.of("1100L"),
+          YourChildcareVouchersId.of(true),
+          YourAgeId.of(Age.UnderEighteen),
+          YourMinimumEarningsId.of(false),
+          AreYouSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed)
         )
       }
     }
 
     "doYouLiveWithPartner is true" must {
       "remove an existing paid employment and who is in paid employment" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            AreYouInPaidWorkId.toString    -> JsBoolean(true),
-            DoYouGetAnyBenefitsId.toString -> JsBoolean(true)
+        val originalCacheMap = CacheMap.of(
+            AreYouInPaidWorkId.of(true),
+            DoYouGetAnyBenefitsId.of(Set.empty)
           )
-        )
 
-        val result = cascadeUpsert(DoYouLiveWithPartnerId.toString, true, originalCacheMap)
-        result.data mustBe Map(DoYouLiveWithPartnerId.toString -> JsBoolean(true))
+        val result = cascadeUpsert(DoYouLiveWithPartnerId, true, originalCacheMap)
+        result.data mustBe Map(DoYouLiveWithPartnerId.of(true))
       }
     }
   }
 
   "saving the areYouInPaidWork" must {
     "remove all the relevant data for you pages when are you in paid work is no" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          HasYourTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-          DoYouKnowYourAdjustedTaxCodeId.toString -> JsBoolean(true),
-          WhatIsYourTaxCodeId.toString            -> JsString("1100L"),
-          YourChildcareVouchersId.toString        -> JsString("yes"),
-          DoYouGetAnyBenefitsId.toString          -> JsBoolean(false),
-          YourAgeId.toString                      -> JsString("under18"),
-          YourMinimumEarningsId.toString          -> JsBoolean(true),
-          YourMaximumEarningsId.toString          -> JsBoolean(true),
-          UniversalCreditId.toString              -> JsString("uc"),
-          PartnerPaidWorkCYId.toString            -> JsBoolean(true),
-          ParentEmploymentIncomeCYId.toString     -> JsBoolean(true),
-          YouPaidPensionCYId.toString             -> JsBoolean(true),
-          HowMuchYouPayPensionId.toString         -> JsNumber(BigDecimal(20)),
-          YourOtherIncomeThisYearId.toString      -> JsBoolean(true),
-          YouAnyTheseBenefitsIdCY.toString        -> JsBoolean(true),
-          YouBenefitsIncomeCYId.toString          -> JsNumber(BigDecimal(20))
+      val originalCacheMap = CacheMap.of(
+          WhatIsYourTaxCodeId.of("1100L"),
+          YourChildcareVouchersId.of(true),
+          DoYouGetAnyBenefitsId.of(Set.empty),
+          YourAgeId.of(Age.UnderEighteen),
+          YourMinimumEarningsId.of(true),
+          YourMaximumEarningsId.of(true),
+          UniversalCreditId.of(true),
+          PartnerPaidWorkCYId.of(true),
+          ParentEmploymentIncomeCYId.of(20),
+          YouPaidPensionCYId.of(true),
+          HowMuchYouPayPensionId.of(20),
+          YourOtherIncomeThisYearId.of(true),
+          YouAnyTheseBenefitsCYId.of(true),
+          YouBenefitsIncomeCYId.of(20)
         )
-      )
 
-      val result = cascadeUpsert(AreYouInPaidWorkId.toString, false, originalCacheMap)
-      result.data mustBe Map(AreYouInPaidWorkId.toString -> JsBoolean(false))
+      val result = cascadeUpsert(AreYouInPaidWorkId, false, originalCacheMap)
+      result.data mustBe Map(AreYouInPaidWorkId.of(false))
     }
   }
 
   "saving the whoIsInPaidEmployment" must {
 
     "Do data clearance for Neither" in {
-      val originalCacheMap1 = new CacheMap(
-        "id",
-        Map(
-          HasYourTaxCodeBeenAdjustedId.toString           -> JsString(yes),
-          HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-          DoYouKnowYourAdjustedTaxCodeId.toString         -> JsBoolean(true),
-          DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-          WhatIsYourTaxCodeId.toString                    -> JsString("1100L"),
-          WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-          WhoGetsVouchersId.toString                      -> JsString("both"),
-          YourChildcareVouchersId.toString                -> JsString("yes"),
-          PartnerChildcareVouchersId.toString             -> JsString("yes"),
-          DoYouGetAnyBenefitsId.toString                  -> JsBoolean(false),
-          YourAgeId.toString                              -> JsString("under18"),
-          YourPartnersAgeId.toString                      -> JsString("under18"),
-          YourMinimumEarningsId.toString                  -> JsBoolean(true),
-          PartnerMinimumEarningsId.toString               -> JsBoolean(true),
-          EitherOfYouMaximumEarningsId.toString           -> JsBoolean(true),
-          UniversalCreditId.toString                      -> JsString("uc"),
-          EmploymentIncomeCYId.toString                   -> Json.toJson(EmploymentIncomeCY(20, 20)),
-          BothPaidPensionCYId.toString                    -> JsBoolean(true),
-          WhoPaysIntoPensionId.toString                   -> JsString(both),
-          HowMuchBothPayPensionId.toString                -> JsNumber(BigDecimal(20)),
-          BothOtherIncomeThisYearId.toString              -> JsBoolean(true),
-          WhoGetsOtherIncomeCYId.toString                 -> JsString(both),
-          OtherIncomeAmountCYId.toString                  -> Json.toJson(OtherIncomeAmountCY(20, 20)),
-          BothAnyTheseBenefitsCYId.toString               -> JsBoolean(true),
-          WhosHadBenefitsId.toString                      -> JsString(both),
-          BenefitsIncomeCYId.toString                     -> Json.toJson(BenefitsIncomeCY(20, 20))
+      val originalCacheMap1 = CacheMap.of(
+          WhatIsYourTaxCodeId.of("1100L"),
+          WhatIsYourPartnersTaxCodeId.of("1100L"),
+          WhoGetsVouchersId.of(YouPartnerBothNeitherNotSure.Both),
+          YourChildcareVouchersId.of(true),
+          PartnerChildcareVouchersId.of(true),
+          DoYouGetAnyBenefitsId.of(Set.empty),
+          YourAgeId.of(Age.UnderEighteen),
+          YourPartnersAgeId.of(Age.UnderEighteen),
+          YourMinimumEarningsId.of(true),
+          PartnerMinimumEarningsId.of(true),
+          EitherOfYouMaximumEarningsId.of(true),
+          UniversalCreditId.of("uc"),
+          EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+          BothPaidPensionCYId.of(true),
+          WhoPaysIntoPensionId.of(YouPartnerBoth.Both),
+          HowMuchBothPayPensionId.of(HowMuchBothPayPension(10, 10)),
+          BothOtherIncomeThisYearId.of(true),
+          WhoGetsOtherIncomeCYId.of(YouPartnerBoth.Both),
+          OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20)),
+          BothAnyTheseBenefitsCYId.of(true),
+          WhosHadBenefitsId.of(YouPartnerBoth.Both),
+          BenefitsIncomeCYId.of(BenefitsIncomeCY(20, 20))
         )
-      )
 
       // Partner In Paid Employment
-      val originalCacheMap2 = new CacheMap(
-        "id",
-        Map(
-          HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-          DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-          WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-          PartnerChildcareVouchersId.toString             -> JsString("yes"),
-          DoYouGetAnyBenefitsId.toString                  -> JsBoolean(false),
-          YourPartnersAgeId.toString                      -> JsString("under18"),
-          PartnerMinimumEarningsId.toString               -> JsBoolean(false),
-          PartnerSelfEmployedOrApprenticeId.toString      -> JsString(SelfEmployed.toString),
-          UniversalCreditId.toString                      -> JsString("uc"),
-          ParentPaidWorkCYId.toString                     -> JsBoolean(true),
-          PartnerEmploymentIncomeCYId.toString            -> JsBoolean(true),
-          PartnerPaidPensionCYId.toString                 -> JsBoolean(true),
-          HowMuchPartnerPayPensionId.toString             -> JsNumber(BigDecimal(20)),
-          PartnerBenefitsIncomeCYId.toString              -> JsNumber(BigDecimal(20))
+      val originalCacheMap2 = CacheMap.of(
+          WhatIsYourPartnersTaxCodeId.of("1100L"),
+          PartnerChildcareVouchersId.of("yes"),
+          DoYouGetAnyBenefitsId.of(false),
+          YourPartnersAgeId.of("under18"),
+          PartnerMinimumEarningsId.of(false),
+          PartnerSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+          UniversalCreditId.of("uc"),
+          ParentPaidWorkCYId.of(true),
+          PartnerEmploymentIncomeCYId.of(true),
+          PartnerPaidPensionCYId.of(true),
+          HowMuchPartnerPayPensionId.of(20),
+          PartnerBenefitsIncomeCYId.of(20)
         )
-      )
 
       // You In Paid Employment
-      val originalCacheMap3 = new CacheMap(
-        "id",
-        Map(
-          HasYourTaxCodeBeenAdjustedId.toString     -> JsString(yes),
-          DoYouKnowYourAdjustedTaxCodeId.toString   -> JsBoolean(true),
-          WhatIsYourTaxCodeId.toString              -> JsString("1100L"),
-          YourChildcareVouchersId.toString          -> JsString("yes"),
-          DoYouGetAnyBenefitsId.toString            -> JsBoolean(false),
-          YourAgeId.toString                        -> JsString("under18"),
-          YourMinimumEarningsId.toString            -> JsBoolean(false),
-          AreYouSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployed.toString),
-          YourMaximumEarningsId.toString            -> JsBoolean(true),
-          UniversalCreditId.toString                -> JsString("uc"),
-          PartnerPaidWorkCYId.toString              -> JsBoolean(true),
-          ParentEmploymentIncomeCYId.toString       -> JsBoolean(true),
-          YouPaidPensionCYId.toString               -> JsBoolean(true),
-          HowMuchYouPayPensionId.toString           -> JsNumber(BigDecimal(20)),
-          YourOtherIncomeThisYearId.toString        -> JsBoolean(true),
-          YouAnyTheseBenefitsIdCY.toString          -> JsBoolean(true),
-          YouBenefitsIncomeCYId.toString            -> JsNumber(BigDecimal(20))
+      val originalCacheMap3 = CacheMap.of(
+          WhatIsYourTaxCodeId.of("1100L"),
+          YourChildcareVouchersId.of("yes"),
+          DoYouGetAnyBenefitsId.of(false),
+          YourAgeId.of("under18"),
+          YourMinimumEarningsId.of(false),
+          AreYouSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+          YourMaximumEarningsId.of(true),
+          UniversalCreditId.of("uc"),
+          PartnerPaidWorkCYId.of(true),
+          ParentEmploymentIncomeCYId.of(true),
+          YouPaidPensionCYId.of(true),
+          HowMuchYouPayPensionId.of(20),
+          YourOtherIncomeThisYearId.of(true),
+          YouAnyTheseBenefitsCYId.of(true),
+          YouBenefitsIncomeCYId.of(20)
         )
-      )
 
       val result1 =
-        cascadeUpsert(WhoIsInPaidEmploymentId.toString, YouPartnerBothNeither.Neither.toString, originalCacheMap1)
-      result1.data mustBe Map(WhoIsInPaidEmploymentId.toString -> JsString(YouPartnerBothNeither.Neither.toString))
+        cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBothNeither.Neither.toString, originalCacheMap1)
+      result1.data mustBe Map(WhoIsInPaidEmploymentId.of(YouPartnerBothNeither.Neither))
 
       val result2 =
-        cascadeUpsert(WhoIsInPaidEmploymentId.toString, YouPartnerBothNeither.Neither.toString, originalCacheMap2)
-      result2.data mustBe Map(WhoIsInPaidEmploymentId.toString -> JsString(YouPartnerBothNeither.Neither.toString))
+        cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBothNeither.Neither.toString, originalCacheMap2)
+      result2.data mustBe Map(WhoIsInPaidEmploymentId.of(YouPartnerBothNeither.Neither))
 
       val result3 =
-        cascadeUpsert(WhoIsInPaidEmploymentId.toString, YouPartnerBothNeither.Neither.toString, originalCacheMap3)
-      result3.data mustBe Map(WhoIsInPaidEmploymentId.toString -> JsString(YouPartnerBothNeither.Neither.toString))
+        cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBothNeither.Neither.toString, originalCacheMap3)
+      result3.data mustBe Map(WhoIsInPaidEmploymentId.of(YouPartnerBothNeither.Neither))
     }
 
     "remove an existing partner work hours, partner min and max earnings, employment," +
       " pension, benefits CY when whoIsInPaidEmployment is you" in {
 
         // Partner earning less than minimum earnings
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            YourPartnersAgeId.toString                 -> JsString("under18"),
-            PartnerMinimumEarningsId.toString          -> JsBoolean(false),
-            PartnerSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployed.toString),
-            UniversalCreditId.toString                 -> JsString("uc"),
-            ParentPaidWorkCYId.toString                -> JsBoolean(true),
-            PartnerEmploymentIncomeCYId.toString       -> JsBoolean(true),
-            PartnerPaidPensionCYId.toString            -> JsBoolean(true),
-            HowMuchPartnerPayPensionId.toString        -> JsNumber(BigDecimal(20)),
-            PartnerBenefitsIncomeCYId.toString         -> JsNumber(BigDecimal(20))
-          )
-        ) // TODO Add in Statutory Data
+        val originalCacheMap = CacheMap.of(
+            YourPartnersAgeId.of("under18"),
+            PartnerMinimumEarningsId.of(false),
+            PartnerSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+            UniversalCreditId.of("uc"),
+            ParentPaidWorkCYId.of(true),
+            PartnerEmploymentIncomeCYId.of(true),
+            PartnerPaidPensionCYId.of(true),
+            HowMuchPartnerPayPensionId.of(20),
+            PartnerBenefitsIncomeCYId.of(20)
+          ) // TODO Add in Statutory Data
 
-        val result = cascadeUpsert(WhoIsInPaidEmploymentId.toString, you, originalCacheMap)
+        val result = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.You.toString, originalCacheMap)
         result.data mustBe Map(
-          WhoIsInPaidEmploymentId.toString -> JsString(you),
-          UniversalCreditId.toString       -> JsString("uc")
+          WhoIsInPaidEmploymentId.of(YouPartnerBoth.You),
+          UniversalCreditId.of("uc")
         )
       }
 
@@ -244,97 +199,88 @@ class MaximumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
       "both employment, both pension, both benefits CY when whoIsInPaidEmployment is you" in {
 
         // Parent earning more than minimum earnings and Partner earning less than minimum earnings
-        val originalCacheMap1 = new CacheMap(
-          "id",
-          Map(
-            WhoGetsVouchersId.toString                 -> JsString("you"),
-            YourAgeId.toString                         -> JsString("under18"),
-            YourPartnersAgeId.toString                 -> JsString("under18"),
-            YourMinimumEarningsId.toString             -> JsBoolean(true),
-            PartnerMinimumEarningsId.toString          -> JsBoolean(false),
-            PartnerSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployed.toString),
-            YourMaximumEarningsId.toString             -> JsBoolean(true),
-            EmploymentIncomeCYId.toString              -> Json.toJson(EmploymentIncomeCY(20, 20)),
-            BothPaidPensionCYId.toString               -> JsBoolean(true),
-            WhoPaysIntoPensionId.toString              -> JsString(both),
-            HowMuchBothPayPensionId.toString           -> JsNumber(BigDecimal(20)),
-            BothOtherIncomeThisYearId.toString         -> JsBoolean(true),
-            WhoGetsOtherIncomeCYId.toString            -> JsString(both),
-            OtherIncomeAmountCYId.toString             -> Json.toJson(OtherIncomeAmountCY(20, 20)),
-            BothAnyTheseBenefitsCYId.toString          -> JsBoolean(true),
-            WhosHadBenefitsId.toString                 -> JsString(both),
-            BenefitsIncomeCYId.toString                -> Json.toJson(BenefitsIncomeCY(20, 20))
+        val originalCacheMap1 = CacheMap.of(
+            WhoGetsVouchersId.of("you"),
+            YourAgeId.of("under18"),
+            YourPartnersAgeId.of("under18"),
+            YourMinimumEarningsId.of(true),
+            PartnerMinimumEarningsId.of(false),
+            PartnerSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+            YourMaximumEarningsId.of(true),
+            EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+            BothPaidPensionCYId.of(true),
+            WhoPaysIntoPensionId.of(YouPartnerBoth.Both),
+            HowMuchBothPayPensionId.of(20),
+            BothOtherIncomeThisYearId.of(true),
+            WhoGetsOtherIncomeCYId.of(YouPartnerBoth.Both),
+            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20)),
+            BothAnyTheseBenefitsCYId.of(true),
+            WhosHadBenefitsId.of(YouPartnerBoth.Both),
+            BenefitsIncomeCYId.of(BenefitsIncomeCY(20, 20))
           )
-        )
 
         // Parent and Partner earning more than minimum earnings
-        val originalCacheMap2 = new CacheMap(
-          "id",
-          Map(
-            WhoGetsVouchersId.toString            -> JsString("you"),
-            YourAgeId.toString                    -> JsString("under18"),
-            YourPartnersAgeId.toString            -> JsString("under18"),
-            YourMinimumEarningsId.toString        -> JsBoolean(true),
-            PartnerMinimumEarningsId.toString     -> JsBoolean(true),
-            EitherOfYouMaximumEarningsId.toString -> JsBoolean(true),
-            EmploymentIncomeCYId.toString         -> Json.toJson(EmploymentIncomeCY(20, 20)),
-            BothPaidPensionCYId.toString          -> JsBoolean(true),
-            WhoPaysIntoPensionId.toString         -> JsString(both),
-            HowMuchBothPayPensionId.toString      -> JsNumber(BigDecimal(20)),
-            BothOtherIncomeThisYearId.toString    -> JsBoolean(true),
-            WhoGetsOtherIncomeCYId.toString       -> JsString(both),
-            OtherIncomeAmountCYId.toString        -> Json.toJson(OtherIncomeAmountCY(20, 20)),
-            BothAnyTheseBenefitsCYId.toString     -> JsBoolean(true),
-            WhosHadBenefitsId.toString            -> JsString(both),
-            BenefitsIncomeCYId.toString           -> Json.toJson(BenefitsIncomeCY(20, 20))
+        val originalCacheMap2 = CacheMap.of(
+            WhoGetsVouchersId.of("you"),
+            YourAgeId.of("under18"),
+            YourPartnersAgeId.of("under18"),
+            YourMinimumEarningsId.of(true),
+            PartnerMinimumEarningsId.of(true),
+            EitherOfYouMaximumEarningsId.of(true),
+            EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+            BothPaidPensionCYId.of(true),
+            WhoPaysIntoPensionId.of(YouPartnerBoth.Both),
+            HowMuchBothPayPensionId.of(20),
+            BothOtherIncomeThisYearId.of(true),
+            WhoGetsOtherIncomeCYId.of(YouPartnerBoth.Both),
+            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20)),
+            BothAnyTheseBenefitsCYId.of(true),
+            WhosHadBenefitsId.of(YouPartnerBoth.Both),
+            BenefitsIncomeCYId.of(BenefitsIncomeCY(20, 20))
           )
-        )
 
         // Partner earning more than minimum earnings and Parent earning less than minimum earnings
-        val originalCacheMap3 = new CacheMap(
-          "id",
-          Map(
-            WhoGetsVouchersId.toString                -> JsString("you"),
-            YourAgeId.toString                        -> JsString("under18"),
-            YourPartnersAgeId.toString                -> JsString("under18"),
-            YourMinimumEarningsId.toString            -> JsBoolean(false),
-            PartnerMinimumEarningsId.toString         -> JsBoolean(true),
-            AreYouSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployed.toString),
-            PartnerMaximumEarningsId.toString         -> JsBoolean(true),
-            EmploymentIncomeCYId.toString             -> Json.toJson(EmploymentIncomeCY(20, 20)),
-            BothPaidPensionCYId.toString              -> JsBoolean(true),
-            WhoPaysIntoPensionId.toString             -> JsString(both),
-            HowMuchBothPayPensionId.toString          -> JsNumber(BigDecimal(20)),
-            BothOtherIncomeThisYearId.toString        -> JsBoolean(true),
-            WhoGetsOtherIncomeCYId.toString           -> JsString(both),
-            OtherIncomeAmountCYId.toString            -> Json.toJson(OtherIncomeAmountCY(20, 20)),
-            BothAnyTheseBenefitsCYId.toString         -> JsBoolean(true),
-            WhosHadBenefitsId.toString                -> JsString(both),
-            BenefitsIncomeCYId.toString               -> Json.toJson(BenefitsIncomeCY(20, 20))
+        val originalCacheMap3 = CacheMap.of(
+            WhoGetsVouchersId.of("you"),
+            YourAgeId.of("under18"),
+            YourPartnersAgeId.of("under18"),
+            YourMinimumEarningsId.of(false),
+            PartnerMinimumEarningsId.of(true),
+            AreYouSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+            PartnerMaximumEarningsId.of(true),
+            EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+            BothPaidPensionCYId.of(true),
+            WhoPaysIntoPensionId.of(YouPartnerBoth.Both),
+            HowMuchBothPayPensionId.of(20),
+            BothOtherIncomeThisYearId.of(true),
+            WhoGetsOtherIncomeCYId.of(YouPartnerBoth.Both),
+            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20)),
+            BothAnyTheseBenefitsCYId.of(true),
+            WhosHadBenefitsId.of(YouPartnerBoth.Both),
+            BenefitsIncomeCYId.of(BenefitsIncomeCY(20, 20))
           )
-        )
 
-        val result1 = cascadeUpsert(WhoIsInPaidEmploymentId.toString, you, originalCacheMap1)
+        val result1 = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.You.toString, originalCacheMap1)
         result1.data mustBe Map(
-          WhoIsInPaidEmploymentId.toString -> JsString(you),
-          YourAgeId.toString               -> JsString("under18"),
-          YourMinimumEarningsId.toString   -> JsBoolean(true),
-          YourMaximumEarningsId.toString   -> JsBoolean(true)
+          WhoIsInPaidEmploymentId.of(YouPartnerBoth.You),
+          YourAgeId.of("under18"),
+          YourMinimumEarningsId.of(true),
+          YourMaximumEarningsId.of(true)
         )
 
-        val result2 = cascadeUpsert(WhoIsInPaidEmploymentId.toString, you, originalCacheMap2)
+        val result2 = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.You.toString, originalCacheMap2)
         result2.data mustBe Map(
-          WhoIsInPaidEmploymentId.toString -> JsString(you),
-          YourAgeId.toString               -> JsString("under18"),
-          YourMinimumEarningsId.toString   -> JsBoolean(true)
+          WhoIsInPaidEmploymentId.of(YouPartnerBoth.You),
+          YourAgeId.of("under18"),
+          YourMinimumEarningsId.of(true)
         )
 
-        val result3 = cascadeUpsert(WhoIsInPaidEmploymentId.toString, you, originalCacheMap3)
+        val result3 = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.You.toString, originalCacheMap3)
         result3.data mustBe Map(
-          WhoIsInPaidEmploymentId.toString          -> JsString(you),
-          YourAgeId.toString                        -> JsString("under18"),
-          AreYouSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployed.toString),
-          YourMinimumEarningsId.toString            -> JsBoolean(false)
+          WhoIsInPaidEmploymentId.of(YouPartnerBoth.You),
+          YourAgeId.of("under18"),
+          AreYouSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+          YourMinimumEarningsId.of(false)
         )
       }
 
@@ -342,428 +288,374 @@ class MaximumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
       " pension, benefits CY when whoIsInPaidEmployment is partner" in {
 
         // Parent earning less than minimum earnings
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            HasYourTaxCodeBeenAdjustedId.toString     -> JsString(yes),
-            DoYouKnowYourAdjustedTaxCodeId.toString   -> JsBoolean(true),
-            WhatIsYourTaxCodeId.toString              -> JsString("1100L"),
-            YourChildcareVouchersId.toString          -> Json.toJson(YesNoNotSure.Yes),
-            YourAgeId.toString                        -> JsString("under18"),
-            YourMinimumEarningsId.toString            -> JsBoolean(false),
-            AreYouSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployed.toString),
-            PartnerPaidWorkCYId.toString              -> JsBoolean(true),
-            ParentEmploymentIncomeCYId.toString       -> JsBoolean(true),
-            YouPaidPensionCYId.toString               -> JsBoolean(true),
-            HowMuchYouPayPensionId.toString           -> JsNumber(BigDecimal(20)),
-            YourOtherIncomeThisYearId.toString        -> JsBoolean(true),
-            YouAnyTheseBenefitsIdCY.toString          -> JsBoolean(true),
-            YouBenefitsIncomeCYId.toString            -> JsNumber(BigDecimal(20))
+        val originalCacheMap = CacheMap.of(
+            HasYourTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            DoYouKnowYourAdjustedTaxCodeId.of(true),
+            WhatIsYourTaxCodeId.of("1100L"),
+            YourChildcareVouchersId.of(YesNoNotSure.Yes),
+            YourAgeId.of("under18"),
+            YourMinimumEarningsId.of(false),
+            AreYouSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+            PartnerPaidWorkCYId.of(true),
+            ParentEmploymentIncomeCYId.of(true),
+            YouPaidPensionCYId.of(true),
+            HowMuchYouPayPensionId.of(20),
+            YourOtherIncomeThisYearId.of(true),
+            YouAnyTheseBenefitsCYId.of(true),
+            YouBenefitsIncomeCYId.of(20)
           )
-        )
 
-        val result = cascadeUpsert(WhoIsInPaidEmploymentId.toString, partner, originalCacheMap)
-        result.data mustBe Map(WhoIsInPaidEmploymentId.toString -> JsString(partner))
+        val result = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.Partner.toString, originalCacheMap)
+        result.data mustBe Map(WhoIsInPaidEmploymentId.of(YouPartnerBoth.Partner))
       }
 
     "remove an existing your work hours,  your vouchers your and both min and max earnings, " +
       "both employment,both pension,both benefits CY when whoIsInPaidEmployment is partner" in {
 
         // Partner earning less than minimum earnings and Parent earning more than minimum earnings
-        val originalCacheMap1 = new CacheMap(
-          "id",
-          Map(
-            HasYourTaxCodeBeenAdjustedId.toString           -> JsString(yes),
-            HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-            DoYouKnowYourAdjustedTaxCodeId.toString         -> JsBoolean(true),
-            DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-            WhatIsYourTaxCodeId.toString                    -> JsString("1100L"),
-            WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-            WhoGetsVouchersId.toString                      -> JsString("you"),
-            YourAgeId.toString                              -> JsString("under18"),
-            YourPartnersAgeId.toString                      -> JsString("under18"),
-            YourMinimumEarningsId.toString                  -> JsBoolean(true),
-            PartnerMinimumEarningsId.toString               -> JsBoolean(false),
-            PartnerSelfEmployedOrApprenticeId.toString      -> JsString(SelfEmployed.toString),
-            YourMaximumEarningsId.toString                  -> JsBoolean(true),
-            EmploymentIncomeCYId.toString                   -> Json.toJson(EmploymentIncomeCY(20, 20)),
-            BothPaidPensionCYId.toString                    -> JsBoolean(true),
-            WhoPaysIntoPensionId.toString                   -> JsString(both),
-            HowMuchBothPayPensionId.toString                -> JsNumber(BigDecimal(20)),
-            BothOtherIncomeThisYearId.toString              -> JsBoolean(true),
-            WhoGetsOtherIncomeCYId.toString                 -> JsString(both),
-            OtherIncomeAmountCYId.toString                  -> Json.toJson(OtherIncomeAmountCY(20, 20)),
-            BothAnyTheseBenefitsCYId.toString               -> JsBoolean(true),
-            WhosHadBenefitsId.toString                      -> JsString(both),
-            BenefitsIncomeCYId.toString                     -> Json.toJson(BenefitsIncomeCY(20, 20))
+        val originalCacheMap1 = CacheMap.of(
+            HasYourTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            DoYouKnowYourAdjustedTaxCodeId.of(true),
+            DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+            WhatIsYourTaxCodeId.of("1100L"),
+            WhatIsYourPartnersTaxCodeId.of("1100L"),
+            WhoGetsVouchersId.of("you"),
+            YourAgeId.of("under18"),
+            YourPartnersAgeId.of("under18"),
+            YourMinimumEarningsId.of(true),
+            PartnerMinimumEarningsId.of(false),
+            PartnerSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+            YourMaximumEarningsId.of(true),
+            EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+            BothPaidPensionCYId.of(true),
+            WhoPaysIntoPensionId.of(YouPartnerBoth.Both),
+            HowMuchBothPayPensionId.of(20),
+            BothOtherIncomeThisYearId.of(true),
+            WhoGetsOtherIncomeCYId.of(YouPartnerBoth.Both),
+            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20)),
+            BothAnyTheseBenefitsCYId.of(true),
+            WhosHadBenefitsId.of(YouPartnerBoth.Both),
+            BenefitsIncomeCYId.of(BenefitsIncomeCY(20, 20))
           )
-        )
 
         // Partner and Parent earning more than minimum earnings
-        val originalCacheMap2 = new CacheMap(
-          "id",
-          Map(
-            HasYourTaxCodeBeenAdjustedId.toString           -> JsString(yes),
-            HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-            DoYouKnowYourAdjustedTaxCodeId.toString         -> JsBoolean(true),
-            DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-            WhatIsYourTaxCodeId.toString                    -> JsString("1100L"),
-            WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-            WhoGetsVouchersId.toString                      -> JsString("you"),
-            YourAgeId.toString                              -> JsString("under18"),
-            YourPartnersAgeId.toString                      -> JsString("under18"),
-            YourMinimumEarningsId.toString                  -> JsBoolean(true),
-            PartnerMinimumEarningsId.toString               -> JsBoolean(true),
-            EitherOfYouMaximumEarningsId.toString           -> JsBoolean(true),
-            EmploymentIncomeCYId.toString                   -> Json.toJson(EmploymentIncomeCY(20, 20)),
-            BothPaidPensionCYId.toString                    -> JsBoolean(true),
-            WhoPaysIntoPensionId.toString                   -> JsString(both),
-            HowMuchBothPayPensionId.toString                -> JsNumber(BigDecimal(20)),
-            BothOtherIncomeThisYearId.toString              -> JsBoolean(true),
-            WhoGetsOtherIncomeCYId.toString                 -> JsString(both),
-            OtherIncomeAmountCYId.toString                  -> Json.toJson(OtherIncomeAmountCY(20, 20)),
-            BothAnyTheseBenefitsCYId.toString               -> JsBoolean(true),
-            WhosHadBenefitsId.toString                      -> JsString(both),
-            BenefitsIncomeCYId.toString                     -> Json.toJson(BenefitsIncomeCY(20, 20))
+        val originalCacheMap2 = CacheMap.of(
+            HasYourTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            DoYouKnowYourAdjustedTaxCodeId.of(true),
+            DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+            WhatIsYourTaxCodeId.of("1100L"),
+            WhatIsYourPartnersTaxCodeId.of("1100L"),
+            WhoGetsVouchersId.of("you"),
+            YourAgeId.of("under18"),
+            YourPartnersAgeId.of("under18"),
+            YourMinimumEarningsId.of(true),
+            PartnerMinimumEarningsId.of(true),
+            EitherOfYouMaximumEarningsId.of(true),
+            EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+            BothPaidPensionCYId.of(true),
+            WhoPaysIntoPensionId.of(YouPartnerBoth.Both),
+            HowMuchBothPayPensionId.of(20),
+            BothOtherIncomeThisYearId.of(true),
+            WhoGetsOtherIncomeCYId.of(YouPartnerBoth.Both),
+            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20)),
+            BothAnyTheseBenefitsCYId.of(true),
+            WhosHadBenefitsId.of(YouPartnerBoth.Both),
+            BenefitsIncomeCYId.of(BenefitsIncomeCY(20, 20))
           )
-        )
 
         // Partner earning more than minimum earnings and Parent earning less than minimum earnings
-        val originalCacheMap3 = new CacheMap(
-          "id",
-          Map(
-            HasYourTaxCodeBeenAdjustedId.toString           -> JsString(yes),
-            HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-            DoYouKnowYourAdjustedTaxCodeId.toString         -> JsBoolean(true),
-            DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-            WhatIsYourTaxCodeId.toString                    -> JsString("1100L"),
-            WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-            WhoGetsVouchersId.toString                      -> JsString("you"),
-            YourAgeId.toString                              -> JsString("under18"),
-            YourPartnersAgeId.toString                      -> JsString("under18"),
-            YourMinimumEarningsId.toString                  -> JsBoolean(false),
-            PartnerMinimumEarningsId.toString               -> JsBoolean(true),
-            AreYouSelfEmployedOrApprenticeId.toString       -> JsString(SelfEmployed.toString),
-            PartnerMaximumEarningsId.toString               -> JsBoolean(true),
-            EmploymentIncomeCYId.toString                   -> Json.toJson(EmploymentIncomeCY(20, 20)),
-            BothPaidPensionCYId.toString                    -> JsBoolean(true),
-            WhoPaysIntoPensionId.toString                   -> JsString(both),
-            HowMuchBothPayPensionId.toString                -> JsNumber(BigDecimal(20)),
-            BothOtherIncomeThisYearId.toString              -> JsBoolean(true),
-            WhoGetsOtherIncomeCYId.toString                 -> JsString(both),
-            OtherIncomeAmountCYId.toString                  -> Json.toJson(OtherIncomeAmountCY(20, 20)),
-            BothAnyTheseBenefitsCYId.toString               -> JsBoolean(true),
-            WhosHadBenefitsId.toString                      -> JsString(both),
-            BenefitsIncomeCYId.toString                     -> Json.toJson(BenefitsIncomeCY(20, 20))
+        val originalCacheMap3 = CacheMap.of(
+            HasYourTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            DoYouKnowYourAdjustedTaxCodeId.of(true),
+            DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+            WhatIsYourTaxCodeId.of("1100L"),
+            WhatIsYourPartnersTaxCodeId.of("1100L"),
+            WhoGetsVouchersId.of("you"),
+            YourAgeId.of("under18"),
+            YourPartnersAgeId.of("under18"),
+            YourMinimumEarningsId.of(false),
+            PartnerMinimumEarningsId.of(true),
+            AreYouSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed),
+            PartnerMaximumEarningsId.of(true),
+            EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+            BothPaidPensionCYId.of(true),
+            WhoPaysIntoPensionId.of(YouPartnerBoth.Both),
+            HowMuchBothPayPensionId.of(20),
+            BothOtherIncomeThisYearId.of(true),
+            WhoGetsOtherIncomeCYId.of(YouPartnerBoth.Both),
+            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20)),
+            BothAnyTheseBenefitsCYId.of(true),
+            WhosHadBenefitsId.of(YouPartnerBoth.Both),
+            BenefitsIncomeCYId.of(BenefitsIncomeCY(20, 20))
           )
-        )
 
-        val result1 = cascadeUpsert(WhoIsInPaidEmploymentId.toString, partner, originalCacheMap1)
+        val result1 = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.Partner.toString, originalCacheMap1)
         result1.data mustBe Map(
-          WhoIsInPaidEmploymentId.toString                -> JsString(partner),
-          HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-          DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-          YourPartnersAgeId.toString                      -> JsString("under18"),
-          WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-          PartnerMinimumEarningsId.toString               -> JsBoolean(false),
-          PartnerSelfEmployedOrApprenticeId.toString      -> JsString(SelfEmployed.toString)
+          WhoIsInPaidEmploymentId.of(YouPartnerBoth.Partner),
+          HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+          DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+          YourPartnersAgeId.of("under18"),
+          WhatIsYourPartnersTaxCodeId.of("1100L"),
+          PartnerMinimumEarningsId.of(false),
+          PartnerSelfEmployedOrApprenticeId.of(EmploymentStatus.SelfEmployed)
         )
 
-        val result2 = cascadeUpsert(WhoIsInPaidEmploymentId.toString, partner, originalCacheMap2)
+        val result2 = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.Partner.toString, originalCacheMap2)
         result2.data mustBe Map(
-          WhoIsInPaidEmploymentId.toString                -> JsString(partner),
-          HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-          DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-          YourPartnersAgeId.toString                      -> JsString("under18"),
-          WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-          PartnerMinimumEarningsId.toString               -> JsBoolean(true)
+          WhoIsInPaidEmploymentId.of(YouPartnerBoth.Partner),
+          HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+          DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+          YourPartnersAgeId.of("under18"),
+          WhatIsYourPartnersTaxCodeId.of("1100L"),
+          PartnerMinimumEarningsId.of(true)
         )
 
-        val result3 = cascadeUpsert(WhoIsInPaidEmploymentId.toString, partner, originalCacheMap3)
+        val result3 = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.Partner.toString, originalCacheMap3)
         result3.data mustBe Map(
-          WhoIsInPaidEmploymentId.toString                -> JsString(partner),
-          HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-          DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-          YourPartnersAgeId.toString                      -> JsString("under18"),
-          WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-          PartnerMinimumEarningsId.toString               -> JsBoolean(true),
-          PartnerMaximumEarningsId.toString               -> JsBoolean(true)
+          WhoIsInPaidEmploymentId.of(YouPartnerBoth.Partner),
+          HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+          DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+          YourPartnersAgeId.of("under18"),
+          WhatIsYourPartnersTaxCodeId.of("1100L"),
+          PartnerMinimumEarningsId.of(true),
+          PartnerMaximumEarningsId.of(true)
         )
       }
 
     "remove parent childcare vouchers when whoIsInPaidEmployment is both" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          YourChildcareVouchersId.toString    -> JsString("yes"),
-          PartnerPaidWorkCYId.toString        -> JsBoolean(true),
-          ParentEmploymentIncomeCYId.toString -> JsBoolean(true),
-          YouPaidPensionCYId.toString         -> JsBoolean(true),
-          HowMuchYouPayPensionId.toString     -> JsNumber(BigDecimal(20)),
-          YourOtherIncomeThisYearId.toString  -> JsBoolean(true),
-          YouAnyTheseBenefitsIdCY.toString    -> JsBoolean(true),
-          YouBenefitsIncomeCYId.toString      -> JsNumber(BigDecimal(20))
+      val originalCacheMap = CacheMap.of(
+          YourChildcareVouchersId.of("YesNoNotSure.Yes.toString"),
+          PartnerPaidWorkCYId.of(true),
+          ParentEmploymentIncomeCYId.of(true),
+          YouPaidPensionCYId.of(true),
+          HowMuchYouPayPensionId.of(20),
+          YourOtherIncomeThisYearId.of(true),
+          YouAnyTheseBenefitsCYId.of(true),
+          YouBenefitsIncomeCYId.of(20)
         )
-      )
 
-      val result = cascadeUpsert(WhoIsInPaidEmploymentId.toString, both, originalCacheMap)
-      result.data mustBe Map(WhoIsInPaidEmploymentId.toString -> JsString(both)) // TODO Add in Statutory Data
+      val result = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.Both.toString, originalCacheMap)
+      result.data mustBe Map(WhoIsInPaidEmploymentId.of(YouPartnerBoth.Both)) // TODO Add in Statutory Data
     }
 
     "remove partner childcare vouchers when whoIsInPaidEmployment is both" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          PartnerChildcareVouchersId.toString  -> JsString("yes"),
-          ParentPaidWorkCYId.toString          -> JsBoolean(true),
-          PartnerEmploymentIncomeCYId.toString -> JsBoolean(true),
-          PartnerPaidPensionCYId.toString      -> JsBoolean(true),
-          HowMuchPartnerPayPensionId.toString  -> JsNumber(BigDecimal(20)),
-          PartnerBenefitsIncomeCYId.toString   -> JsNumber(BigDecimal(20))
+      val originalCacheMap = CacheMap.of(
+          PartnerChildcareVouchersId.of("yes"),
+          ParentPaidWorkCYId.of(true),
+          PartnerEmploymentIncomeCYId.of(true),
+          PartnerPaidPensionCYId.of(true),
+          HowMuchPartnerPayPensionId.of(20),
+          PartnerBenefitsIncomeCYId.of(20)
         )
-      )
 
-      val result = cascadeUpsert(WhoIsInPaidEmploymentId.toString, both, originalCacheMap)
-      result.data mustBe Map(WhoIsInPaidEmploymentId.toString -> JsString(both)) // TODO Add in Statutory Data
+      val result = cascadeUpsert(WhoIsInPaidEmploymentId, YouPartnerBoth.Both.toString, originalCacheMap)
+      result.data mustBe Map(WhoIsInPaidEmploymentId.of(YouPartnerBoth.Both)) // TODO Add in Statutory Data
     }
   }
 
   "saving the your age" must {
     "removing an existing yourMinimumEarnings when user change the selection to age under18" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(YourAgeId.toString -> JsString(eighteenToTwenty), YourMinimumEarningsId.toString -> JsBoolean(true))
-      )
+      val originalCacheMap = CacheMap.of(YourAgeId.of(Age.EighteenToTwenty), YourMinimumEarningsId.of(true))
 
-      val result = cascadeUpsert(YourAgeId.toString, under18, originalCacheMap)
-      result.data mustBe Map(YourAgeId.toString -> JsString(under18))
+      val result = cascadeUpsert(YourAgeId, Age.UnderEighteen.toString, originalCacheMap)
+      result.data mustBe Map(YourAgeId.of(Age.UnderEighteen))
     }
 
     "removing an existing yourMinimumEarnings and areYouSelfEmployedOrApprentice when user change the selection to age 18-20" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          YourAgeId.toString                        -> JsString(under18),
-          YourMinimumEarningsId.toString            -> JsBoolean(false),
-          AreYouSelfEmployedOrApprenticeId.toString -> JsBoolean(false)
+      val originalCacheMap = CacheMap.of(
+          YourAgeId.of(Age.UnderEighteen),
+          YourMinimumEarningsId.of(false),
+          AreYouSelfEmployedOrApprenticeId.of(false)
         )
-      )
 
-      val result = cascadeUpsert(YourAgeId.toString, eighteenToTwenty, originalCacheMap)
-      result.data mustBe Map(YourAgeId.toString -> JsString(eighteenToTwenty))
+      val result = cascadeUpsert(YourAgeId, Age.EighteenToTwenty.toString, originalCacheMap)
+      result.data mustBe Map(YourAgeId.of(Age.EighteenToTwenty))
     }
 
     "removing an existing yourMinimumEarnings areYouSelfEmployedOrApprentice and yourSelfEmployed when user change the selection to age 20-24" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          YourAgeId.toString                        -> JsString(under18),
-          YourMinimumEarningsId.toString            -> JsBoolean(false),
-          AreYouSelfEmployedOrApprenticeId.toString -> JsBoolean(true),
-          YourSelfEmployedId.toString               -> JsBoolean(true)
+      val originalCacheMap = CacheMap.of(
+          YourAgeId.of(Age.UnderEighteen),
+          YourMinimumEarningsId.of(false),
+          AreYouSelfEmployedOrApprenticeId.of(true),
+          YourSelfEmployedId.of(true)
         )
-      )
 
-      val result = cascadeUpsert(YourAgeId.toString, twentyOneOrOver, originalCacheMap)
-      result.data mustBe Map(YourAgeId.toString -> JsString(twentyOneOrOver))
+      val result = cascadeUpsert(YourAgeId, Age.TwentyOneOrOver.toString, originalCacheMap)
+      result.data mustBe Map(YourAgeId.of(Age.TwentyOneOrOver))
     }
 
     "removing an existing yourMinimumEarnings  when user change the selection to age over 25" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(YourAgeId.toString -> JsString(under18), YourMinimumEarningsId.toString -> JsBoolean(true))
-      )
+      val originalCacheMap = CacheMap.of(YourAgeId.of(Age.UnderEighteen), YourMinimumEarningsId.of(true))
 
-      val result = cascadeUpsert(YourAgeId.toString, twentyOneOrOver, originalCacheMap)
-      result.data mustBe Map(YourAgeId.toString -> JsString(twentyOneOrOver))
+      val result = cascadeUpsert(YourAgeId, Age.TwentyOneOrOver.toString, originalCacheMap)
+      result.data mustBe Map(YourAgeId.of(Age.TwentyOneOrOver))
     }
 
     " not removing an existing your minimumEarnings  when user change the selection to age 18-20 again" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(YourAgeId.toString -> JsString(eighteenToTwenty), YourMinimumEarningsId.toString -> JsBoolean(true))
-      )
+      val originalCacheMap = CacheMap.of(YourAgeId.of(Age.EighteenToTwenty), YourMinimumEarningsId.of(true))
 
-      val result = cascadeUpsert(YourAgeId.toString, eighteenToTwenty, originalCacheMap)
+      val result = cascadeUpsert(YourAgeId, Age.EighteenToTwenty.toString, originalCacheMap)
       result.data mustBe Map(
-        YourAgeId.toString             -> JsString(eighteenToTwenty),
-        YourMinimumEarningsId.toString -> JsBoolean(true)
+        YourAgeId.of(Age.EighteenToTwenty),
+        YourMinimumEarningsId.of(true)
       )
     }
   }
 
   "saving the partner age" must {
     "removing an existing partnerMinimumEarnings when user change the selection to age under18" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          YourPartnersAgeId.toString        -> JsString(eighteenToTwenty),
-          PartnerMinimumEarningsId.toString -> JsBoolean(true)
+      val originalCacheMap = CacheMap.of(
+          YourPartnersAgeId.of(Age.EighteenToTwenty),
+          PartnerMinimumEarningsId.of(true)
         )
-      )
 
-      val result = cascadeUpsert(YourPartnersAgeId.toString, under18, originalCacheMap)
-      result.data mustBe Map(YourPartnersAgeId.toString -> JsString(under18))
+      val result = cascadeUpsert(YourPartnersAgeId, Age.UnderEighteen.toString, originalCacheMap)
+      result.data mustBe Map(YourPartnersAgeId.of(Age.UnderEighteen))
     }
 
     "removing an existing yourMinimumEarnings ,selfEmployedOrApprentice when user change the selection to age 18-20" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          YourPartnersAgeId.toString                 -> JsString(under18),
-          PartnerMinimumEarningsId.toString          -> JsBoolean(false),
-          PartnerSelfEmployedOrApprenticeId.toString -> JsBoolean(false)
+      val originalCacheMap = CacheMap.of(
+          YourPartnersAgeId.of(Age.UnderEighteen),
+          PartnerMinimumEarningsId.of(false),
+          PartnerSelfEmployedOrApprenticeId.of(false)
         )
-      )
 
-      val result = cascadeUpsert(YourPartnersAgeId.toString, eighteenToTwenty, originalCacheMap)
-      result.data mustBe Map(YourPartnersAgeId.toString -> JsString(eighteenToTwenty))
+      val result = cascadeUpsert(YourPartnersAgeId, Age.EighteenToTwenty.toString, originalCacheMap)
+      result.data mustBe Map(YourPartnersAgeId.of(Age.EighteenToTwenty))
     }
 
     "removing an existing yourMinimumEarnings selfEmployedOrApprentice and SelfEmployed when user change the selection to age 20-24" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          YourPartnersAgeId.toString                 -> JsString(under18),
-          PartnerMinimumEarningsId.toString          -> JsBoolean(false),
-          PartnerSelfEmployedOrApprenticeId.toString -> JsBoolean(true),
-          PartnerSelfEmployedId.toString             -> JsBoolean(true)
+      val originalCacheMap = CacheMap.of(
+          YourPartnersAgeId.of(Age.UnderEighteen),
+          PartnerMinimumEarningsId.of(false),
+          PartnerSelfEmployedOrApprenticeId.of(true),
+          PartnerSelfEmployedId.of(true)
         )
-      )
 
-      val result = cascadeUpsert(YourPartnersAgeId.toString, twentyOneOrOver, originalCacheMap)
-      result.data mustBe Map(YourPartnersAgeId.toString -> JsString(twentyOneOrOver))
+      val result = cascadeUpsert(YourPartnersAgeId, Age.TwentyOneOrOver.toString, originalCacheMap)
+      result.data mustBe Map(YourPartnersAgeId.of(Age.TwentyOneOrOver))
     }
 
     "removing an existing yourMinimumEarnings, maximumEarnings when user change the selection to age over 25" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(YourPartnersAgeId.toString -> JsString(under18), PartnerMinimumEarningsId.toString -> JsBoolean(true))
-      )
+      val originalCacheMap = CacheMap.of(YourPartnersAgeId.of(Age.UnderEighteen), PartnerMinimumEarningsId.of(true))
 
-      val result = cascadeUpsert(YourPartnersAgeId.toString, twentyOneOrOver, originalCacheMap)
-      result.data mustBe Map(YourPartnersAgeId.toString -> JsString(twentyOneOrOver))
+      val result = cascadeUpsert(YourPartnersAgeId, Age.TwentyOneOrOver.toString, originalCacheMap)
+      result.data mustBe Map(YourPartnersAgeId.of(Age.TwentyOneOrOver))
     }
 
     "not removing an existing yourMinimumEarnings maximum earnings when user change the selection to age under18 again" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(YourPartnersAgeId.toString -> JsString(under18), PartnerMinimumEarningsId.toString -> JsBoolean(true))
-      )
+      val originalCacheMap = CacheMap.of(YourPartnersAgeId.of(Age.UnderEighteen), PartnerMinimumEarningsId.of(true))
 
-      val result = cascadeUpsert(YourPartnersAgeId.toString, under18, originalCacheMap)
+      val result = cascadeUpsert(YourPartnersAgeId, Age.UnderEighteen.toString, originalCacheMap)
       result.data mustBe Map(
-        YourPartnersAgeId.toString        -> JsString(under18),
-        PartnerMinimumEarningsId.toString -> JsBoolean(true)
+        YourPartnersAgeId.of(Age.UnderEighteen),
+        PartnerMinimumEarningsId.of(true)
       )
     }
   }
 
   "saving the your minimumEarnings" must {
     "remove your maximum earnings and either of you max earnings whenparent in paid employment and your minimum earnings is no" in {
-      val originalCacheMap = new CacheMap("id", Map(YourMaximumEarningsId.toString -> JsBoolean(false)))
+      val originalCacheMap = CacheMap.of(YourMaximumEarningsId.of(false))
 
-      val result = cascadeUpsert(YourMinimumEarningsId.toString, false, originalCacheMap)
-      result.data mustBe Map(YourMinimumEarningsId.toString -> JsBoolean(false))
+      val result = cascadeUpsert(YourMinimumEarningsId, false, originalCacheMap)
+      result.data mustBe Map(YourMinimumEarningsId.of(false))
     }
 
     "remove you self employed or apprentice and you self employed less than 12 months when minimum earnings is yes" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          AreYouSelfEmployedOrApprenticeId.toString -> JsBoolean(true),
-          YourSelfEmployedId.toString               -> JsBoolean(true)
+      val originalCacheMap = CacheMap.of(
+          AreYouSelfEmployedOrApprenticeId.of(true),
+          YourSelfEmployedId.of(true)
         )
-      )
 
-      val result = cascadeUpsert(YourMinimumEarningsId.toString, true, originalCacheMap)
-      result.data mustBe Map(YourMinimumEarningsId.toString -> JsBoolean(true))
+      val result = cascadeUpsert(YourMinimumEarningsId, true, originalCacheMap)
+      result.data mustBe Map(YourMinimumEarningsId.of(true))
     }
   }
 
   "saving the your partners minimumEarnings" must {
     "remove partners and either of you maximum earnings when partners minimum earnings is no" in {
-      val originalCacheMap = new CacheMap("id", Map(PartnerMaximumEarningsId.toString -> JsBoolean(false)))
+      val originalCacheMap = CacheMap.of(PartnerMaximumEarningsId.of(false))
 
-      val result = cascadeUpsert(PartnerMinimumEarningsId.toString, false, originalCacheMap)
-      result.data mustBe Map(PartnerMinimumEarningsId.toString -> JsBoolean(false))
+      val result = cascadeUpsert(PartnerMinimumEarningsId, false, originalCacheMap)
+      result.data mustBe Map(PartnerMinimumEarningsId.of(false))
     }
 
     "remove your either of you max earnings when both in paid employment  and your minimum earnings is no" in {
-      val originalCacheMap = new CacheMap("id", Map(EitherOfYouMaximumEarningsId.toString -> JsBoolean(true)))
+      val originalCacheMap = CacheMap.of(EitherOfYouMaximumEarningsId.of(true))
 
-      val result = cascadeUpsert(PartnerMinimumEarningsId.toString, false, originalCacheMap)
-      result.data mustBe Map(PartnerMinimumEarningsId.toString -> JsBoolean(false))
+      val result = cascadeUpsert(PartnerMinimumEarningsId, false, originalCacheMap)
+      result.data mustBe Map(PartnerMinimumEarningsId.of(false))
     }
 
     "remove your partners self employed or apprentice and partners self employed less than 12 months when partners minimum earnings is yes" in {
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          PartnerSelfEmployedOrApprenticeId.toString -> JsBoolean(true),
-          PartnerSelfEmployedId.toString             -> JsBoolean(true)
+      val originalCacheMap = CacheMap.of(
+          PartnerSelfEmployedOrApprenticeId.of(true),
+          PartnerSelfEmployedId.of(true)
         )
-      )
 
-      val result = cascadeUpsert(PartnerMinimumEarningsId.toString, true, originalCacheMap)
-      result.data mustBe Map(PartnerMinimumEarningsId.toString -> JsBoolean(true))
+      val result = cascadeUpsert(PartnerMinimumEarningsId, true, originalCacheMap)
+      result.data mustBe Map(PartnerMinimumEarningsId.of(true))
     }
   }
 
   "saving are you self employed or apprentice" must {
     "remove your self employed selection when parent select apprentice" in {
-      val originalCacheMap = new CacheMap("id", Map(YourSelfEmployedId.toString -> JsBoolean(false)))
+      val originalCacheMap = CacheMap.of(YourSelfEmployedId.of(false))
 
       val result = cascadeUpsert(
         AreYouSelfEmployedOrApprenticeId.toString,
-        SelfEmployedOrApprenticeOrNeither.Apprentice.toString,
+        EmploymentStatus.Apprentice.toString,
         originalCacheMap
       )
       result.data mustBe Map(
-        AreYouSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployedOrApprenticeOrNeither.Apprentice.toString)
+        AreYouSelfEmployedOrApprenticeId.of(EmploymentStatus.Apprentice)
       )
     }
 
     "remove your self employed selection when parent select neither" in {
-      val originalCacheMap = new CacheMap("id", Map(YourSelfEmployedId.toString -> JsBoolean(false)))
+      val originalCacheMap = CacheMap.of(YourSelfEmployedId.of(false))
 
       val result = cascadeUpsert(
         AreYouSelfEmployedOrApprenticeId.toString,
-        SelfEmployedOrApprenticeOrNeither.Neither.toString,
+        EmploymentStatus.Neither.toString,
         originalCacheMap
       )
       result.data mustBe Map(
-        AreYouSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployedOrApprenticeOrNeither.Neither.toString)
+        AreYouSelfEmployedOrApprenticeId.of(EmploymentStatus.Neither)
       )
     }
   }
 
   "saving partner self employed or apprentice" must {
     "remove partner self employed selection when partner select apprentice" in {
-      val originalCacheMap = new CacheMap("id", Map(PartnerSelfEmployedId.toString -> JsBoolean(false)))
+      val originalCacheMap = CacheMap.of(PartnerSelfEmployedId.of(false))
 
       val result = cascadeUpsert(
         PartnerSelfEmployedOrApprenticeId.toString,
-        SelfEmployedOrApprenticeOrNeither.Apprentice.toString,
+        EmploymentStatus.Apprentice.toString,
         originalCacheMap
       )
       result.data mustBe Map(
         PartnerSelfEmployedOrApprenticeId.toString -> JsString(
-          SelfEmployedOrApprenticeOrNeither.Apprentice.toString
+          EmploymentStatus.Apprentice.toString
         )
       )
     }
 
     "remove partner self employed selection when partner select neither" in {
-      val originalCacheMap = new CacheMap("id", Map(PartnerSelfEmployedId.toString -> JsBoolean(false)))
+      val originalCacheMap = CacheMap.of(PartnerSelfEmployedId.of(false))
 
       val result = cascadeUpsert(
         PartnerSelfEmployedOrApprenticeId.toString,
-        SelfEmployedOrApprenticeOrNeither.Neither.toString,
+        EmploymentStatus.Neither.toString,
         originalCacheMap
       )
       result.data mustBe Map(
-        PartnerSelfEmployedOrApprenticeId.toString -> JsString(SelfEmployedOrApprenticeOrNeither.Neither.toString)
+        PartnerSelfEmployedOrApprenticeId.of(EmploymentStatus.Neither)
       )
     }
   }
@@ -773,16 +665,13 @@ class MaximumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
   "session management" must {
     "clear all the cache Map data" in {
 
-      val originalCacheMap = new CacheMap(
-        "id",
-        Map(
-          LocationId.toString            -> JsString(Location.England.toString),
-          PartnerSelfEmployedId.toString -> JsBoolean(false)
+      val originalCacheMap = CacheMap.of(
+          LocationId.of(Location.England),
+          PartnerSelfEmployedId.of(false)
         )
-      )
-      val result = cascadeUpsert(SessionDataClearId.toString, "sessionData", originalCacheMap)
+      val result = cascadeUpsert(SessionDataClearId, "sessionData", originalCacheMap)
 
-      result.data mustBe Map(SessionDataClearId.toString -> JsString("sessionData"))
+      result.data mustBe Map(SessionDataClearId.of("sessionData"))
 
     }
   }

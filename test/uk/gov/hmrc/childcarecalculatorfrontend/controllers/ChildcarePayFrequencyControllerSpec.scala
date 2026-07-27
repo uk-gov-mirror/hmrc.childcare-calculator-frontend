@@ -60,7 +60,7 @@ class ChildcarePayFrequencyControllerSpec extends ControllerSpecBase with Option
     view(frontendAppConfig, form, id, name)(fakeRequest, messages).toString
 
   val requiredData: Map[String, JsValue] = Map(
-    WhoHasChildcareCostsId.toString -> Json.toJson(Seq(0, 1)),
+    WhoHasChildcareCostsId.of(Seq(0, 1)),
     AboutYourChildId.toString -> Json.obj(
       "0" -> AboutYourChild("Foo", LocalDate.now),
       "1" -> AboutYourChild("Bar", LocalDate.now)

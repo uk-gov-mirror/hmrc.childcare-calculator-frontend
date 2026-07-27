@@ -83,14 +83,14 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET for a user with a single child when the question has previously been answered" in {
-      val validData       = requiredData(1) + (ChildrenDisabilityBenefitsId.toString -> JsBoolean(true))
+      val validData       = requiredData(1) + (ChildrenDisabilityBenefitsId.of(true))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
       val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) mustBe singleViewAsString(BooleanForm().fill(true))
     }
 
     "populate the view correctly on a GET for a user with multiple children when the question has previously been answered" in {
-      val validData       = requiredData(2) + (ChildrenDisabilityBenefitsId.toString -> JsBoolean(true))
+      val validData       = requiredData(2) + (ChildrenDisabilityBenefitsId.of(true))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
       val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) mustBe viewAsString(BooleanForm().fill(true))
@@ -160,7 +160,7 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a GET if there is no answer for `about your child`" in {
-      val data    = Map(NoOfChildrenId.toString -> JsNumber(1))
+      val data    = Map(NoOfChildrenId.of(1))
       val getData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)))
       val result  = controller(getData).onPageLoad()(fakeRequest)
       status(result) mustBe SEE_OTHER
@@ -168,7 +168,7 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if there is no answer for `about your child`" in {
-      val data        = Map(NoOfChildrenId.toString -> JsNumber(1))
+      val data        = Map(NoOfChildrenId.of(1))
       val getData     = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)))
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
       val result      = controller(getData).onSubmit()(postRequest)

@@ -48,7 +48,7 @@ private[navigation] class MinimumHoursNavigator @Inject() (freeHours: FreeHours)
       routes.ChildAgedTwoController.onPageLoad()
     }
 
-  private def costRoute(answers: UserAnswers): Call = {
+  private def costRoute(answers: UserAnswers): Call =
     if (answers.childcareCosts.contains(YesNoNotYet.No)) {
       if (freeHours.eligibility(answers) == Eligibility.Eligible && answers.location.contains(Location.England)) {
         routes.FreeHoursInfoController.onPageLoad
@@ -64,9 +64,8 @@ private[navigation] class MinimumHoursNavigator @Inject() (freeHours: FreeHours)
     } else {
       routes.ApprovedProviderController.onPageLoad()
     }
-  }
 
-  private def approvedChildCareRoute(answers: UserAnswers): Call = {
+  private def approvedChildCareRoute(answers: UserAnswers): Call =
     if (answers.approvedProvider.contains(YesNoNotSure.No)) {
       if (freeHours.eligibility(answers) == Eligibility.Eligible && answers.location.contains(Location.England)) {
         routes.FreeHoursInfoController.onPageLoad
@@ -86,6 +85,5 @@ private[navigation] class MinimumHoursNavigator @Inject() (freeHours: FreeHours)
         routes.DoYouLiveWithPartnerController.onPageLoad()
       }
     }
-  }
 
 }

@@ -18,60 +18,55 @@ package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
 import play.api.libs.json.*
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{SelfEmployedOrApprenticeOrNeither, YesNoNotSure, YesNoNotYet}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{EmploymentStatus, YesNoNotSure, YesNoNotYet}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
-import uk.gov.hmrc.childcarecalculatorfrontend.{CascadeUpsertBase, SpecBase}
+import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 
 class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
-  lazy val no: String = YesNoNotYet.No.toString
-  lazy val No: String = YesNoNotSure.No.toString
 
   "MinimumHoursCascadeUpsert" when {
 
     "saving a location of northernIreland" must {
       "remove an existing childAgedTwo key and save the location" in {
-        val originalCacheMap = new CacheMap("id", Map(ChildAgedTwoId.toString -> JsBoolean(true)))
+        val originalCacheMap = CacheMap.of((ChildAgedTwoId.of(true)))
 
-        val result = cascadeUpsert(LocationId.toString, "northern-ireland", originalCacheMap)
-        result.data mustBe Map(LocationId.toString -> JsString("northern-ireland"))
+        val result = cascadeUpsert(LocationId, "northern-ireland", originalCacheMap)
+        result.data mustBe Map(LocationId.of("northern-ireland"))
       }
     }
 
     "saving a location of wales" must {
       "remove an existing childAgedTwo key and save the location" in {
-        val originalCacheMap = new CacheMap("id", Map(ChildAgedTwoId.toString -> JsBoolean(true)))
+        val originalCacheMap = CacheMap.of((ChildAgedTwoId.of(true)))
 
-        val result = cascadeUpsert(LocationId.toString, "wales", originalCacheMap)
-        result.data mustBe Map(LocationId.toString -> JsString("wales"))
+        val result = cascadeUpsert(LocationId, "wales", originalCacheMap)
+        result.data mustBe Map(LocationId.of("wales"))
       }
     }
 
     "saving a location of scotland" must {
       "save the location and leave an existing childAgedTwo key in place" in {
-        val originalCacheMap = new CacheMap("id", Map(ChildAgedTwoId.toString -> JsBoolean(true)))
+        val originalCacheMap = CacheMap.of((ChildAgedTwoId.of(true)))
 
-        val result = cascadeUpsert(LocationId.toString, "scotland", originalCacheMap)
+        val result = cascadeUpsert(LocationId, "scotland", originalCacheMap)
         result.data mustBe Map(
-          ChildAgedTwoId.toString -> JsBoolean(true),
-          LocationId.toString     -> JsString("scotland")
+          ChildAgedTwoId.of(true),
+          LocationId.of("scotland")
         )
       }
     }
 
     "saving a location of england" must {
       "save the location and remove existing childAgedTwo and childAgedThreeOrFour answers" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            ChildAgedTwoId.toString         -> JsBoolean(true),
-            ChildAgedThreeOrFourId.toString -> JsBoolean(true)
+        val originalCacheMap = (CacheMap.of(
+            ChildAgedTwoId.of(true),
+            ChildAgedThreeOrFourId.of(true)
           )
         )
 
-        val result = cascadeUpsert(LocationId.toString, "england", originalCacheMap)
+        val result = cascadeUpsert(LocationId, "england", originalCacheMap)
         result.data mustBe Map(
-          LocationId.toString -> JsString("england")
+          LocationId.of("england")
         )
       }
     }
@@ -79,157 +74,145 @@ class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
     "saving childcareCosts with an england location" must {
 
       "save the page data when user access the page first time and selects no" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            LocationId.toString          -> JsString("england"),
+        val originalCacheMap = (CacheMap.of(
+            LocationId.of("england"),
             ChildrenAgeGroupsId.toString -> JsArray(Seq(JsString("threeYears")))
           )
         )
 
-        val result = cascadeUpsert(ChildcareCostsId.toString, no, originalCacheMap)
+        val result = cascadeUpsert(ChildcareCostsId, YesNoNotSure.No.toString, originalCacheMap)
         result.data mustBe Map(
-          ChildcareCostsId.toString    -> JsString(no),
-          LocationId.toString          -> JsString("england"),
+          ChildcareCostsId.of(YesNoNotSure.No),
+          LocationId.of("england"),
           ChildrenAgeGroupsId.toString -> JsArray(Seq(JsString("threeYears")))
         )
       }
 
       "remove all the data for subsequent pages when user changes the selection from yes to no" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            LocationId.toString                             -> JsString("england"),
-            ChildrenAgeGroupsId.toString                    -> JsArray(Seq(JsString("threeYears"))),
-            ChildcareCostsId.toString                       -> JsString(yes),
-            ApprovedProviderId.toString                     -> JsString(yes),
-            DoYouLiveWithPartnerId.toString                 -> JsBoolean(false),
-            WhoIsInPaidEmploymentId.toString                -> JsString(partner),
-            HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-            DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-            WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-            PartnerChildcareVouchersId.toString             -> JsString("yes"),
-            YourPartnersAgeId.toString                      -> JsString("under18"),
-            PartnerMinimumEarningsId.toString               -> JsBoolean(true),
+        val originalCacheMap = (CacheMap.of(
+            LocationId.of("england"),
+            ChildrenAgeGroupsId.toString -> JsArray(Seq(JsString("threeYears"))),
+            ChildcareCostsId.of(YesNoNotSure.Yes),
+            ApprovedProviderId.of(YesNoNotSure.Yes),
+            DoYouLiveWithPartnerId.of(false),
+            WhoIsInPaidEmploymentId.toString -> JsString(partner),
+            HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+            WhatIsYourPartnersTaxCodeId.of("1100L"),
+            PartnerChildcareVouchersId.of("yes"),
+            YourPartnersAgeId.of("under18"),
+            PartnerMinimumEarningsId.of(true),
             PartnerSelfEmployedOrApprenticeId.toString -> JsString(
-              SelfEmployedOrApprenticeOrNeither.SelfEmployed.toString
+              EmploymentStatus.SelfEmployed.toString
             ),
-            PartnerMaximumEarningsId.toString -> JsBoolean(true)
+            PartnerMaximumEarningsId.of(true)
           )
         )
 
-        val result = cascadeUpsert(ChildcareCostsId.toString, no, originalCacheMap)
+        val result = cascadeUpsert(ChildcareCostsId, no, originalCacheMap)
         result.data mustBe Map(
-          LocationId.toString          -> JsString("england"),
+          LocationId.of("england"),
           ChildrenAgeGroupsId.toString -> JsArray(Seq(JsString("threeYears"))),
-          ChildcareCostsId.toString    -> JsString(no)
+          ChildcareCostsId.of(YesNoNotSure.No)
         )
       }
     }
 
     "saving childcareCosts with a non england location" must {
       "save the page data when user access the page first time and selects no" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            LocationId.toString             -> JsString("scotland"),
-            ChildAgedTwoId.toString         -> JsBoolean(false),
-            ChildAgedThreeOrFourId.toString -> JsBoolean(true)
+        val originalCacheMap = (CacheMap.of(
+            LocationId.of("scotland"),
+            ChildAgedTwoId.of(false),
+            ChildAgedThreeOrFourId.of(true)
           )
         )
 
-        val result = cascadeUpsert(ChildcareCostsId.toString, no, originalCacheMap)
+        val result = cascadeUpsert(ChildcareCostsId, YesNoNotSure.No.toString, originalCacheMap)
         result.data mustBe Map(
-          ChildcareCostsId.toString       -> JsString(no),
-          LocationId.toString             -> JsString("scotland"),
-          ChildAgedTwoId.toString         -> JsBoolean(false),
-          ChildAgedThreeOrFourId.toString -> JsBoolean(true)
+          ChildcareCostsId.of(YesNoNotSure.No),
+          LocationId.of("scotland"),
+          ChildAgedTwoId.of(false),
+          ChildAgedThreeOrFourId.of(true)
         )
       }
 
       "remove all the data for subsequent pages when user changes the selection from yes to no" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            LocationId.toString                             -> JsString("scotland"),
-            ChildAgedTwoId.toString                         -> JsBoolean(false),
-            ChildAgedThreeOrFourId.toString                 -> JsBoolean(true),
-            ChildcareCostsId.toString                       -> JsString(yes),
-            ApprovedProviderId.toString                     -> JsString(yes),
-            DoYouLiveWithPartnerId.toString                 -> JsBoolean(false),
-            WhoIsInPaidEmploymentId.toString                -> JsString(partner),
-            HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-            DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-            WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-            PartnerChildcareVouchersId.toString             -> JsString("yes"),
-            YourPartnersAgeId.toString                      -> JsString("under18"),
-            PartnerMinimumEarningsId.toString               -> JsBoolean(true),
+        val originalCacheMap = (CacheMap.of(
+            LocationId.of("scotland"),
+            ChildAgedTwoId.of(false),
+            ChildAgedThreeOrFourId.of(true),
+            ChildcareCostsId.of(YesNoNotSure.Yes),
+            ApprovedProviderId.of(YesNoNotSure.Yes),
+            DoYouLiveWithPartnerId.of(false),
+            WhoIsInPaidEmploymentId.toString -> JsString(partner),
+            HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+            WhatIsYourPartnersTaxCodeId.of("1100L"),
+            PartnerChildcareVouchersId.of("yes"),
+            YourPartnersAgeId.of("under18"),
+            PartnerMinimumEarningsId.of(true),
             PartnerSelfEmployedOrApprenticeId.toString -> JsString(
-              SelfEmployedOrApprenticeOrNeither.SelfEmployed.toString
+              EmploymentStatus.SelfEmployed.toString
             ),
-            PartnerMaximumEarningsId.toString -> JsBoolean(true)
+            PartnerMaximumEarningsId.of(true)
           )
         )
 
-        val result = cascadeUpsert(ChildcareCostsId.toString, no, originalCacheMap)
+        val result = cascadeUpsert(ChildcareCostsId, YesNoNotSure.No.toString, originalCacheMap)
         result.data mustBe Map(
-          LocationId.toString             -> JsString("scotland"),
-          ChildAgedTwoId.toString         -> JsBoolean(false),
-          ChildAgedThreeOrFourId.toString -> JsBoolean(true),
-          ChildcareCostsId.toString       -> JsString(no)
+          LocationId.of("scotland"),
+          ChildAgedTwoId.of(false),
+          ChildAgedThreeOrFourId.of(true),
+          ChildcareCostsId.of(YesNoNotSure.No)
         )
       }
     }
 
     "saving ApprovedProvider with an england location" must {
       "save the page data when user access the page first time and selects no" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            LocationId.toString          -> JsString("england"),
+        val originalCacheMap = (CacheMap.of(
+            LocationId.of("england"),
             ChildrenAgeGroupsId.toString -> JsArray(Seq(JsString("threeYears"))),
-            ChildcareCostsId.toString    -> JsString(yes)
+            ChildcareCostsId.of(YesNoNotSure.Yes)
           )
         )
 
-        val result = cascadeUpsert(ApprovedProviderId.toString, No, originalCacheMap)
+        val result = cascadeUpsert(ApprovedProviderId, No, originalCacheMap)
         result.data mustBe Map(
           ApprovedProviderId.toString  -> JsString(No),
-          LocationId.toString          -> JsString("england"),
+          LocationId.of("england"),
           ChildrenAgeGroupsId.toString -> JsArray(Seq(JsString("threeYears"))),
-          ChildcareCostsId.toString    -> JsString(yes)
+          ChildcareCostsId.of(YesNoNotSure.Yes)
         )
       }
 
       "remove all the data for subsequent pages when user changes the selection from yes to no" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            LocationId.toString                             -> JsString("england"),
-            ChildrenAgeGroupsId.toString                    -> JsArray(Seq(JsString("threeYears"))),
-            ChildcareCostsId.toString                       -> JsString(yes),
-            ApprovedProviderId.toString                     -> JsString(YesNoNotSure.Yes.toString),
-            DoYouLiveWithPartnerId.toString                 -> JsBoolean(false),
-            WhoIsInPaidEmploymentId.toString                -> JsString(partner),
-            HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-            DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-            WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-            PartnerChildcareVouchersId.toString             -> JsString("yes"),
-            YourPartnersAgeId.toString                      -> JsString("under18"),
-            PartnerMinimumEarningsId.toString               -> JsBoolean(true),
+        val originalCacheMap = (CacheMap.of(
+            LocationId.of("england"),
+            ChildrenAgeGroupsId.toString -> JsArray(Seq(JsString("threeYears"))),
+            ChildcareCostsId.of(YesNoNotSure.Yes),
+            ApprovedProviderId.of(YesNoNotSure.Yes),
+            DoYouLiveWithPartnerId.of(false),
+            WhoIsInPaidEmploymentId.toString -> JsString(partner),
+            HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+            WhatIsYourPartnersTaxCodeId.of("1100L"),
+            PartnerChildcareVouchersId.of("yes"),
+            YourPartnersAgeId.of("under18"),
+            PartnerMinimumEarningsId.of(true),
             PartnerSelfEmployedOrApprenticeId.toString -> JsString(
-              SelfEmployedOrApprenticeOrNeither.SelfEmployed.toString
+              EmploymentStatus.SelfEmployed.toString
             ),
-            PartnerMaximumEarningsId.toString -> JsBoolean(true)
+            PartnerMaximumEarningsId.of(true)
           )
         )
 
-        val result = cascadeUpsert(ApprovedProviderId.toString, No, originalCacheMap)
+        val result = cascadeUpsert(ApprovedProviderId, No, originalCacheMap)
         result.data mustBe Map(
-          LocationId.toString          -> JsString("england"),
+          LocationId.of("england"),
           ChildrenAgeGroupsId.toString -> JsArray(Seq(JsString("threeYears"))),
           ApprovedProviderId.toString  -> JsString(No),
-          ChildcareCostsId.toString    -> JsString(yes)
+          ChildcareCostsId.of(YesNoNotSure.Yes)
         )
       }
     }
@@ -237,57 +220,53 @@ class MinimumHoursCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
     "saving ApprovedProvider with a non england location" must {
 
       "save the page data when user access the page first time and selects no" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            LocationId.toString             -> JsString("scotland"),
-            ChildAgedTwoId.toString         -> JsBoolean(false),
-            ChildAgedThreeOrFourId.toString -> JsBoolean(true),
-            ChildcareCostsId.toString       -> JsString(yes)
+        val originalCacheMap = (CacheMap.of(
+            LocationId.of("scotland"),
+            ChildAgedTwoId.of(false),
+            ChildAgedThreeOrFourId.of(true),
+            ChildcareCostsId.of(YesNoNotSure.Yes)
           )
         )
 
-        val result = cascadeUpsert(ApprovedProviderId.toString, No, originalCacheMap)
+        val result = cascadeUpsert(ApprovedProviderId, No, originalCacheMap)
         result.data mustBe Map(
-          ApprovedProviderId.toString     -> JsString(No),
-          LocationId.toString             -> JsString("scotland"),
-          ChildAgedTwoId.toString         -> JsBoolean(false),
-          ChildAgedThreeOrFourId.toString -> JsBoolean(true),
-          ChildcareCostsId.toString       -> JsString(yes)
+          ApprovedProviderId.toString -> JsString(No),
+          LocationId.of("scotland"),
+          ChildAgedTwoId.of(false),
+          ChildAgedThreeOrFourId.of(true),
+          ChildcareCostsId.of(YesNoNotSure.Yes)
         )
       }
 
       "remove all the data for subsequent pages when user changes the selection from yes to no" in {
-        val originalCacheMap = new CacheMap(
-          "id",
-          Map(
-            LocationId.toString                             -> JsString("scotland"),
-            ChildAgedTwoId.toString                         -> JsBoolean(false),
-            ChildAgedThreeOrFourId.toString                 -> JsBoolean(true),
-            ChildcareCostsId.toString                       -> JsString(yes),
-            ApprovedProviderId.toString                     -> JsString(YesNoNotSure.Yes.toString),
-            DoYouLiveWithPartnerId.toString                 -> JsBoolean(false),
-            WhoIsInPaidEmploymentId.toString                -> JsString(partner),
-            HasYourPartnersTaxCodeBeenAdjustedId.toString   -> JsString(yes),
-            DoYouKnowYourPartnersAdjustedTaxCodeId.toString -> JsBoolean(true),
-            WhatIsYourPartnersTaxCodeId.toString            -> JsString("1100L"),
-            PartnerChildcareVouchersId.toString             -> JsString("yes"),
-            YourPartnersAgeId.toString                      -> JsString("under18"),
-            PartnerMinimumEarningsId.toString               -> JsBoolean(true),
+        val originalCacheMap = (CacheMap.of(
+            LocationId.of("scotland"),
+            ChildAgedTwoId.of(false),
+            ChildAgedThreeOrFourId.of(true),
+            ChildcareCostsId.of(YesNoNotSure.Yes),
+            ApprovedProviderId.of(YesNoNotSure.Yes),
+            DoYouLiveWithPartnerId.of(false),
+            WhoIsInPaidEmploymentId.toString -> JsString(partner),
+            HasYourPartnersTaxCodeBeenAdjustedId.of(YesNoNotSure.Yes),
+            DoYouKnowYourPartnersAdjustedTaxCodeId.of(true),
+            WhatIsYourPartnersTaxCodeId.of("1100L"),
+            PartnerChildcareVouchersId.of("yes"),
+            YourPartnersAgeId.of("under18"),
+            PartnerMinimumEarningsId.of(true),
             PartnerSelfEmployedOrApprenticeId.toString -> JsString(
-              SelfEmployedOrApprenticeOrNeither.SelfEmployed.toString
+              EmploymentStatus.SelfEmployed.toString
             ),
-            PartnerMaximumEarningsId.toString -> JsBoolean(true)
+            PartnerMaximumEarningsId.of(true)
           )
         )
 
-        val result = cascadeUpsert(ApprovedProviderId.toString, No, originalCacheMap)
+        val result = cascadeUpsert(ApprovedProviderId, No, originalCacheMap)
         result.data mustBe Map(
-          LocationId.toString             -> JsString("scotland"),
-          ChildAgedTwoId.toString         -> JsBoolean(false),
-          ChildAgedThreeOrFourId.toString -> JsBoolean(true),
-          ApprovedProviderId.toString     -> JsString(No),
-          ChildcareCostsId.toString       -> JsString(yes)
+          LocationId.of("scotland"),
+          ChildAgedTwoId.of(false),
+          ChildAgedThreeOrFourId.of(true),
+          ApprovedProviderId.toString -> JsString(No),
+          ChildcareCostsId.of(YesNoNotSure.Yes)
         )
       }
     }

@@ -52,7 +52,7 @@ class AboutYourChildControllerSpec extends ControllerSpecBase {
     aboutYourChild(frontendAppConfig, form, 0, 1)(fakeRequest, messages).toString
 
   val requiredData: Map[String, JsNumber] = Map(
-    NoOfChildrenId.toString -> JsNumber(1)
+    NoOfChildrenId.of(1)
   )
 
   "AboutYourChild Controller" must {

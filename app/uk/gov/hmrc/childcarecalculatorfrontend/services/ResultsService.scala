@@ -126,7 +126,6 @@ class ResultsService @Inject() (
         case Scheme.TcEligibility  => resultViewModel
         case Scheme.TfcEligibility => resultViewModel.copy(tfc = Some(scheme.amount))
         case Scheme.EscEligibility => resultViewModel.copy(esc = Some(scheme.amount))
-        case _                     => resultViewModel
       }
     } else {
       resultViewModel
@@ -166,13 +165,12 @@ class ResultsService @Inject() (
       case Location.Scotland        => resultViewModel.copy(freeHours = Some(freeHoursForScotland))
       case Location.Wales           => resultViewModel.copy(freeHours = Some(freeHoursForWales))
       case Location.NorthernIreland => resultViewModel.copy(freeHours = Some(freeHoursForNI))
-      case _                        => resultViewModel
     }
 
   private def tfcEligibilityMessage(answers: UserAnswers)(implicit messages: Messages): Option[String] = {
-    lazy val hasEligibileChildren = answers.hasChildEligibleForTfc
-    lazy val youInPaidWork        = answers.areYouInPaidWork.getOrElse(false)
-    lazy val earningsForAge = utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, answers.yourAge)
+    lazy val hasEligibleChildren = answers.hasChildEligibleForTfc
+    lazy val youInPaidWork       = answers.areYouInPaidWork.getOrElse(false)
+    lazy val earningsForAge      = utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, answers.yourAge)
     lazy val youEligibleMinEarnings = answers.yourMinimumEarnings.getOrElse(false)
     lazy val youEligibleMaxEarnings = !answers.yourMaximumEarnings.getOrElse(false)
     lazy val hasPartner             = answers.doYouLiveWithPartner.getOrElse(false)
@@ -203,7 +201,7 @@ class ResultsService @Inject() (
         Some(messages(s"$msgKey.minimumEarning", earningsForAge))
       case _ if !hasPartner && !youEligibleMaxEarnings =>
         Some(messages(s"$msgKey.maximumEarning"))
-      case _ if !hasEligibileChildren =>
+      case _ if !hasEligibleChildren =>
         Some(messages(s"$msgKey.noEligibleChild"))
       case _ => None
     }

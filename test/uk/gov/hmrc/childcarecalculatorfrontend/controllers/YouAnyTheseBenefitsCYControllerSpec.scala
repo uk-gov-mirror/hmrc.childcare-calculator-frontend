@@ -22,7 +22,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{DoYouGetAnyBenefitsId, LocationId, YouAnyTheseBenefitsIdCY}
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{DoYouGetAnyBenefitsId, LocationId, YouAnyTheseBenefitsCYId}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
@@ -36,7 +36,7 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
   def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
 
   val location               = Location.England
-  val cacheMapWithLocation   = new CacheMap("id", Map(LocationId.toString -> JsString(location.toString)))
+  val cacheMapWithLocation   = CacheMap.of((LocationId.of(location)))
   def getDataWithLocationSet = new FakeDataRetrievalAction(Some(cacheMapWithLocation))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDataWithLocationSet) =
@@ -65,7 +65,7 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData =
-        Map(LocationId.toString -> JsString(location.toString), YouAnyTheseBenefitsIdCY.toString -> JsBoolean(true))
+        Map(LocationId.of(location), YouAnyTheseBenefitsCYId.of(true))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
@@ -87,8 +87,8 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
       val location = Location.England
       val carerAllowance = Map(
-        LocationId.toString            -> JsString(location.toString),
-        DoYouGetAnyBenefitsId.toString -> Json.toJson(Seq("CarersAllowance"))
+        LocationId.of(location),
+        DoYouGetAnyBenefitsId.of(Seq("CarersAllowance"))
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, carerAllowance)))
 
@@ -105,8 +105,8 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
         val location = Location.Scotland
         val scottishCarersAllowance = Map(
-          LocationId.toString            -> JsString(location.toString),
-          DoYouGetAnyBenefitsId.toString -> Json.toJson(Seq("CarersAllowance"))
+          LocationId.of(location),
+          DoYouGetAnyBenefitsId.of(Seq("CarersAllowance"))
         )
         val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, scottishCarersAllowance)))
 
@@ -131,8 +131,8 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
       val location = Location.England
       val carerAllowance = Map(
-        LocationId.toString            -> JsString(location.toString),
-        DoYouGetAnyBenefitsId.toString -> Json.toJson(Seq("CarersAllowance"))
+        LocationId.of(location),
+        DoYouGetAnyBenefitsId.of(Seq("CarersAllowance"))
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, carerAllowance)))
 
@@ -147,8 +147,8 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
       val location = Location.Scotland
       val scottishCarersAllowance = Map(
-        LocationId.toString            -> JsString(location.toString),
-        DoYouGetAnyBenefitsId.toString -> Json.toJson(Seq("CarersAllowance"))
+        LocationId.of(location),
+        DoYouGetAnyBenefitsId.of(Seq("CarersAllowance"))
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, scottishCarersAllowance)))
 

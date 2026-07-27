@@ -27,8 +27,8 @@ object Credits extends EnumFormat[Credits] {
 
   override protected val aliases: Map[String, Credits] =
     Map(
-      "uc" -> UniversalCredit,
-      "none" -> None,
+      "uc"   -> UniversalCredit,
+      "none" -> None
     )
 
 }

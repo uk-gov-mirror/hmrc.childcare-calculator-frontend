@@ -51,31 +51,31 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
   "return partner when user lives with partner and the answer to whoIsInPaidEmployment returns 'partner'" in {
     val answers: CacheMap = cacheMap(
-      WhoIsInPaidEmploymentId.toString -> JsString("partner"),
-      DoYouLiveWithPartnerId.toString  -> JsBoolean(true)
+      WhoIsInPaidEmploymentId.of("partner"),
+      DoYouLiveWithPartnerId.of(true)
     )
     helper(answers).isYouPartnerOrBoth(Some("partner")) mustEqual "partner"
   }
 
   "return both when user lives with partner and the answer to whoIsInPaidEmployment returns 'both'" in {
     val answers: CacheMap = cacheMap(
-      WhoIsInPaidEmploymentId.toString -> JsString("both"),
-      DoYouLiveWithPartnerId.toString  -> JsBoolean(true)
+      WhoIsInPaidEmploymentId.of("both"),
+      DoYouLiveWithPartnerId.of(true)
     )
     helper(answers).isYouPartnerOrBoth(Some("both")) mustEqual "both"
   }
 
   "return you when the answer to whoIsInPaidEmployment returns 'you'" in {
     val answers: CacheMap = cacheMap(
-      WhoIsInPaidEmploymentId.toString -> JsString("you"),
-      DoYouLiveWithPartnerId.toString  -> JsBoolean(true)
+      WhoIsInPaidEmploymentId.of("you"),
+      DoYouLiveWithPartnerId.of(true)
     )
     helper(answers).isYouPartnerOrBoth(Some("you")) mustEqual "you"
   }
 
   "return you when user does not live with partner" in {
     val answers: CacheMap = cacheMap(
-      DoYouLiveWithPartnerId.toString -> JsBoolean(false)
+      DoYouLiveWithPartnerId.of(false)
     )
     helper(answers).isYouPartnerOrBoth(Some("you")) mustEqual "you"
   }
@@ -183,12 +183,12 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return false if 1 child that is over 11 and not disabled" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString -> JsNumber(1),
+          NoOfChildrenId.of(1),
           AboutYourChildId.toString -> Json.obj(
             "0" -> Json.toJson(AboutYourChild(foo, ageOfExactly16))
           ),
-          ChildrenDisabilityBenefitsId.toString -> JsBoolean(false),
-          RegisteredBlindId.toString            -> JsBoolean(false)
+          ChildrenDisabilityBenefitsId.of(false),
+          RegisteredBlindId.of(false)
         )
       )
 
@@ -198,14 +198,14 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return false if multiple children over 11 and not disabled" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString -> JsNumber(3),
+          NoOfChildrenId.of(3),
           AboutYourChildId.toString -> Json.obj(
             "0" -> Json.toJson(AboutYourChild(foo, ageOfExactly16)),
             "1" -> Json.toJson(AboutYourChild(bar, ageOf19)),
             "2" -> Json.toJson(AboutYourChild(quux, ageOf16Over))
           ),
-          ChildrenDisabilityBenefitsId.toString -> JsBoolean(false),
-          RegisteredBlindId.toString            -> JsBoolean(false)
+          ChildrenDisabilityBenefitsId.of(false),
+          RegisteredBlindId.of(false)
         )
       )
 
@@ -215,14 +215,14 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return true if there is a disabled child aged 16" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString -> JsNumber(3),
+          NoOfChildrenId.of(3),
           AboutYourChildId.toString -> Json.obj(
             "0" -> Json.toJson(AboutYourChild(foo, ageOfExactly16)),
             "1" -> Json.toJson(AboutYourChild(bar, ageOf19)),
             "2" -> Json.toJson(AboutYourChild(quux, ageOf16Over))
           ),
-          WhichChildrenDisabilityId.toString -> Json.toJson(Seq(0)),
-          WhichChildrenBlindId.toString      -> Json.toJson(Seq(0))
+          WhichChildrenDisabilityId.of(Seq(0)),
+          WhichChildrenBlindId.of(Seq(0))
         )
       )
 
@@ -231,12 +231,12 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
     "return true when number of children is 1 and the child is disabled and 16" in {
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(1),
+        NoOfChildrenId.of(1),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOfUnder16))
         ),
-        ChildrenDisabilityBenefitsId.toString -> JsBoolean(true),
-        RegisteredBlindId.toString            -> JsBoolean(false)
+        ChildrenDisabilityBenefitsId.of(true),
+        RegisteredBlindId.of(false)
       )
 
       val result: Boolean = helper(answers).hasChildEligibleForTfc
@@ -245,12 +245,12 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
     "return false when number of children is 1 and the child is 16 and not disabled" in {
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(1),
+        NoOfChildrenId.of(1),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOfExactly16))
         ),
-        ChildrenDisabilityBenefitsId.toString -> JsBoolean(false),
-        RegisteredBlindId.toString            -> JsBoolean(false)
+        ChildrenDisabilityBenefitsId.of(false),
+        RegisteredBlindId.of(false)
       )
 
       val result: Boolean = helper(answers).hasChildEligibleForTfc
@@ -259,14 +259,14 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
     "return false when the children aged exactly 16 and birthday before 31st of August are disabled" in {
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug)),
           "1" -> Json.toJson(AboutYourChild(bar, ageOfUnder16)),
           "2" -> Json.toJson(AboutYourChild(quux, ageOfUnder16)),
           "3" -> Json.toJson(AboutYourChild("Baz", ageOf16Before31Aug))
         ),
-        WhichChildrenDisabilityId.toString -> Json.toJson(Seq(0, 2, 3))
+        WhichChildrenDisabilityId.of(Seq(0, 2, 3))
       )
 
       val result: Boolean = helper(answers).hasChildEligibleForTfc
@@ -275,12 +275,12 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
     "return true when the children aged exactly 16 and birthday before 31st of August are blind" in {
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug)),
           "1" -> Json.toJson(AboutYourChild("Baz", ageOf16Before31Aug))
         ),
-        WhichChildrenBlindId.toString -> Json.toJson(Seq(0, 2, 3))
+        WhichChildrenBlindId.of(Seq(0, 2, 3))
       )
 
       val result: Boolean = helper(answers).hasChildEligibleForTfc
@@ -289,15 +289,15 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
     "return true when there are children under 11" in {
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug)),
           "1" -> Json.toJson(AboutYourChild(bar, ageOfUnder16)),
           "2" -> Json.toJson(AboutYourChild(quux, ageOfUnder16)),
           "3" -> Json.toJson(AboutYourChild("Baz", ageOf16Before31Aug))
         ),
-        WhichChildrenDisabilityId.toString -> Json.toJson(Seq(1, 2)),
-        WhichChildrenBlindId.toString      -> Json.toJson(Seq(2))
+        WhichChildrenDisabilityId.of(Seq(1, 2)),
+        WhichChildrenBlindId.of(Seq(2))
       )
 
       val result: Boolean = helper(answers).hasChildEligibleForTfc
@@ -306,7 +306,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
     "return false when there are 16 year olds that are not disabled" in {
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug)),
           "1" -> Json.toJson(AboutYourChild("Baz", ageOf16Before31Aug))
@@ -322,15 +322,15 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "returns list with children exactly 16 years with dob before august and blind" in {
 
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug)),
           "1" -> Json.toJson(AboutYourChild(bar, ageOfUnder16)),
           "2" -> Json.toJson(AboutYourChild(quux, ageOfUnder16)),
           "3" -> Json.toJson(AboutYourChild("Baz", ageOf16Before31Aug))
         ),
-        WhichChildrenDisabilityId.toString -> Json.toJson(Seq(1, 2)),
-        WhichChildrenBlindId.toString      -> Json.toJson(Seq(0, 2, 1, 3))
+        WhichChildrenDisabilityId.of(Seq(1, 2)),
+        WhichChildrenBlindId.of(Seq(0, 2, 1, 3))
       )
 
       val result: List[Int] = helper(answers).childrenIdsForAgeExactly16AndDisabled
@@ -340,15 +340,15 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "returns list with children exactly 16 years with dob before august and disable " in {
 
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug)),
           "1" -> Json.toJson(AboutYourChild(bar, ageOfUnder16)),
           "2" -> Json.toJson(AboutYourChild(quux, ageOf16Before31Aug)),
           "3" -> Json.toJson(AboutYourChild("Baz", ageOfUnder16))
         ),
-        WhichChildrenDisabilityId.toString -> Json.toJson(Seq(0, 2, 3)),
-        WhichChildrenBlindId.toString      -> Json.toJson(Seq(1, 3))
+        WhichChildrenDisabilityId.of(Seq(0, 2, 3)),
+        WhichChildrenBlindId.of(Seq(1, 3))
       )
 
       val result: List[Int] = helper(answers).childrenIdsForAgeExactly16AndDisabled
@@ -359,7 +359,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
       val ageOfUnder16 = testDate.minusYears(1)
 
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug)),
           "1" -> Json.toJson(AboutYourChild(bar, ageOfUnder16)),
@@ -375,10 +375,10 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "returns list with single child exactly 16 years with dob before august and disabled" in {
 
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString               -> JsNumber(1),
-        AboutYourChildId.toString             -> Json.obj("0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug))),
-        ChildrenDisabilityBenefitsId.toString -> JsBoolean(true),
-        RegisteredBlindId.toString            -> JsBoolean(false)
+        NoOfChildrenId.of(1),
+        AboutYourChildId.toString -> Json.obj("0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug))),
+        ChildrenDisabilityBenefitsId.of(true),
+        RegisteredBlindId.of(false)
       )
 
       val result: List[Int] = helper(answers).childrenIdsForAgeExactly16AndDisabled
@@ -388,10 +388,10 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "returns list with single child exactly 16 years with dob before august and blind" in {
 
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString               -> JsNumber(1),
-        AboutYourChildId.toString             -> Json.obj("0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug))),
-        ChildrenDisabilityBenefitsId.toString -> JsBoolean(false),
-        RegisteredBlindId.toString            -> JsBoolean(true)
+        NoOfChildrenId.of(1),
+        AboutYourChildId.toString -> Json.obj("0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug))),
+        ChildrenDisabilityBenefitsId.of(false),
+        RegisteredBlindId.of(true)
       )
 
       val result: List[Int] = helper(answers).childrenIdsForAgeExactly16AndDisabled
@@ -401,10 +401,10 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "returns empty list for single child exactly 16 years with dob before august and not blind or disabled" in {
 
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString               -> JsNumber(1),
-        AboutYourChildId.toString             -> Json.obj("0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug))),
-        ChildrenDisabilityBenefitsId.toString -> JsBoolean(false),
-        RegisteredBlindId.toString            -> JsBoolean(false)
+        NoOfChildrenId.of(1),
+        AboutYourChildId.toString -> Json.obj("0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug))),
+        ChildrenDisabilityBenefitsId.of(false),
+        RegisteredBlindId.of(false)
       )
 
       val result: List[Int] = helper(answers).childrenIdsForAgeExactly16AndDisabled
@@ -417,14 +417,14 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return the list of children who are under 16 and exactly 16 with DOB before 31st of august and disable or blind" in {
 
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug)),
           "1" -> Json.toJson(AboutYourChild(bar, ageOfUnder16)),
           "2" -> Json.toJson(AboutYourChild(quux, ageOf16Before31Aug)),
           "3" -> Json.toJson(AboutYourChild("Baz", ageOfUnder16))
         ),
-        WhichChildrenDisabilityId.toString -> Json.toJson(Seq(0, 3))
+        WhichChildrenDisabilityId.of(Seq(0, 3))
       )
 
       val result: List[Int] = helper(answers).childrenBelow16AndExactly16Disabled
@@ -434,14 +434,14 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return empty list when children who are under 16 and exactly 16 with DOB before 31st of august and disable or blind" in {
 
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf16Before31Aug)),
           "1" -> Json.toJson(AboutYourChild(bar, ageOf16Over)),
           "2" -> Json.toJson(AboutYourChild(quux, ageOf16Before31Aug)),
           "3" -> Json.toJson(AboutYourChild("Baz", ageOf16Over))
         ),
-        WhichChildrenBlindId.toString -> Json.toJson(Seq(1, 3))
+        WhichChildrenBlindId.of(Seq(1, 3))
       )
 
       val result: List[Int] = helper(answers).childrenBelow16AndExactly16Disabled
@@ -452,14 +452,14 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
   "childrenBelow16" must {
     "returns list of children id's whose age is less than 16" in {
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf19)),
           "1" -> Json.toJson(AboutYourChild(bar, ageOfUnder16)),
           "2" -> Json.toJson(AboutYourChild(quux, ageOf16Before31Aug)),
           "3" -> Json.toJson(AboutYourChild("Baz", ageOfUnder16))
         ),
-        WhichChildrenDisabilityId.toString -> Json.toJson(Seq(0, 3))
+        WhichChildrenDisabilityId.of(Seq(0, 3))
       )
 
       val result: List[Int] = helper(answers).childrenBelow16
@@ -468,14 +468,14 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
     "returns empty list   when chidren are over or exactly 16" in {
       val answers: CacheMap = cacheMap(
-        NoOfChildrenId.toString -> JsNumber(4),
+        NoOfChildrenId.of(4),
         AboutYourChildId.toString -> Json.obj(
           "0" -> Json.toJson(AboutYourChild(foo, ageOf19)),
           "1" -> Json.toJson(AboutYourChild(bar, ageOf19)),
           "2" -> Json.toJson(AboutYourChild(quux, ageOf16Before31Aug)),
           "3" -> Json.toJson(AboutYourChild("Baz", ageOf16Before31Aug))
         ),
-        WhichChildrenDisabilityId.toString -> Json.toJson(Seq(0, 3))
+        WhichChildrenDisabilityId.of(Seq(0, 3))
       )
 
       val result: List[Int] = helper(answers).childrenBelow16
@@ -488,7 +488,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `Some` if `whichChildrenDisability` is defined" in {
       val answers = helper(
         cacheMap(
-          WhichChildrenDisabilityId.toString -> Json.toJson(Seq(0, 2))
+          WhichChildrenDisabilityId.of(Seq(0, 2))
         )
       )
       answers.childrenWithDisabilityBenefits.value mustEqual Set(0, 2)
@@ -497,8 +497,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `Some` if there is a single child with disability benefits" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString               -> JsNumber(1),
-          ChildrenDisabilityBenefitsId.toString -> JsBoolean(true)
+          NoOfChildrenId.of(1),
+          ChildrenDisabilityBenefitsId.of(true)
         )
       )
       answers.childrenWithDisabilityBenefits.value mustEqual Set(0)
@@ -507,8 +507,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `Some(Set())` if there is a single child without disability benefits" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString               -> JsNumber(1),
-          ChildrenDisabilityBenefitsId.toString -> JsBoolean(false)
+          NoOfChildrenId.of(1),
+          ChildrenDisabilityBenefitsId.of(false)
         )
       )
       answers.childrenWithDisabilityBenefits.value must be(empty)
@@ -517,8 +517,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `Some(Set())` if there are multiple children without disability benefits" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString               -> JsNumber(2),
-          ChildrenDisabilityBenefitsId.toString -> JsBoolean(false)
+          NoOfChildrenId.of(2),
+          ChildrenDisabilityBenefitsId.of(false)
         )
       )
       answers.childrenWithDisabilityBenefits.value must be(empty)
@@ -527,7 +527,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `None` if `noOfChildren` and `whichChildrenDisability` are both undefined" in {
       val answers = helper(
         cacheMap(
-          ChildrenDisabilityBenefitsId.toString -> JsBoolean(true)
+          ChildrenDisabilityBenefitsId.of(true)
         )
       )
       answers.childrenWithDisabilityBenefits mustNot be(defined)
@@ -536,7 +536,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `None` if there is a single child and `childrenDisabilityBenefits` is undefined" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString -> JsNumber(1)
+          NoOfChildrenId.of(1)
         )
       )
       answers.childrenWithDisabilityBenefits mustNot be(defined)
@@ -548,8 +548,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `Some` if there are multiple children and `whoHasChildcareCosts` is defined" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString         -> JsNumber(2),
-          WhoHasChildcareCostsId.toString -> Json.toJson(Seq(JsNumber(0)))
+          NoOfChildrenId.of(2),
+          WhoHasChildcareCostsId.of(Seq(JsNumber(0)))
         )
       )
       answers.childrenWithCosts.value mustEqual Set(0)
@@ -558,8 +558,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `Some` if there is a single child and the `childcareCosts` is `yes`" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString   -> JsNumber(1),
-          ChildcareCostsId.toString -> JsString("yes")
+          NoOfChildrenId.of(1),
+          ChildcareCostsId.of("yes")
         )
       )
       answers.childrenWithCosts.value mustEqual Set(0)
@@ -568,8 +568,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `Some` if there is a single child and the `childcareCosts` is `not yet`" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString   -> JsNumber(1),
-          ChildcareCostsId.toString -> JsString("notYet")
+          NoOfChildrenId.of(1),
+          ChildcareCostsId.of("notYet")
         )
       )
       answers.childrenWithCosts.value mustEqual Set(0)
@@ -578,8 +578,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `Some(Set())` if there is a single child and `childcareCosts` is `no`" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString   -> JsNumber(1),
-          ChildcareCostsId.toString -> JsString("no")
+          NoOfChildrenId.of(1),
+          ChildcareCostsId.of("no")
         )
       )
       answers.childrenWithCosts.value mustEqual Set.empty
@@ -588,7 +588,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `None` if there is a single child and `childcareCosts` is undefined" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString -> JsNumber(1)
+          NoOfChildrenId.of(1)
         )
       )
       answers.childrenWithCosts mustNot be(defined)
@@ -597,7 +597,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `None` if there are multiple children and `whoHasChildcareCosts` is undefined" in {
       val answers = helper(
         cacheMap(
-          NoOfChildrenId.toString -> JsNumber(2)
+          NoOfChildrenId.of(2)
         )
       )
       answers.childrenWithCosts mustNot be(defined)
@@ -628,7 +628,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `false` if a user has no costs" in {
       val answers = helper(
         cacheMap(
-          ChildcareCostsId.toString -> JsString(YesNoNotYet.No.toString)
+          ChildcareCostsId.of(YesNoNotYet.No)
         )
       )
       answers.hasApprovedCosts.value mustEqual false
@@ -638,8 +638,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
       s"return `false` if a user has costs: $costs, but they aren't approved" in
         helper(
           cacheMap(
-            ChildcareCostsId.toString   -> JsString(costs),
-            ApprovedProviderId.toString -> JsString(YesNoNotSure.No.toString)
+            ChildcareCostsId.toString -> JsString(costs),
+            ApprovedProviderId.of(YesNoNotSure.No)
           )
         )
     }
@@ -647,7 +647,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `None` if a user has costs but `approvedProvider` is undefined" in {
       val answers = helper(
         cacheMap(
-          ChildcareCostsId.toString -> JsString(YesNoNotYet.Yes.toString)
+          ChildcareCostsId.of(YesNoNotYet.Yes)
         )
       )
       answers.hasApprovedCosts mustNot be(defined)
@@ -656,7 +656,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return `None` if a user `childcareCosts` is undefined" in {
       val answers = helper(
         cacheMap(
-          ApprovedProviderId.toString -> JsString(YesNoNotSure.Yes.toString)
+          ApprovedProviderId.of(YesNoNotSure.Yes)
         )
       )
       answers.hasApprovedCosts mustNot be(defined)
@@ -665,7 +665,7 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
   "checkVouchersForBoth" must {
     "return false when whoWorks is 'neither'" in {
-      val answers = helper(cacheMap(WhoGetsVouchersId.toString -> JsString("neither")))
+      val answers = helper(cacheMap(WhoGetsVouchersId.of("neither")))
       answers.checkVouchersForBoth mustBe Some(false)
     }
 
@@ -675,12 +675,12 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     }
 
     "return true when whoWorks is 'you'" in {
-      val answers = helper(cacheMap(WhoGetsVouchersId.toString -> JsString("you")))
+      val answers = helper(cacheMap(WhoGetsVouchersId.of("you")))
       answers.checkVouchersForBoth mustBe Some(true)
     }
 
     "return true when whoWorks is 'partner'" in {
-      val answers = helper(cacheMap(WhoGetsVouchersId.toString -> JsString("partner")))
+      val answers = helper(cacheMap(WhoGetsVouchersId.of("partner")))
       answers.checkVouchersForBoth mustBe Some(true)
     }
   }
@@ -688,12 +688,12 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
   "hasVouchers" must {
     "return true" when {
       "'you' receive vouchers" in {
-        val answers = helper(cacheMap(YourChildcareVouchersId.toString -> JsBoolean(true)))
+        val answers = helper(cacheMap(YourChildcareVouchersId.of(true)))
         answers.hasVouchers mustEqual true
       }
 
       "'partner' receives vouchers" in {
-        val answers = helper(cacheMap(PartnerChildcareVouchersId.toString -> JsBoolean(true)))
+        val answers = helper(cacheMap(PartnerChildcareVouchersId.of(true)))
         answers.hasVouchers mustEqual true
       }
 
@@ -715,12 +715,12 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
 
     "return false" when {
       "'you' don't receive vouchers" in {
-        val answers = helper(cacheMap(YourChildcareVouchersId.toString -> JsBoolean(false)))
+        val answers = helper(cacheMap(YourChildcareVouchersId.of(false)))
         answers.hasVouchers mustEqual false
       }
 
       "'partner' doesn't receive vouchers" in {
-        val answers = helper(cacheMap(PartnerChildcareVouchersId.toString -> JsBoolean(false)))
+        val answers = helper(cacheMap(PartnerChildcareVouchersId.of(false)))
         answers.hasVouchers mustEqual false
       }
 
@@ -735,8 +735,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return Some(true) when the location is England and hasVouchers is true" in {
       val answers = helper(
         cacheMap(
-          LocationId.toString                 -> JsString("england"),
-          PartnerChildcareVouchersId.toString -> JsBoolean(true)
+          LocationId.of("england"),
+          PartnerChildcareVouchersId.of(true)
         )
       )
 
@@ -746,8 +746,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return Some(false) when the location is England and hasVouchers is false" in {
       val answers = helper(
         cacheMap(
-          LocationId.toString                 -> JsString("england"),
-          PartnerChildcareVouchersId.toString -> JsBoolean(false)
+          LocationId.of("england"),
+          PartnerChildcareVouchersId.of(false)
         )
       )
 
@@ -757,8 +757,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
     "return None when the location is not England" in {
       val answers = helper(
         cacheMap(
-          LocationId.toString                 -> JsString("scotland"),
-          PartnerChildcareVouchersId.toString -> JsBoolean(true)
+          LocationId.of("scotland"),
+          PartnerChildcareVouchersId.of(true)
         )
       )
 

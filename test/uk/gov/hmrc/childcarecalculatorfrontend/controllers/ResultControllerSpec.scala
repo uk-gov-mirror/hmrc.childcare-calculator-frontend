@@ -45,9 +45,9 @@ class ResultControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   val location = Location.England
 
-  val cacheMapWithLocation = new CacheMap("id", Map(LocationId.toString -> JsString(location.toString)))
+  val cacheMapWithLocation = CacheMap.of((LocationId.of(location)))
 
-  val cacheMapWithNoLocation = new CacheMap("id", Map("test" -> JsString(location.toString)))
+  val cacheMapWithNoLocation = CacheMap.of(("test" -> JsString(location.toString)))
 
   def controller(
       dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap,

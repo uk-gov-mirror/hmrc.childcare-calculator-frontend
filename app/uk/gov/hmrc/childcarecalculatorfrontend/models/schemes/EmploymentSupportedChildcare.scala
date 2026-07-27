@@ -17,7 +17,11 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.models.schemes
 
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Eligibility
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{YesNoNotYet, YouPartnerBothNeither, YouPartnerBothNeitherNotSure}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
+  YesNoNotYet,
+  YouPartnerBothNeither,
+  YouPartnerBothNeitherNotSure
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 
 import javax.inject.{Inject, Singleton}
@@ -45,7 +49,9 @@ class EmploymentSupportedChildcare @Inject() extends Scheme {
         case Some(_) =>
           Eligibility.fromBoolean(
             (hasParentChildcareCosts || childcareCostsNotYet) &&
-              (bothChildcareVouchers.contains(YouPartnerBothNeitherNotSure.Both) || bothChildcareVouchers.contains(YouPartnerBothNeitherNotSure.You) || bothChildcareVouchers
+              (bothChildcareVouchers.contains(YouPartnerBothNeitherNotSure.Both) || bothChildcareVouchers.contains(
+                YouPartnerBothNeitherNotSure.You
+              ) || bothChildcareVouchers
                 .contains(YouPartnerBothNeitherNotSure.Partner))
           )
         case _ => Eligibility.NotEligible

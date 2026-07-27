@@ -111,8 +111,8 @@ class ParentEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "100000")).withMethod("POST")
 
       val validData = Map(
-        YourMaximumEarningsId.toString      -> JsBoolean(false),
-        ParentEmploymentIncomeCYId.toString -> Json.toJson("100000")
+        YourMaximumEarningsId.of(false),
+        ParentEmploymentIncomeCYId.of("100000")
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
@@ -127,8 +127,8 @@ class ParentEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "1000000")).withMethod("POST")
 
       val validData = Map(
-        YourMaximumEarningsId.toString      -> JsBoolean(true),
-        ParentEmploymentIncomeCYId.toString -> Json.toJson("1000000")
+        YourMaximumEarningsId.of(true),
+        ParentEmploymentIncomeCYId.of("1000000")
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))

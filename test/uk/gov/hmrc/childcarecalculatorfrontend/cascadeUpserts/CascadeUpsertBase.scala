@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
+package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
+import uk.gov.hmrc.childcarecalculatorfrontend.helpers.CacheMapOps
 
-case object DoYouKnowYourAdjustedTaxCodeId extends Identifier with CacheKey {
-  override def toString: String = "doYouKnowYourAdjustedTaxCode"
+trait CascadeUpsertBase extends CacheMapOps{
 
-  override type CacheValue = String
+  def cascadeUpsert: CascadeUpsert = new CascadeUpsert(
+    new PensionsCascadeUpsert,
+    new IncomeCascadeUpsert,
+    new BenefitsCascadeUpsert,
+    new MaximumHoursCascadeUpsert,
+    new MinimumHoursCascadeUpsert,
+    new ChildrenCascadeUpsert
+  )
+
+
 }

@@ -64,7 +64,7 @@ class PartnerMinimumEarningsController @Inject() (
             Redirect(routes.YourPartnersAgeController.onPageLoad())
           case Some(yourPartnersAge) =>
             val earningsForAge =
-              utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, request.userAnswers.yourPartnersAge)
+              utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, Some(yourPartnersAge))
 
             val preparedForm = request.userAnswers.partnerMinimumEarnings match {
               case None        => BooleanForm(partnerMinimumEarningsErrorKey, earningsForAge)
