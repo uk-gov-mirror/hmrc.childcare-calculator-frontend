@@ -20,9 +20,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class HowMuchPartnerPayPensionFormSpec extends FormSpec {
 
-  val missingErrorKey      = howMuchPartnerPayPensionRequiredErrorKey
-  val invalidValueErrorKey = howMuchPartnerPayPensionInvalidErrorKey
-
   "HowMuchPartnerPayPension Form" must {
 
     "bind positive numbers" in {
