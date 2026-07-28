@@ -27,7 +27,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.doYouGetAnyBenefits
 class DoYouGetAnyBenefitsViewSpec extends NewViewBehaviours with NewCheckboxViewBehaviours[ParentsBenefit] {
 
   override val form    = DoYouGetAnyBenefitsForm()
-  val testView         = application.injector.instanceOf[doYouGetAnyBenefits]
+  val testView         = inject[doYouGetAnyBenefits]
   val messageKeyPrefix = "doYouGetAnyBenefits"
   val fieldKey: String = DoYouGetAnyBenefitsForm.formId
   val errorMessage     = s"$messageKeyPrefix.error.select"

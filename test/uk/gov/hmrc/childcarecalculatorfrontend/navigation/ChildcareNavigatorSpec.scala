@@ -19,7 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.navigation
 import org.mockito.Mockito.*
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{JsBoolean, JsNumber, JsValue, Json}
+import play.api.libs.json.JsValue
 import uk.gov.hmrc.childcarecalculatorfrontend.DataGenerator.{
   ageExactly15Relative,
   ageOf16WithBirthdayBefore31stAugust,
@@ -53,12 +53,12 @@ class ChildcareNavigatorSpec extends SpecBase with OptionValues with MockitoSuga
 
   private def userAnswersOverride(data: (String, JsValue)*)(newDate: LocalDate): UserAnswers =
     new UserAnswers(CacheMap("", data.toMap)) {
-      override def now = newDate
+      override def now: LocalDate = newDate
     }
 
   private def aboutYourChildren(children: (String, LocalDate)*): (String, JsValue) =
-    AboutYourChildId.of(children.zipWithIndex.map { case ((name, dateOfBirth), i) =>
-      i.toString -> Json.toJson(AboutYourChild(name, dateOfBirth))
+    AboutYourChildId.of(children.zipWithIndex.map { case ((name, dateOfBirth), index) =>
+      index -> AboutYourChild(name, dateOfBirth)
     }.toMap)
 
   "Number of children" must {
@@ -186,7 +186,7 @@ class ChildcareNavigatorSpec extends SpecBase with OptionValues with MockitoSuga
     Seq(0, 2).foreach { id =>
       s"redirect to `WhichDisabilityBenefits` for the first appropriate child, for id: $id" in {
         val answers: UserAnswers = userAnswers(
-          WhichChildrenDisabilityId.of(Seq(id))
+          WhichChildrenDisabilityId.of(Set(id))
         )
         val result = navigator.nextPage(WhichChildrenDisabilityId).value(answers)
         result mustEqual routes.WhichDisabilityBenefitsController.onPageLoad(id)
@@ -203,7 +203,7 @@ class ChildcareNavigatorSpec extends SpecBase with OptionValues with MockitoSuga
 
     "redirect to `Which disability benefits` for the next applicable child, if this is not the last child" in {
       val answers: UserAnswers = userAnswers(
-        WhichChildrenDisabilityId.of(Seq(0, 2))
+        WhichChildrenDisabilityId.of(Set(0, 2))
       )
       val result = navigator.nextPage(WhichDisabilityBenefitsId(0)).value(answers)
       result mustEqual routes.WhichDisabilityBenefitsController.onPageLoad(2)
@@ -211,7 +211,7 @@ class ChildcareNavigatorSpec extends SpecBase with OptionValues with MockitoSuga
 
     "redirect to `Any children blind` when this is the last applicable child" in {
       val answers: UserAnswers = userAnswers(
-        WhichChildrenDisabilityId.of(Seq(0, 2))
+        WhichChildrenDisabilityId.of(Set(0, 2))
       )
       val result = navigator.nextPage(WhichDisabilityBenefitsId(2)).value(answers)
       result mustEqual routes.RegisteredBlindController.onPageLoad()

@@ -17,7 +17,8 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, JsNumber, JsValue, Json}
+import play.api.libs.json.JsValue
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
@@ -36,13 +37,12 @@ import java.time.LocalDate
 
 class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
 
-  val view1       = application.injector.instanceOf[childDisabilityBenefits]
-  val view2       = application.injector.instanceOf[childrenDisabilityBenefits]
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  val view1: childDisabilityBenefits    = inject[childDisabilityBenefits]
+  val view2: childrenDisabilityBenefits = inject[childrenDisabilityBenefits]
+  def onwardRoute: Call                 = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new ChildrenDisabilityBenefitsController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -53,20 +53,20 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
     )
 
   def singleViewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view1(frontendAppConfig, form, "Foo")(fakeRequest, messages).toString
+    view1(form, "Foo")(fakeRequest, messages).toString
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view2(frontendAppConfig, form)(fakeRequest, messages).toString
+    view2(form)(fakeRequest, messages).toString
 
-  def requiredData(number: Int): Map[String, JsValue] = Map(
-    NoOfChildrenId.toString -> JsNumber(number),
-    AboutYourChildId.toString -> Json.obj(
-      "0" -> Json.toJson(AboutYourChild("Foo", LocalDate.now))
+  def requiredData(noOfChildren: Int): Map[String, JsValue] = Map(
+    NoOfChildrenId.of(noOfChildren),
+    AboutYourChildId.of(
+      Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 7, 27)))
     )
   )
 
-  def getRequiredData(number: Int = 1) =
-    new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, requiredData(number))))
+  def getRequiredData(noOfChildren: Int = 1) =
+    new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, requiredData(noOfChildren))))
 
   "ChildrenDisabilityBenefits Controller" must {
 
@@ -83,14 +83,14 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET for a user with a single child when the question has previously been answered" in {
-      val validData       = requiredData(1) + (ChildrenDisabilityBenefitsId.of(true))
+      val validData       = requiredData(1) + ChildrenDisabilityBenefitsId.of(true)
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
       val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) mustBe singleViewAsString(BooleanForm().fill(true))
     }
 
     "populate the view correctly on a GET for a user with multiple children when the question has previously been answered" in {
-      val validData       = requiredData(2) + (ChildrenDisabilityBenefitsId.of(true))
+      val validData       = requiredData(2) + ChildrenDisabilityBenefitsId.of(true)
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
       val result          = controller(getRelevantData).onPageLoad()(fakeRequest)
       contentAsString(result) mustBe viewAsString(BooleanForm().fill(true))
@@ -136,8 +136,8 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired for a GET if there is no answer for `number of children`" in {
       val data = Map(
-        AboutYourChildId.toString -> Json.obj(
-          "0" -> Json.toJson(AboutYourChild("Foo", LocalDate.now))
+        AboutYourChildId.of(
+          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 27, 7)))
         )
       )
       val getData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)))
@@ -148,8 +148,8 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
 
     "redirect to Session Expired for a POST if there is no answer for `number of children`" in {
       val data = Map(
-        AboutYourChildId.toString -> Json.obj(
-          "0" -> Json.toJson(AboutYourChild("Foo", LocalDate.now))
+        AboutYourChildId.of(
+          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 27, 7)))
         )
       )
       val getData     = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)))

@@ -22,11 +22,12 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
 import play.api.mvc.Request
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.connectors.EligibilityConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.mappings.UserAnswerToHousehold
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.SchemeSpec
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers, Utils}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
@@ -35,15 +36,14 @@ import scala.concurrent.{ExecutionContext, Future}
 class EligibilityServiceSpec extends SchemeSpec with MockitoSugar with ScalaFutures {
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers*)))
-  val frontendAppConfig: FrontendAppConfig                  = mock[FrontendAppConfig]
-  val utils: Utils                                          = mock[Utils]
+  val userAnswerToHousehold: UserAnswerToHousehold          = mock[UserAnswerToHousehold]
   val connector: EligibilityConnector                       = mock[EligibilityConnector]
   implicit val hc: HeaderCarrier                            = HeaderCarrier()
   implicit val ec: ExecutionContext                         = ExecutionContext.global
-  implicit val req: Request[?]                              = mock[Request[_]]
+  implicit val req: Request[?]                              = mock[Request[?]]
 
-  def eligibilityService: EligibilityService = new EligibilityService(frontendAppConfig, utils, connector)
-  val todaysDate: LocalDate                  = LocalDate.now()
+  def eligibilityService: EligibilityService = new EligibilityService(userAnswerToHousehold, connector)
+  val today: LocalDate                       = LocalDate.now
 
   "EligibilityService" should {
 

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.models.BenefitsIncomeCY
 
@@ -26,7 +27,7 @@ class BenefitsIncomeCYFormSpec extends FormBehaviours {
     "partnerBenefitsIncome" -> "2"
   )
 
-  val form = BenefitsIncomeCYForm()
+  val form: Form[BenefitsIncomeCY] = BenefitsIncomeCYForm()
 
   "BenefitsIncomeCY form" must {
     behave.like(questionForm(BenefitsIncomeCY(1, 2)))

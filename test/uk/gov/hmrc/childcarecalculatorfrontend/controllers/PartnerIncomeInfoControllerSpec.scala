@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
-import play.api.libs.json.{JsBoolean, JsString}
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{
@@ -25,20 +25,19 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{
   FakeDataRetrievalAction
 }
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YouPartnerBoth
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBothNeither
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerIncomeInfo
 
 class PartnerIncomeInfoControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[partnerIncomeInfo]
-  val taxYearInfo = new TaxYearInfo
+  val view: partnerIncomeInfo = inject[partnerIncomeInfo]
+  val taxYearInfo             = new TaxYearInfo
 
-  def onwardRoute = routes.PartnerPaidWorkCYController.onPageLoad()
+  def onwardRoute: Call = routes.PartnerPaidWorkCYController.onPageLoad()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new PartnerIncomeInfoController(
-      frontendAppConfig,
       mcc,
       dataRetrievalAction,
       new FakeNavigator(onwardRoute),
@@ -52,7 +51,7 @@ class PartnerIncomeInfoControllerSpec extends ControllerSpecBase {
 
       val validData = Map(
         DoYouLiveWithPartnerId.of(true),
-        WhoIsInPaidEmploymentId.of(YouPartnerBoth.You)
+        WhoIsInPaidEmploymentId.of(YouPartnerBothNeither.You)
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
@@ -60,7 +59,7 @@ class PartnerIncomeInfoControllerSpec extends ControllerSpecBase {
       val result = controller(getRelevantData).onPageLoad(fakeRequest)
       status(result) mustBe OK
       contentAsString(result) mustBe
-        view(frontendAppConfig, routes.PartnerPaidWorkCYController.onPageLoad(), taxYearInfo)(
+        view(routes.PartnerPaidWorkCYController.onPageLoad(), taxYearInfo)(
           fakeRequest,
           messages
         ).toString

@@ -64,7 +64,7 @@ class WhoHasChildcareCostsController @Inject() (
       WhoHasChildcareCostsForm(values.values.toSeq*)
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[?]) =>
+          (formWithErrors: Form[Set[Int]]) =>
             Future.successful(
               BadRequest(
                 whoHasChildcareCosts(formWithErrors, options(values, childrenUnderSixteen).toSeq)
@@ -78,8 +78,8 @@ class WhoHasChildcareCostsController @Inject() (
     }
   }
 
-  private def options(values: Map[String, Int], childrenUnder16: Seq[Int]): Map[String, String] =
-    values.filter(c => childrenUnder16.contains(c._2)).map { case (k, v) => (k, v.toString) }
+  private def options(values: Map[String, Int], childrenUnder16: Seq[Int]): Map[String, Int] =
+    values.filter(c => childrenUnder16.contains(c._2)).map { case (k, v) => (k, v) }
 
   private def withValues[A](
       block: Map[String, Int] => Future[Result]

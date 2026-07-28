@@ -125,7 +125,7 @@ class ChildrenCascadeUpsert @Inject() {
       value: JsValue,
       cacheMap: CacheMap,
       parentKey: String,
-      elementToDeleteKey: CacheKey
+      elementToDeleteKey: CacheKey[?]
   ): CacheMap =
     value
       .validate[Set[Int]]

@@ -23,16 +23,18 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{Location, SchemeResults}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.SchemeResults
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.Claimant
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class EligiblityConnectorSpec extends PlaySpec with MockitoSugar with ScalaFutures {
-  val mockHttp                              = mock[HttpClientV2]
+  val mockHttp: HttpClientV2 = mock[HttpClientV2]
   val frontendAppConfig: FrontendAppConfig  = mock[FrontendAppConfig]
   implicit val request: Request[AnyContent] = FakeRequest()
   implicit val hc: HeaderCarrier            = HeaderCarrier()

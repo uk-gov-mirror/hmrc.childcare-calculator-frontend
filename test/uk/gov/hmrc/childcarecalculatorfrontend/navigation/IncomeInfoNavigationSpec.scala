@@ -23,7 +23,7 @@ import play.api.libs.json.JsValue
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.PartnerIncomeInfoId
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBothNeither
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers, Utils}
 
 class IncomeInfoNavigationSpec extends SpecBase with MockitoSugar with OptionValues {
@@ -40,16 +40,16 @@ class IncomeInfoNavigationSpec extends SpecBase with MockitoSugar with OptionVal
         "return  PartnerPaidWorkCY page when parent in paid work and lives with partner" in {
           val answers = spy(userAnswers())
           when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-          when(answers.whoIsInPaidEmployment).thenReturn(Some(you))
+          when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.You))
 
           navigator.nextPage(PartnerIncomeInfoId).value(answers) mustBe
             routes.PartnerPaidWorkCYController.onPageLoad()
         }
 
-        "return ParentPaidWorkCY page when partner in paid work and lives with partneBothOtherIncomeThisYearIdr" in {
+        "return ParentPaidWorkCY page when partner in paid work and lives with partner" in {
           val answers = spy(userAnswers())
           when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-          when(answers.whoIsInPaidEmployment).thenReturn(Some(partner))
+          when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Partner))
 
           navigator.nextPage(PartnerIncomeInfoId).value(answers) mustBe
             routes.ParentPaidWorkCYController.onPageLoad()
@@ -58,7 +58,7 @@ class IncomeInfoNavigationSpec extends SpecBase with MockitoSugar with OptionVal
         "return EmploymentIncomeCY page when both in paid work and lives with partner" in {
           val answers = spy(userAnswers())
           when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-          when(answers.whoIsInPaidEmployment).thenReturn(Some(both))
+          when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
 
           navigator.nextPage(PartnerIncomeInfoId).value(answers) mustBe
             routes.EmploymentIncomeCYController.onPageLoad()

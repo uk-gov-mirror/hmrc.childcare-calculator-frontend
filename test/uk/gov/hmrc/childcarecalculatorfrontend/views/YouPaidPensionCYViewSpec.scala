@@ -25,7 +25,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.youPaidPensionCY
 
 class YouPaidPensionCYViewSpec extends NewYesNoViewBehaviours {
 
-  val view             = application.injector.instanceOf[youPaidPensionCY]
+  val view             = inject[youPaidPensionCY]
   val taxYearInfo      = new TaxYearInfo
   override val form    = BooleanForm()
   val messageKeyPrefix = "YouPaidPensionCY"

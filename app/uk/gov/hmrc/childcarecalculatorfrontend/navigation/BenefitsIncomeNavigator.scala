@@ -23,6 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBoth
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
 
 import javax.inject.{Inject, Singleton}
+import scala.annotation.unused
 
 /** Contains the navigation for current and previous year benefits pages
   */
@@ -66,7 +67,7 @@ private[navigation] class BenefitsIncomeNavigator @Inject() (utils: Utils) exten
     case false => routes.YourOtherIncomeThisYearController.onPageLoad()
   }
 
-  private def partnerBenefitsIncomeRouteCY(_answers: UserAnswers) =
+  private def partnerBenefitsIncomeRouteCY(@unused answers: UserAnswers) =
     routes.BothOtherIncomeThisYearController.onPageLoad()
 
   private def bothBenefitsIncomeRouteCY(answers: UserAnswers) =

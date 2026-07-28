@@ -24,7 +24,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.forms.YouBenefitsIncomeCYForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.YouBenefitsIncomeCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.parentBenefitsIncomeCYRequiredErrorKey
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.youBenefitsIncomeCY
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -53,7 +52,7 @@ class YouBenefitsIncomeCYController @Inject() (
   }
 
   def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
-    YouBenefitsIncomeCYForm(parentBenefitsIncomeCYRequiredErrorKey)
+    YouBenefitsIncomeCYForm()
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[BigDecimal]) => Future.successful(BadRequest(youBenefitsIncomeCY(formWithErrors))),

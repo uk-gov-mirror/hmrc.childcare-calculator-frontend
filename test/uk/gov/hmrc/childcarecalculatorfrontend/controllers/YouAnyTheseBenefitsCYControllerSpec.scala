@@ -17,13 +17,14 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, JsString, Json}
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{DoYouGetAnyBenefitsId, LocationId, YouAnyTheseBenefitsCYId}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
@@ -31,17 +32,16 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.youAnyTheseBenefitsCY
 
 class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[youAnyTheseBenefitsCY]
+  val view: youAnyTheseBenefitsCY = inject[youAnyTheseBenefitsCY]
   val taxYearInfo = new TaxYearInfo
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
-  val location               = Location.England
-  val cacheMapWithLocation   = CacheMap.of((LocationId.of(location)))
+  val location: Location = Location.England
+  val cacheMapWithLocation: CacheMap = CacheMap.of(LocationId.of(location))
   def getDataWithLocationSet = new FakeDataRetrievalAction(Some(cacheMapWithLocation))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDataWithLocationSet) =
     new YouAnyTheseBenefitsCYController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -51,8 +51,8 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[Boolean] = BooleanForm()) =
-    view(frontendAppConfig, form, taxYearInfo, location)(fakeRequest, messages).toString
+  def viewAsString(form: Form[Boolean] = BooleanForm()): String =
+    view(form, taxYearInfo, location)(fakeRequest, messages).toString
 
   "YouAnyTheseBenefits Controller" must {
 
@@ -82,13 +82,13 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "return a Bad Request and errors when parent answered they get carers allowance and on current page they select 'No' for non scottish users" in {
+    "return a Bad Request and errors when parent answered they get carers allowance and on current page they select 'No' for non Scottish users" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
       val location = Location.England
       val carerAllowance = Map(
         LocationId.of(location),
-        DoYouGetAnyBenefitsId.of(Seq("CarersAllowance"))
+        DoYouGetAnyBenefitsId.of(Set(ParentsBenefit.CarersAllowance))
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, carerAllowance)))
 
@@ -99,14 +99,14 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when parent answered they get either carer’s allowance or carer support payment and " +
-      "on current page they select 'No' for scottish users" in {
+      "on current page they select 'No' for Scottish users" in {
 
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
         val location = Location.Scotland
         val scottishCarersAllowance = Map(
           LocationId.of(location),
-          DoYouGetAnyBenefitsId.of(Seq("CarersAllowance"))
+          DoYouGetAnyBenefitsId.of(Set(ParentsBenefit.CarersAllowance))
         )
         val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, scottishCarersAllowance)))
 
@@ -126,13 +126,13 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(boundForm)
     }
 
-    "redirect to next page when parent answered they get carers allowance and they select 'Yes' for non scottish users" in {
+    "redirect to next page when parent answered they get carers allowance and they select 'Yes' for non Scottish users" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
 
       val location = Location.England
       val carerAllowance = Map(
         LocationId.of(location),
-        DoYouGetAnyBenefitsId.of(Seq("CarersAllowance"))
+        DoYouGetAnyBenefitsId.of(Set(ParentsBenefit.CarersAllowance))
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, carerAllowance)))
 
@@ -142,13 +142,13 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "redirect to next page when parent answered they get either carer’s allowance or carer support payment and they select 'Yes' for scottish users" in {
+    "redirect to next page when parent answered they get either carer’s allowance or carer support payment and they select 'Yes' for Scottish users" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
 
       val location = Location.Scotland
       val scottishCarersAllowance = Map(
         LocationId.of(location),
-        DoYouGetAnyBenefitsId.of(Seq("CarersAllowance"))
+        DoYouGetAnyBenefitsId.of(Set(ParentsBenefit.CarersAllowance))
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, scottishCarersAllowance)))
 

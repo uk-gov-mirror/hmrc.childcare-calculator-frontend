@@ -23,6 +23,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Request
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
+import uk.gov.hmrc.childcarecalculatorfrontend.helpers.CacheMapOps
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.OptionalDataRequest
 import uk.gov.hmrc.http.SessionKeys
@@ -30,7 +31,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with RecoverMethods {
+class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with RecoverMethods with CacheMapOps {
 
   class Harness(dataCacheService: DataCacheService)
       extends DataRetrievalActionImpl(dataCacheService, mcc, frontendAppConfig) {
@@ -42,7 +43,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
     "there is no data in the cache" must {
       "set userAnswers to 'None' in the request" in {
         val dataCacheConnector = mock[DataCacheService]
-        when(dataCacheConnector.fetch(ArgumentMatchers.any())).thenReturn(Future(None))
+        when(dataCacheConnector.fetch()(using ArgumentMatchers.any())).thenReturn(Future(None))
         val action = new Harness(dataCacheConnector)
 
         val futureResult = action.callTransform(fakeRequest.withSession(SessionKeys.sessionId -> "id"))
@@ -54,7 +55,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
     "there is data in the cache" must {
       "build a userAnswers object and add it to the request" in {
         val dataCacheConnector = mock[DataCacheService]
-        when(dataCacheConnector.fetch(ArgumentMatchers.any())).thenReturn(Future(Some(CacheMap.of(()))))
+        when(dataCacheConnector.fetch()(using ArgumentMatchers.any())).thenReturn(Future(Some(CacheMap.empty)))
         val action = new Harness(dataCacheConnector)
 
         val futureResult = action.callTransform(fakeRequest.withSession(SessionKeys.sessionId -> "id"))

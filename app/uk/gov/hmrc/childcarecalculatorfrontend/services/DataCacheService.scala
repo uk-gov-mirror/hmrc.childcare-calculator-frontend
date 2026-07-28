@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.services
 
 import com.google.inject.{ImplementedBy, Inject}
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json.{Format, Json, Reads, Writes}
 import uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts.CascadeUpsert
 import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.SessionIdProvider
 import uk.gov.hmrc.childcarecalculatorfrontend.repositories.SessionRepository
@@ -29,11 +29,11 @@ class DataCacheServiceImpl @Inject() (val sessionRepository: SessionRepository, 
     implicit ec: ExecutionContext
 ) extends DataCacheService {
 
-  def save(
-      cacheKey: CacheKey,
-      value: cacheKey.CacheValue
+  def save[A](
+      cacheKey: CacheKey[A],
+      value: A,
   )(
-      using writes: Writes[cacheKey.CacheValue],
+      using writes: Writes[A],
       request: SessionIdProvider
   ): Future[CacheMap] = {
     val cacheId = request.sessionId
@@ -45,33 +45,23 @@ class DataCacheServiceImpl @Inject() (val sessionRepository: SessionRepository, 
     }
   }
 
-  def remove(key: CacheKey)(using request: SessionIdProvider): Future[Boolean] =
-    sessionRepository().get(request.sessionId).flatMap { optionalCacheMap =>
-      optionalCacheMap.fold(Future(false)) { cacheMap =>
-        val newCacheMap = cacheMap.removed(key)
-        sessionRepository().upsert(newCacheMap)
-      }
-    }
-
   def fetch()(using request: SessionIdProvider): Future[Option[CacheMap]] =
     sessionRepository().get(request.sessionId)
 
-  def getEntry(
-      key: CacheKey
-  )(implicit reads: Reads[key.CacheValue], request: SessionIdProvider): Future[Option[key.CacheValue]] =
+  def getEntry[A](
+      key: CacheKey[A]
+  )(implicit reads: Reads[A], request: SessionIdProvider): Future[Option[A]] =
     fetch().map(optionalCacheMap => optionalCacheMap.flatMap(cacheMap => cacheMap.getEntry(key)))
 
-  def saveInMap[K, V](cacheKey: CacheKey, key: K, value: V)(
-      implicit fmt: Writes[Map[K, V]],
-      reads: Reads[cacheKey.CacheValue],
+  def saveInMap[K, V](cacheKey: CacheKey[Map[K, V]], key: K, value: V)(
+      implicit fmt: Format[Map[K, V]],
       request: SessionIdProvider,
-      ev: cacheKey.CacheValue =:= Map[K, V]
   ): Future[CacheMap] = {
     val cacheId = request.sessionId
 
     sessionRepository().get(cacheId).flatMap {
       _.map { cacheMap =>
-        val map: Map[K, V]  = cacheMap.getEntry(cacheKey).asInstanceOf[Option[Map[K, V]]].getOrElse(Map.empty)
+        val map: Map[K, V]  = cacheMap.getEntry(cacheKey).getOrElse(Map.empty)
         val updatedMap      = map + (key -> value)
         val updatedCacheMap = cacheMap.copy(data = cacheMap.data + (cacheKey.cacheKey -> Json.toJson(updatedMap)))
         sessionRepository().upsert(updatedCacheMap).map(_ => updatedCacheMap)
@@ -79,38 +69,29 @@ class DataCacheServiceImpl @Inject() (val sessionRepository: SessionRepository, 
     }
   }
 
-  def updateMap(data: CacheMap): Future[Boolean] =
-    sessionRepository().upsert(data)
-
 }
 
 @ImplementedBy(classOf[DataCacheServiceImpl])
 trait DataCacheService {
 
-  def save(key: CacheKey, value: key.CacheValue)(
-      using Writes[key.CacheValue],
+  def save[A](key: CacheKey[A], value: A)(
+      using Writes[A],
       SessionIdProvider
   ): Future[CacheMap]
 
-  def updateMap(data: CacheMap): Future[Boolean]
-
-  def remove(key: CacheKey)(using SessionIdProvider): Future[Boolean]
-
   def fetch()(using SessionIdProvider): Future[Option[CacheMap]]
 
-  def getEntry(
-      key: CacheKey
-  )(using Reads[key.CacheValue], SessionIdProvider): Future[Option[key.CacheValue]]
+  def getEntry[A](
+      key: CacheKey[A]
+  )(using Reads[A], SessionIdProvider): Future[Option[A]]
 
   def saveInMap[K, V](
-      cacheKey: CacheKey,
+      cacheKey: CacheKey[Map[K, V]],
       key: K,
       value: V
   )(
-      using Writes[Map[K, V]],
-      Reads[cacheKey.CacheValue],
+      using Format[Map[K, V]],
       SessionIdProvider,
-      cacheKey.CacheValue =:= Map[K, V]
   ): Future[CacheMap]
 
 }

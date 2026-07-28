@@ -17,11 +17,11 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours
 
 import uk.gov.hmrc.childcarecalculatorfrontend.views.NewViewSpecBase
-import play.twirl.api.HtmlFormat
+import play.twirl.api.Html
 
 trait NewViewBehaviours extends NewViewSpecBase {
 
-  def normalPage(view: () => HtmlFormat.Appendable, messageKeyPrefix: String, expectedGuidanceKeys: String*): Unit =
+  def normalPage(view: () => Html, messageKeyPrefix: String, expectedGuidanceKeys: String*): Unit =
 
     "behave like a normal page" when {
       "rendered" must {
@@ -64,7 +64,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
     }
 
   def normalPageWithCurrencySymbol(
-      view: () => HtmlFormat.Appendable,
+      view: () => Html,
       messageKeyPrefix: String,
       expectedGuidanceKeys: String*
   ): Unit = {
@@ -83,7 +83,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
   }
 
   def normalPageWithTitleAsString(
-      view: () => HtmlFormat.Appendable,
+      view: () => Html,
       messageKeyPrefix: String,
       messageKeyPostfix: String,
       title: String,
@@ -129,7 +129,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
     }
 
   def normalPageWithTitleParameters(
-      view: () => HtmlFormat.Appendable,
+      view: () => Html,
       messageKeyPrefix: String,
       messageKeyPostfix: String,
       expectedGuidanceKeys: Seq[String],
@@ -177,7 +177,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
       }
     }
 
-  def pageWithBackLink(view: () => HtmlFormat.Appendable): Unit =
+  def pageWithBackLink(view: () => Html): Unit =
 
     "behave like a page with a back link" must {
       "have a back link" in {
@@ -186,7 +186,7 @@ trait NewViewBehaviours extends NewViewSpecBase {
       }
     }
 
-  def resultPage(view: () => HtmlFormat.Appendable): Unit =
+  def resultPage(view: () => Html): Unit =
     "behave like a result page" when {
       "rendered" must {
         "have a link to feedback survey" in {

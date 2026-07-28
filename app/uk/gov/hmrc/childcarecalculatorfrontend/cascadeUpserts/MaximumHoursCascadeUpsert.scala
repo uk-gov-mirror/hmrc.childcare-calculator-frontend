@@ -202,7 +202,7 @@ class MaximumHoursCascadeUpsert @Inject() {
             OtherIncomeAmountCYId,
             BothAnyTheseBenefitsCYId,
             WhosHadBenefitsId,
-            BenefitsIncomeCYId,
+            BenefitsIncomeCYId
           )
 
         case _ => cacheMap

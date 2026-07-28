@@ -19,12 +19,13 @@ package uk.gov.hmrc.childcarecalculatorfrontend.forms
 import play.api.data.Form
 import play.api.data.Forms.*
 import play.api.data.format.Formatter
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.formatters.IntFormatter
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
+@Singleton
 class NoOfChildrenForm @Inject() (appConfig: FrontendAppConfig) extends FormErrorHelper {
 
   private def noOfChildrenFormatter(missingErrorKey: String, errorKeyNonNumeric: String): Formatter[Int] =

@@ -38,7 +38,7 @@ class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap], timeReplacemen
   override protected def transform[A](request: Request[A]): Future[OptionalDataRequest[A]] = {
     val userAnswers: Option[UserAnswers] = cacheMapToReturn.map {
       new UserAnswers(_) {
-        override def now: LocalDate = timeReplacement.getOrElse(LocalDate.now())
+        override def now: LocalDate = timeReplacement.getOrElse(LocalDate.now)
       }
     }
 

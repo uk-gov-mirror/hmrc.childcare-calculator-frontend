@@ -26,7 +26,7 @@ class PartnerChildcareVouchersViewSpec extends NewYesNoViewBehaviours {
 
   override val form: Form[Boolean] = BooleanForm()
   val messageKeyPrefix             = "partnerChildcareVouchers"
-  val view                         = application.injector.instanceOf[partnerChildcareVouchers]
+  val view                         = inject[partnerChildcareVouchers]
 
   def createView = () => view(frontendAppConfig, BooleanForm())(fakeRequest, messages)
 

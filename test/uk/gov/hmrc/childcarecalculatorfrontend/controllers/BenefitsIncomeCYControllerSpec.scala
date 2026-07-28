@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
@@ -30,12 +30,11 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.benefitsIncomeCY
 
 class BenefitsIncomeCYControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[benefitsIncomeCY]
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  val view: benefitsIncomeCY = inject[benefitsIncomeCY]
+  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new BenefitsIncomeCYController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -44,8 +43,8 @@ class BenefitsIncomeCYControllerSpec extends ControllerSpecBase {
       new DataRequiredAction
     )
 
-  def viewAsString(form: Form[BenefitsIncomeCY] = BenefitsIncomeCYForm()) =
-    view(frontendAppConfig, form)(fakeRequest, messages).toString
+  def viewAsString(form: Form[BenefitsIncomeCY] = BenefitsIncomeCYForm()): String =
+    view(form)(fakeRequest, messages).toString
 
   "BenefitsIncomeCY Controller" must {
 

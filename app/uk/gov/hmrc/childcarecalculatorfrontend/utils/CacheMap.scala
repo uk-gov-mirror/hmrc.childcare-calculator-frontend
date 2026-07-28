@@ -20,28 +20,28 @@ import play.api.libs.json.*
 
 case class CacheMap(id: String, data: Map[String, JsValue]) {
 
-  def getEntry(key: CacheKey)(using Reads[key.CacheValue]): Option[key.CacheValue] =
+  def getEntry[A](key: CacheKey[A])(using Reads[A]): Option[A] =
     data
       .get(key.cacheKey)
       .map(json =>
         json
-          .validate[key.CacheValue]
+          .validate[A]
           .fold(
             errors => throw new CacheEntryValidationException(key.cacheKey, json, CacheMap.getClass, errors),
             valid => valid
           )
       )
 
-  def updated[A](key: CacheKey, value: A)(using Writes[A]): CacheMap =
+  def updated(key: CacheKey[?], value: JsValue): CacheMap =
     copy(
       data = data.updated(key.cacheKey, Json.toJson(value))
     )
 
-  def removed(key: CacheKey): CacheMap = copy(
+  def removed(key: CacheKey[?]): CacheMap = copy(
     data = data.removed(key.cacheKey)
   )
 
-  def removedAll(keys: CacheKey*): CacheMap =
+  def removedAll(keys: CacheKey[?]*): CacheMap =
     copy(
       data = data.removedAll(keys.map(_.cacheKey))
     )

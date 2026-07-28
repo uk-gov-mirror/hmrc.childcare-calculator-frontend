@@ -18,6 +18,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours
 
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.FormSpec
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.unknownErrorKey
 
 trait CheckboxBehaviours[A] extends FormSpec {
 
@@ -26,7 +27,7 @@ trait CheckboxBehaviours[A] extends FormSpec {
   def fieldName: String
   def form: Form[Set[A]]
 
-  def aCheckboxForm(invalid: String = "error.invalid"): Unit = {
+  def aCheckboxForm(invalid: String = unknownErrorKey): Unit = {
     for {
       (value, i) <- validOptions.zipWithIndex
     } yield s"binds `$value` successfully" in {

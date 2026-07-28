@@ -21,14 +21,15 @@ import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.{CarersAllowance, IncapacityBenefit}
+import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfigSpec
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.{CarersAllowance, IncapacityBenefit}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child.{ChildCareCost, Disability}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.{Income, MinimumEarnings}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child.{Child, ChildCareCost, Disability}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.{BackendEmploymentStatus, Claimant, Income, MinimumEarnings}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.SchemeSpec
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo, UserAnswers, Utils}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo, UserAnswers}
 import uk.gov.hmrc.time.TaxYear
 
 import java.time.LocalDate
@@ -37,8 +38,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers*)))
 
-  val frontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
-  val utils: Utils                         = mock[Utils]
+  val nmwConfig: NmwConfigSpec = mock[NmwConfigSpec]
 
   val mockTaxYearInfo: TaxYearInfo = mock[TaxYearInfo]
 
@@ -46,13 +46,12 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
   val previousTaxYear: Int = currentTaxYear - 1
 
-  def userAnswerToHousehold: UserAnswerToHousehold = new UserAnswerToHousehold(frontendAppConfig, utils)
+  def userAnswerToHousehold: UserAnswerToHousehold = new UserAnswerToHousehold(nmwConfig)
 
-  val todaysDate: LocalDate = LocalDate.now()
+  val today: LocalDate = LocalDate.now()
 
   override def beforeEach(): Unit = {
-    reset(frontendAppConfig)
-    reset(utils)
+    reset(nmwConfig)
     reset(mockTaxYearInfo)
     super.beforeEach()
   }
@@ -76,7 +75,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val child1 = Child(
           id = 0,
           name = "Patrick",
-          dob = todaysDate.minusYears(7),
+          dob = today.minusYears(7),
           disability = Some(Disability(disabled = true, severelyDisabled = true, blind = true)),
           childcareCost = Some(ChildCareCost(Some(200.0), Some(Period.Monthly))),
           education = None
@@ -91,11 +90,11 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.noOfChildren).thenReturn(Some(1))
         when(answers.expectedChildcareCosts(0)).thenReturn(Some(BigDecimal(200.0)))
         when(answers.childcarePayFrequency(0)).thenReturn(Some(ChildcarePayFrequency.Monthly))
-        when(answers.aboutYourChild(0)).thenReturn(Some(AboutYourChild("Patrick", todaysDate.minusYears(7))))
+        when(answers.aboutYourChild(0)).thenReturn(Some(AboutYourChild("Patrick", today.minusYears(7))))
 
         when(answers.whichChildrenDisability).thenReturn(Some(Set(0)))
         when(answers.whichDisabilityBenefits).thenReturn(
-          Some(Map(0 -> Set(DisabilityBenefits.HigherDisabilityBenefits, DisabilityBenefits.DisabilityBenefits)))
+          Some(Map(0 -> Set(DisabilityBenefit.HigherDisabilityBenefits, DisabilityBenefit.DisabilityBenefits)))
         )
         when(answers.registeredBlind).thenReturn(Some(true))
 
@@ -109,7 +108,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val child1 = Child(
           id = 0,
           name = "Kamal",
-          dob = todaysDate.minusYears(7),
+          dob = today.minusYears(7),
           disability = Some(Disability(disabled = true, severelyDisabled = true)),
           childcareCost = None,
           education = None
@@ -118,7 +117,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val child2 = Child(
           id = 1,
           name = "Jagan",
-          dob = todaysDate.minusYears(2),
+          dob = today.minusYears(2),
           disability = Some(Disability(disabled = true, blind = true)),
           childcareCost = None,
           education = None
@@ -129,15 +128,15 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.noOfChildren).thenReturn(Some(2))
-        when(answers.aboutYourChild(0)).thenReturn(Some(AboutYourChild("Kamal", todaysDate.minusYears(7))))
-        when(answers.aboutYourChild(1)).thenReturn(Some(AboutYourChild("Jagan", todaysDate.minusYears(2))))
+        when(answers.aboutYourChild(0)).thenReturn(Some(AboutYourChild("Kamal", today.minusYears(7))))
+        when(answers.aboutYourChild(1)).thenReturn(Some(AboutYourChild("Jagan", today.minusYears(2))))
 
         when(answers.whichChildrenDisability).thenReturn(Some(Set(0, 1)))
         when(answers.whichDisabilityBenefits).thenReturn(
           Some(
             Map(
-              0 -> Set(DisabilityBenefits.HigherDisabilityBenefits, DisabilityBenefits.DisabilityBenefits),
-              1 -> Set(DisabilityBenefits.DisabilityBenefits)
+              0 -> Set(DisabilityBenefit.HigherDisabilityBenefits, DisabilityBenefit.DisabilityBenefits),
+              1 -> Set(DisabilityBenefit.DisabilityBenefits)
             )
           )
         )
@@ -146,14 +145,14 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         userAnswerToHousehold.convert(answers) mustEqual household
       }
 
-      "has location and universal credit for non-scottish users" in {
+      "has location and universal credit for non-Scottish users" in {
         val parent = Claimant(
           benefits = Set(CarersAllowance, IncapacityBenefit),
           escVouchers = Some(YesNoNotSure.No),
           minimumEarnings = Some(MinimumEarnings(0.0, None, None))
         )
         val household = Household(
-          credits = Some(Credits.UNIVERSALCREDIT),
+          credits = Some(Credits.UniversalCredit),
           location = Location.England,
           parent = parent
         )
@@ -166,14 +165,14 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         userAnswerToHousehold.convert(answers) mustEqual household
       }
 
-      "has location and UNIVERSAL CREDIT for scottish users" in {
+      "has location and UNIVERSAL CREDIT for Scottish users" in {
         val parent = Claimant(
           benefits = Set(CarersAllowance, IncapacityBenefit),
           escVouchers = Some(YesNoNotSure.No),
           minimumEarnings = Some(MinimumEarnings(0.0, None, None))
         )
         val household = Household(
-          credits = Some(Credits.UNIVERSALCREDIT),
+          credits = Some(Credits.UniversalCredit),
           location = Location.Scotland,
           parent = parent
         )
@@ -200,11 +199,11 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.Scotland))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(false))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(120)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(120)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -213,7 +212,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val parent = Claimant(
           escVouchers = Some(YesNoNotSure.No),
           ageRange = Some(Age.TwentyOneOrOver),
-          minimumEarnings = Some(MinimumEarnings(employmentStatus = Some(EmploymentStatus.Neither))),
+          minimumEarnings = Some(MinimumEarnings(employmentStatus = Some(BackendEmploymentStatus.Neither))),
           maximumEarnings = Some(false),
           currentYearlyIncome = Some(Income(employmentIncome = Some(BigDecimal(32000.0))))
         )
@@ -223,14 +222,14 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.Scotland))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(false))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.areYouSelfEmployedOrApprentice).thenReturn(
-          Some(EmploymentStatus.Neither.toString)
+          Some(EmploymentStatus.Neither)
         )
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(120)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(120)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -239,7 +238,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val parent = Claimant(
           escVouchers = Some(YesNoNotSure.No),
           ageRange = Some(Age.TwentyOneOrOver),
-          minimumEarnings = Some(MinimumEarnings(amount = 120, employmentStatus = Some(EmploymentStatus.Apprentice))),
+          minimumEarnings = Some(MinimumEarnings(amount = 120, employmentStatus = Some(BackendEmploymentStatus.Apprentice))),
           maximumEarnings = Some(false),
           currentYearlyIncome = Some(Income(employmentIncome = Some(BigDecimal(32000.0))))
         )
@@ -249,14 +248,14 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.Scotland))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(false))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.areYouSelfEmployedOrApprentice).thenReturn(
-          Some(EmploymentStatus.Apprentice.toString)
+          Some(EmploymentStatus.Apprentice)
         )
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(120)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(120)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -268,7 +267,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
           minimumEarnings = Some(
             MinimumEarnings(
               amount = 120,
-              employmentStatus = Some(EmploymentStatus.SelfEmployed),
+              employmentStatus = Some(BackendEmploymentStatus.SelfEmployed),
               selfEmployedIn12Months = Some(true)
             )
           ),
@@ -281,15 +280,15 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.Scotland))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(false))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.areYouSelfEmployedOrApprentice).thenReturn(
-          Some(EmploymentStatus.SelfEmployed.toString)
+          Some(EmploymentStatus.SelfEmployed)
         )
         when(answers.yourSelfEmployed).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(120)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(120)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -300,7 +299,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
           ageRange = Some(Age.TwentyOneOrOver),
           minimumEarnings = Some(
             MinimumEarnings(
-              employmentStatus = Some(EmploymentStatus.SelfEmployed),
+              employmentStatus = Some(BackendEmploymentStatus.SelfEmployed),
               selfEmployedIn12Months = Some(false)
             )
           ),
@@ -313,15 +312,15 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.Scotland))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(false))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.areYouSelfEmployedOrApprentice).thenReturn(
-          Some(EmploymentStatus.SelfEmployed.toString)
+          Some(EmploymentStatus.SelfEmployed)
         )
         when(answers.yourSelfEmployed).thenReturn(Some(false))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(120)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(120)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -339,11 +338,11 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(120)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(120)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -366,12 +365,12 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(120)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(120)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -394,12 +393,12 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(120)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(120)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -422,12 +421,12 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(120)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(120)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -436,14 +435,14 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val parent = Claimant(
           escVouchers = Some(YesNoNotSure.NotSure),
           ageRange = Some(Age.TwentyOneOrOver),
-          minimumEarnings = Some(MinimumEarnings(employmentStatus = Some(EmploymentStatus.Neither))),
+          minimumEarnings = Some(MinimumEarnings(employmentStatus = Some(BackendEmploymentStatus.Neither))),
           maximumEarnings = Some(true),
           currentYearlyIncome = Some(Income(employmentIncome = Some(BigDecimal(72000.0))))
         )
         val partner = Claimant(
           escVouchers = Some(YesNoNotSure.NotSure),
           ageRange = Some(Age.EighteenToTwenty),
-          minimumEarnings = Some(MinimumEarnings(employmentStatus = Some(EmploymentStatus.Neither))),
+          minimumEarnings = Some(MinimumEarnings(employmentStatus = Some(BackendEmploymentStatus.Neither))),
           maximumEarnings = Some(false),
           currentYearlyIncome = Some(Income(employmentIncome = Some(BigDecimal(32000.0))))
         )
@@ -453,21 +452,21 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.areYouSelfEmployedOrApprentice).thenReturn(
-          Some(EmploymentStatus.Neither.toString)
+          Some(EmploymentStatus.Neither)
         )
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(false))
         when(answers.partnerSelfEmployedOrApprentice).thenReturn(
-          Some(EmploymentStatus.Neither.toString)
+          Some(EmploymentStatus.Neither)
         )
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -477,7 +476,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
           escVouchers = Some(YesNoNotSure.NotSure),
           ageRange = Some(Age.TwentyOneOrOver),
           minimumEarnings =
-            Some(MinimumEarnings(employmentStatus = Some(EmploymentStatus.Apprentice), amount = BigDecimal(112))),
+            Some(MinimumEarnings(employmentStatus = Some(BackendEmploymentStatus.Apprentice), amount = BigDecimal(112))),
           maximumEarnings = Some(true),
           currentYearlyIncome = Some(Income(employmentIncome = Some(BigDecimal(72000.0))))
         )
@@ -485,7 +484,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
           escVouchers = Some(YesNoNotSure.NotSure),
           ageRange = Some(Age.EighteenToTwenty),
           minimumEarnings =
-            Some(MinimumEarnings(employmentStatus = Some(EmploymentStatus.Apprentice), amount = BigDecimal(89))),
+            Some(MinimumEarnings(employmentStatus = Some(BackendEmploymentStatus.Apprentice), amount = BigDecimal(89))),
           maximumEarnings = Some(false),
           currentYearlyIncome = Some(Income(employmentIncome = Some(BigDecimal(32000.0))))
         )
@@ -495,21 +494,21 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.areYouSelfEmployedOrApprentice).thenReturn(
-          Some(EmploymentStatus.Apprentice.toString)
+          Some(EmploymentStatus.Apprentice)
         )
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(false))
         when(answers.partnerSelfEmployedOrApprentice).thenReturn(
-          Some(EmploymentStatus.Apprentice.toString)
+          Some(EmploymentStatus.Apprentice)
         )
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -520,7 +519,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
           ageRange = Some(Age.TwentyOneOrOver),
           minimumEarnings = Some(
             MinimumEarnings(
-              employmentStatus = Some(EmploymentStatus.SelfEmployed),
+              employmentStatus = Some(BackendEmploymentStatus.SelfEmployed),
               selfEmployedIn12Months = Some(true),
               amount = BigDecimal(112)
             )
@@ -541,19 +540,19 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.areYouSelfEmployedOrApprentice).thenReturn(
-          Some(EmploymentStatus.SelfEmployed.toString)
+          Some(EmploymentStatus.SelfEmployed)
         )
         when(answers.yourSelfEmployed).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -579,16 +578,16 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
         when(answers.eitherOfYouMaximumEarnings).thenReturn(Some(true))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -614,15 +613,15 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -652,15 +651,15 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -690,15 +689,15 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -724,15 +723,15 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -766,15 +765,15 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(32000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -783,7 +782,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val parent = Claimant(
           escVouchers = Some(YesNoNotSure.Yes),
           ageRange = Some(Age.UnderEighteen),
-          minimumEarnings = Some(MinimumEarnings(employmentStatus = Some(EmploymentStatus.Apprentice))),
+          minimumEarnings = Some(MinimumEarnings(employmentStatus = Some(BackendEmploymentStatus.Apprentice))),
           maximumEarnings = Some(false),
           currentYearlyIncome = Some(
             Income(
@@ -798,13 +797,13 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.NorthernIreland))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.UnderEighteen.toString))
+        when(answers.yourAge).thenReturn(Some(Age.UnderEighteen))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
-        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.Apprentice.toString))
+        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.Apprentice))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
         when(answers.howMuchYouPayPension).thenReturn(Some(BigDecimal(200.0)))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(0)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(0)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -815,7 +814,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
           ageRange = Some(Age.TwentyOneOrOver),
           minimumEarnings = Some(
             MinimumEarnings(
-              employmentStatus = Some(EmploymentStatus.SelfEmployed),
+              employmentStatus = Some(BackendEmploymentStatus.SelfEmployed),
               selfEmployedIn12Months = Some(true)
             )
           ),
@@ -828,13 +827,13 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.Scotland))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
-        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed.toString))
+        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed))
         when(answers.yourSelfEmployed).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(0)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(0)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -846,13 +845,13 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.Scotland))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(false))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
-        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed.toString))
+        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed))
         when(answers.yourSelfEmployed).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(0)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(0)
 
         userAnswerToHousehold.convert(answers).parent.escVouchers.get mustBe YesNoNotSure.No
       }
@@ -871,12 +870,12 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         when(answers.location).thenReturn(Some(Location.NorthernIreland))
         when(answers.doYouLiveWithPartner).thenReturn(Some(false))
         when(answers.yourChildcareVouchers).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.UnderEighteen.toString))
+        when(answers.yourAge).thenReturn(Some(Age.UnderEighteen))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.areYouSelfEmployedOrApprentice).thenReturn(None)
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.parentEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(0)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(0)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -901,15 +900,15 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -918,12 +917,12 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val answers = spy(userAnswers())
 
         when(answers.location).thenReturn(Some(Location.Wales))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("partner"))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Partner))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.partnerChildcareVouchers).thenReturn(Some(true))
         when(answers.partnerEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
 
@@ -936,12 +935,12 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val answers = spy(userAnswers())
 
         when(answers.location).thenReturn(Some(Location.Wales))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("partner"))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Partner))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.partnerChildcareVouchers).thenReturn(Some(false))
         when(answers.partnerEmploymentIncomeCY).thenReturn(Some(BigDecimal(32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
 
@@ -970,17 +969,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.Both.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.Both.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Both))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1003,13 +1002,13 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1033,17 +1032,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.Both.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.Both.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Both))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1078,18 +1077,18 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.Both.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.You.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.You))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.howMuchBothPayPension).thenReturn(Some(HowMuchBothPayPension(250.0, 200.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1124,18 +1123,18 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.Both.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.Partner.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Partner))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.howMuchBothPayPension).thenReturn(Some(HowMuchBothPayPension(250.0, 200.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1168,17 +1167,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBoth.Both.toString))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.Partner.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Partner))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1212,18 +1211,18 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("both"))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.howMuchBothPayPension).thenReturn(Some(HowMuchBothPayPension(250.0, 0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
 
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1258,17 +1257,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("both"))
-        when(answers.whoGetsVouchers).thenReturn(Some(YesNoNotSure.NotSure.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.NotSure))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.otherIncomeAmountCY).thenReturn(Some(OtherIncomeAmountCY(150.0, 1000.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1301,17 +1300,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("both"))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.Partner.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Partner))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.otherIncomeAmountCY).thenReturn(None)
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1346,17 +1345,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("both"))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.Partner.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Partner))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.otherIncomeAmountCY).thenReturn(Some(OtherIncomeAmountCY(7500.0, 1350.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1386,17 +1385,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("both"))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.Partner.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Partner))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.otherIncomeAmountCY).thenReturn(Some(OtherIncomeAmountCY(150.0, 0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1431,17 +1430,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("both"))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.You.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.You))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.benefitsIncomeCY).thenReturn(Some(BenefitsIncomeCY(250.0, 200.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1476,17 +1475,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("both"))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBoth.Both.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Both))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.benefitsIncomeCY).thenReturn(Some(BenefitsIncomeCY(250.0, 200.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }
@@ -1516,17 +1515,17 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
         when(answers.location).thenReturn(Some(Location.Wales))
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some("both"))
-        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Neither.toString))
-        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver.toString))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
+        when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Neither))
+        when(answers.yourAge).thenReturn(Some(Age.TwentyOneOrOver))
         when(answers.yourMinimumEarnings).thenReturn(Some(true))
         when(answers.yourMaximumEarnings).thenReturn(Some(true))
         when(answers.employmentIncomeCY).thenReturn(Some(EmploymentIncomeCY(72000.0, 32000.0)))
         when(answers.benefitsIncomeCY).thenReturn(Some(BenefitsIncomeCY(0, 200.0)))
-        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty.toString))
+        when(answers.yourPartnersAge).thenReturn(Some(Age.EighteenToTwenty))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
-        when(utils.getEarningsForAgeRange(any(), any(), any())).thenReturn(89).thenReturn(112)
+        when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(89).thenReturn(112)
 
         userAnswerToHousehold.convert(answers) mustEqual household
       }

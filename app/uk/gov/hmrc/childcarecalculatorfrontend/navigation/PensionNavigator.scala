@@ -23,6 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBoth
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
 
 import javax.inject.{Inject, Singleton}
+import scala.annotation.unused
 
 /** Contains the navigation for current and previous year pension pages
   */
@@ -73,10 +74,10 @@ private[navigation] class PensionNavigator @Inject() (utils: Utils) extends SubN
     case false => routes.YouAnyTheseBenefitsCYController.onPageLoad()
   }
 
-  private def howMuchPartnerPayPensionRouteCY(_answers: UserAnswers): Call =
+  private def howMuchPartnerPayPensionRouteCY(@unused answers: UserAnswers): Call =
     routes.BothAnyTheseBenefitsCYController.onPageLoad()
 
-  private def howMuchBothPayPensionRouteCY(_answers: UserAnswers): Call =
+  private def howMuchBothPayPensionRouteCY(@unused answers: UserAnswers): Call =
     routes.BothAnyTheseBenefitsCYController.onPageLoad()
 
 }

@@ -34,7 +34,7 @@ class SplunkSubmissionServiceSpec extends PlaySpec with MockitoSugar with ScalaF
   implicit val ec: ExecutionContext = ExecutionContext.global
   private val mockConnector         = mock[DefaultAuditConnector]
 
-  val data = Map("key 1" -> "value 1", "key 2" -> "value 2")
+  val data: Map[String, String] = Map("key 1" -> "value 1", "key 2" -> "value 2")
 
   implicit val hcCaptor: ArgumentCaptor[HeaderCarrier]    = ArgumentCaptor.forClass(classOf[HeaderCarrier])
   implicit val ecCaptor: ArgumentCaptor[ExecutionContext] = ArgumentCaptor.forClass(classOf[ExecutionContext])

@@ -26,7 +26,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.parentEmploymentIncome
 class ParentEmploymentIncomeCYViewSpec extends NewBigDecimalViewBehaviours {
 
   val taxYearInfo = new TaxYearInfo
-  val view        = application.injector.instanceOf[parentEmploymentIncomeCY]
+  val view        = inject[parentEmploymentIncomeCY]
 
   val messageKeyPrefix = "parentEmploymentIncomeCY"
 

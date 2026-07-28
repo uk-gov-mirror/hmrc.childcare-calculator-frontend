@@ -25,7 +25,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourOtherIncomeThisYea
 
 class YourOtherIncomeThisYearViewSpec extends NewYesNoViewBehaviours {
 
-  val view        = application.injector.instanceOf[yourOtherIncomeThisYear]
+  val view        = inject[yourOtherIncomeThisYear]
   val taxYearInfo = new TaxYearInfo
 
   val messageKeyPrefix = "yourOtherIncomeThisYear"

@@ -29,7 +29,7 @@ class BothOtherIncomeThisYearViewSpec extends NewYesNoViewBehaviours {
 
   val taxYearInfo = new TaxYearInfo
 
-  val view = application.injector.instanceOf[bothOtherIncomeThisYear]
+  val view = inject[bothOtherIncomeThisYear]
 
   val messageKeyPrefix = "bothOtherIncomeThisYear"
 

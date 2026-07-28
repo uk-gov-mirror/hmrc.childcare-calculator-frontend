@@ -16,26 +16,27 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.models.mappings
 
-import java.time.LocalDate
 import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfigSpec
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{Location, YesNoNotSure}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.MinimumEarnings
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child.Child
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.{Claimant, MinimumEarnings}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.SchemeSpec
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{TaxYearInfo, UserAnswers, Utils}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo, UserAnswers}
 import uk.gov.hmrc.time.TaxYear
+
+import java.time.LocalDate
 
 class UserAnswerToHouseholdIncompleteChildDetailsSpec extends SchemeSpec with MockitoSugar with BeforeAndAfterEach {
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers*)))
 
-  val frontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
-  val utils: Utils                         = mock[Utils]
+  val nmwConfig: NmwConfigSpec = mock[NmwConfigSpec]
 
   val mockTaxYearInfo: TaxYearInfo = mock[TaxYearInfo]
 
@@ -43,13 +44,12 @@ class UserAnswerToHouseholdIncompleteChildDetailsSpec extends SchemeSpec with Mo
 
   val previousTaxYear: Int = currentTaxYear - 1
 
-  def userAnswerToHousehold: UserAnswerToHousehold = new UserAnswerToHousehold(frontendAppConfig, utils)
+  def userAnswerToHousehold: UserAnswerToHousehold = new UserAnswerToHousehold(nmwConfig)
 
-  val currentDate: LocalDate = LocalDate.now()
+  val currentDate: LocalDate = LocalDate.of(2026, 27, 7)
 
   override def beforeEach(): Unit = {
-    reset(frontendAppConfig)
-    reset(utils)
+    reset(nmwConfig)
     reset(mockTaxYearInfo)
     super.beforeEach()
   }

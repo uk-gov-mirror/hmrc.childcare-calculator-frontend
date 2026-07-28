@@ -18,8 +18,6 @@ package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
 
-case object BothOtherIncomeThisYearId extends Identifier with CacheKey {
-  override def toString: String = "bothOtherIncomeThisYear"
-
-  override type CacheValue = Boolean
+case object BothOtherIncomeThisYearId extends Identifier with CacheKey[Boolean] {
+  override val toString = "bothOtherIncomeThisYear"
 }

@@ -22,10 +22,7 @@ import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.formatters.EnumFormatter
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.DisabilityBenefit
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
-  unknownErrorKey,
-  whichDisabilityBenefitsErrorKey
-}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{unknownErrorKey, whichChildrenDisabilityErrorKey, whichDisabilityBenefitsErrorKey}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.InputOption
 
 object WhichDisabilityBenefitsForm extends FormErrorHelper {
@@ -40,7 +37,7 @@ object WhichDisabilityBenefitsForm extends FormErrorHelper {
     case set if set.nonEmpty =>
       Valid
     case _ =>
-      Invalid("whichDisabilityBenefits.error.notCompleted", name)
+      Invalid(whichChildrenDisabilityErrorKey, name)
   }
 
   def apply(name: String): Form[Set[DisabilityBenefit]] =

@@ -26,7 +26,7 @@ class ChildRegisteredBlindViewSpec extends NewYesNoViewBehaviours {
 
   override val form    = BooleanForm()
   val messageKeyPrefix = "childRegisteredBlind"
-  val view             = application.injector.instanceOf[childRegisteredBlind]
+  val view             = inject[childRegisteredBlind]
 
   def createView = () => view(frontendAppConfig, BooleanForm(), "Foo")(fakeRequest, messages)
 

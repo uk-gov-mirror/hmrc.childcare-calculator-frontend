@@ -21,7 +21,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whatToTellTheCalculato
 
 class WhatToTellTheCalculatorControllerSpec extends ControllerSpecBase {
 
-  val view = application.injector.instanceOf[whatToTellTheCalculator]
+  val view: whatToTellTheCalculator = inject[whatToTellTheCalculator]
 
   "WhatToTellTheCalculator Controller" must {
     "return 200 for a GET" in {

@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YesNoNotSure
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class ApprovedProviderFormSpec extends FormBehaviours {
@@ -25,7 +27,7 @@ class ApprovedProviderFormSpec extends FormBehaviours {
     "value" -> ApprovedProviderForm.options.head.value
   )
 
-  val form = ApprovedProviderForm()
+  val form: Form[YesNoNotSure] = ApprovedProviderForm()
 
   "ApprovedProvider form" must {
     behave.like(questionForm[String](ApprovedProviderForm.options.head.value))

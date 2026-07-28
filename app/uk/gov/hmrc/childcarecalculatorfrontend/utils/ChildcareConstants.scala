@@ -90,10 +90,6 @@ object ChildcareConstants {
 
   val yourSelfEmployedErrorKey = "yourSelfEmployed.error.notCompleted"
 
-  val ruleDateConfigParam       = "rule-date"
-  val ccDateFormat              = "dd-MM-yyyy"
-  val nmwConfigFileAbbreviation = "nmw"
-
   val taxCodeRegularExpression = """([K][1-9][0-9]{2,3})|([1-9][0-9]{2,3}(L|M|N|BR|D0|D1|NT|S|0T|W1|M1|X)+)"""
 
   val partnerSelfEmployedErrorKey = "partnerSelfEmployed.error.notCompleted"
@@ -165,9 +161,15 @@ object ChildcareConstants {
 
   val surveyChildcareSupportErrorKey = "surveyChildcareSupport.error.notCompleted"
 
+  val surveyDoNotUnderstandErrorKey = "surveyDoNotUnderstand.error.notCompleted"
+
   val parentEmpIncomeCYFormField  = "parentEmploymentIncomeCY"
   val partnerEmpIncomeCYFormField = "partnerEmploymentIncomeCY"
   val defaultFormValueField       = "value"
 
   val whoGetsTheBenefitsErrorKey = "whoGetsTheBenefits.error.notCompleted"
+  val whoHasChildcareCostsErrorKey = "whoHasChildcareCosts.error.notCompleted"
+
+  val whichChildrenBlindErrorKey = "whichChildrenBlind.error.notCompleted"
+  val whichChildrenDisabilityErrorKey = "whichChildrenDisability.error.notCompleted"
 }

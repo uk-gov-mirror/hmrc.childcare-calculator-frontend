@@ -27,7 +27,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.childrenAgeGroups
 class ChildrenAgeGroupsViewSpec extends NewViewBehaviours with NewCheckboxViewBehaviours[ChildAgeGroup] {
 
   override val form: Form[Set[ChildAgeGroup]] = ChildrenAgeGroupsForm()
-  val mockView: childrenAgeGroups             = application.injector.instanceOf[childrenAgeGroups]
+  val mockView: childrenAgeGroups             = inject[childrenAgeGroups]
   val messageKeyPrefix                        = "childrenAgeGroups"
   val fieldKey: String                        = ChildrenAgeGroupsForm.formId
   val errorMessage                            = s"$messageKeyPrefix.error.select"

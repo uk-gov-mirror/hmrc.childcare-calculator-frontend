@@ -16,17 +16,18 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import play.api.data.Form
 import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildcarePayFrequency.Weekly
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequency
 
 class ExpectedChildcareCostsFormSpec extends FormSpec {
 
   val missingErrorKey                 = "expectedChildcareCosts.error.notCompleted"
   val invalidValueErrorKey            = "expectedChildcareCosts.error.invalid"
   val firstName                       = "name"
-  val frequency                       = Weekly
-  implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), app.injector.instanceOf[MessagesApi])
-  val form                            = ExpectedChildcareCostsForm(frequency, firstName)
+  val frequency: ChildcarePayFrequency = ChildcarePayFrequency.Weekly
+  implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), inject[MessagesApi])
+  val form: Form[BigDecimal] = ExpectedChildcareCostsForm(frequency, firstName)
   val frequencyString: String         = messages(s"childcarePayFrequency.$frequency").toLowerCase
 
   "ExpectedChildcareCosts Form" must {

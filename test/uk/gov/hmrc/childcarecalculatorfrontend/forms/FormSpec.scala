@@ -16,19 +16,21 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import org.scalatest.Assertion
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
 import play.api.inject.Injector
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
 import org.scalatestplus.play.PlaySpec
+import play.api.test.Injecting
+import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 
-trait FormSpec extends PlaySpec with GuiceOneAppPerSuite {
+trait FormSpec extends PlaySpec with GuiceOneAppPerSuite with Injecting {
 
   def injector: Injector = app.injector
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  def frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
 
-  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError]) =
+  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError]): Assertion =
     form
       .bind(data)
       .fold(
@@ -40,7 +42,7 @@ trait FormSpec extends PlaySpec with GuiceOneAppPerSuite {
         form => fail("Expected a validation error when binding the form, but it was bound successfully.")
       )
 
-  def error(key: String, value: String, args: Any*) = Seq(FormError(key, value, args))
+  def error(key: String, value: String, args: Any*): Seq[FormError] = Seq(FormError(key, value, args))
 
-  lazy val emptyForm = Map[String, String]()
+  lazy val emptyForm: Map[String, String] = Map.empty
 }

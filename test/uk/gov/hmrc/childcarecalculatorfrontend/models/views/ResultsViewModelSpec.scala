@@ -17,13 +17,9 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.models.views
 
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
-import uk.gov.hmrc.childcarecalculatorfrontend.models.{FourYears, Location, ThreeYears, TwoYears}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
-  freeHoursForEngland,
-  freeHoursForNI,
-  freeHoursForScotland,
-  freeHoursForWales
-}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildAgeGroup
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{freeHoursForEngland, freeHoursForNI, freeHoursForScotland, freeHoursForWales}
 
 class ResultsViewModelSpec extends SpecBase {
 
@@ -78,7 +74,7 @@ class ResultsViewModelSpec extends SpecBase {
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
           livesWithPartner = true,
-          childrenAgeGroups = Set(TwoYears, FourYears)
+          childrenAgeGroups = Set(ChildAgeGroup.TwoYears, ChildAgeGroup.FourYears)
         )
         model.showTwoYearOldInfo mustBe true
       }
@@ -90,7 +86,7 @@ class ResultsViewModelSpec extends SpecBase {
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
           livesWithPartner = true,
-          childrenAgeGroups = Set(TwoYears)
+          childrenAgeGroups = Set(ChildAgeGroup.TwoYears)
         )
         model.showTwoYearOldInfo mustBe true
       }
@@ -105,7 +101,7 @@ class ResultsViewModelSpec extends SpecBase {
           hasCostsWithApprovedProvider = true,
           isAnyoneInPaidEmployment = true,
           livesWithPartner = true,
-          childrenAgeGroups = Set(TwoYears, ThreeYears)
+          childrenAgeGroups = Set(ChildAgeGroup.TwoYears, ChildAgeGroup.ThreeYears)
         )
         model.showTwoYearOldInfo mustBe false
       }

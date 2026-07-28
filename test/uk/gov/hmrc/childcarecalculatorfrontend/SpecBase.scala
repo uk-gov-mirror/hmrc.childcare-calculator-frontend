@@ -20,29 +20,29 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.inject.Injector
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
-import play.api.test.FakeRequest
+import play.api.test.{FakeRequest, Injecting}
+import uk.gov.hmrc.childcarecalculatorfrontend.config.{FrontendAppConfig, NmwConfig, NmwConfigSpec}
 
 import scala.concurrent.ExecutionContext
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite {
+trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting {
 
   implicit val application: Application = app
 
-  def injector: Injector = app.injector
+  lazy val frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  lazy val nmwConfig: NmwConfig = inject[NmwConfig]
 
-  def mcc: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
+  lazy val mcc: MessagesControllerComponents = inject[MessagesControllerComponents]
 
-  def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
+  lazy val fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
-  def lang: Lang = Lang("en")
+  lazy val lang: Lang = Lang("en")
 
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+  lazy val messagesApi: MessagesApi = inject[MessagesApi]
 
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+  implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
 
-  implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
+  implicit lazy val ec: ExecutionContext = inject[ExecutionContext]
 }

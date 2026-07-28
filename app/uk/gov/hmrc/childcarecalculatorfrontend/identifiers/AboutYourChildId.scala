@@ -23,8 +23,6 @@ case class AboutYourChildId(id: Int) extends Identifier {
   override def toString: String = "aboutYourChild"
 }
 
-object AboutYourChildId extends CacheKey {
-  override def toString: String = "aboutYourChild"
-
-  override type CacheValue = Map[Int, AboutYourChild]
+object AboutYourChildId extends CacheKey[Map[Int, AboutYourChild]] {
+  override val toString = "aboutYourChild"
 }

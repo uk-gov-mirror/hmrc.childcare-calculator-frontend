@@ -199,7 +199,7 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
             OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
           )
 
-        val result = cascadeUpsert(WhoGetsOtherIncomeCYId, YouPartnerBoth.You.toString, originalCacheMap)
+        val result = cascadeUpsert(WhoGetsOtherIncomeCYId, YouPartnerBoth.You, originalCacheMap)
 
         result.data mustBe Map(
           WhoGetsOtherIncomeCYId.of(YouPartnerBoth.You),
@@ -214,7 +214,7 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
             OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
           )
 
-        val result = cascadeUpsert(WhoGetsOtherIncomeCYId, YouPartnerBoth.Partner.toString, originalCacheMap)
+        val result = cascadeUpsert(WhoGetsOtherIncomeCYId, YouPartnerBoth.Partner, originalCacheMap)
 
         result.data mustBe Map(
           WhoGetsOtherIncomeCYId.of(YouPartnerBoth.Partner),
@@ -229,27 +229,10 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
             OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
           )
 
-        val result = cascadeUpsert(WhoGetsOtherIncomeCYId, YouPartnerBoth.Both.toString, originalCacheMap)
+        val result = cascadeUpsert(WhoGetsOtherIncomeCYId, YouPartnerBoth.Both, originalCacheMap)
 
         result.data mustBe Map(
           WhoGetsOtherIncomeCYId.of(YouPartnerBoth.Both),
-          OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
-        )
-      }
-
-      "return original cache map when there is any invalid value for the input" in {
-        val originalCacheMap = CacheMap.of(
-            YourOtherIncomeAmountCYId.of(20),
-            PartnerOtherIncomeAmountCYId.of(20),
-            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
-          )
-
-        val result = cascadeUpsert(WhoGetsOtherIncomeCYId, "invalidvalue", originalCacheMap)
-
-        result.data mustBe Map(
-          WhoGetsOtherIncomeCYId.toString -> "invalidvalue",
-          YourOtherIncomeAmountCYId.of(20),
-          PartnerOtherIncomeAmountCYId.of(20),
           OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
         )
       }

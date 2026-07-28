@@ -52,7 +52,7 @@ class WhichChildrenBlindController @Inject() (
           case None        => WhichChildrenBlindForm()
           case Some(value) => WhichChildrenBlindForm().fill(value)
         }
-        Future.successful(Ok(whichChildrenBlind(preparedForm, options(values).toSeq)))
+        Future.successful(Ok(whichChildrenBlind(preparedForm, values.toSeq)))
       }
     }
 
@@ -62,19 +62,14 @@ class WhichChildrenBlindController @Inject() (
         WhichChildrenBlindForm(values.values.toSeq*)
           .bindFromRequest()
           .fold(
-            (formWithErrors: Form[?]) =>
-              Future.successful(BadRequest(whichChildrenBlind(formWithErrors, options(values).toSeq))),
+            (formWithErrors: Form[Set[Int]]) =>
+              Future.successful(BadRequest(whichChildrenBlind(formWithErrors, values.toSeq))),
             value =>
               dataCacheService.save(WhichChildrenBlindId, value).map { cacheMap =>
                 Redirect(navigator.nextPage(WhichChildrenBlindId)(new UserAnswers(cacheMap)))
               }
           )
       }
-    }
-
-  private def options(values: Map[String, Int]): Map[String, String] =
-    values.map { case (k, v) =>
-      (k, v.toString)
     }
 
   private def withValues[A](

@@ -23,7 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourPartnersAge
 
 class YourPartnersAgeViewSpec extends NewViewBehaviours {
 
-  val view             = application.injector.instanceOf[yourPartnersAge]
+  val view             = inject[yourPartnersAge]
   val messageKeyPrefix = "yourPartnersAge"
 
   def createView = () => view(frontendAppConfig, YourPartnersAgeForm())(fakeRequest, messages)

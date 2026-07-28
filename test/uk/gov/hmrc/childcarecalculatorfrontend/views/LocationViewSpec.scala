@@ -18,17 +18,18 @@ package uk.gov.hmrc.childcarecalculatorfrontend.views
 
 import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.LocationForm
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewViewBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.location
 
 class LocationViewSpec extends NewViewBehaviours {
 
-  val view             = application.injector.instanceOf[location]
+  val view             = inject[location]
   val messageKeyPrefix = "location"
 
   def createView = () => view(frontendAppConfig, LocationForm())(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[?]) => view(frontendAppConfig, form)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[Location]) => view(frontendAppConfig, form)(fakeRequest, messages)
 
   "Location view" must {
     behave.like(normalPage(createView, messageKeyPrefix, "guidance"))

@@ -25,8 +25,8 @@
 )
 
 @(
-    form: Form[?],
-    inputs: Seq[(String, String)],
+    form: Form[Set[Int]],
+    inputs: Seq[(String, Int)],
 )(
     implicit request: Request[?],
     messages: Messages,
@@ -52,8 +52,8 @@
             hint = Some(messages("whichBenefits.select.all")),
             inputs = inputs.map { case (text, value) =>
                 CheckboxItem(
-                    content = HtmlContent(text.capitalize),
-                    value = value,
+                    content = Text(text.capitalize),
+                    value = value.toString,
                 )
             }
     )

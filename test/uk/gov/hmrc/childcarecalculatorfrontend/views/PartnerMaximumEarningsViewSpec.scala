@@ -26,7 +26,7 @@ class PartnerMaximumEarningsViewSpec extends NewYesNoViewBehaviours {
 
   override val form    = BooleanForm()
   val messageKeyPrefix = "partnerMaximumEarnings"
-  val view             = application.injector.instanceOf[partnerMaximumEarnings]
+  val view             = inject[partnerMaximumEarnings]
 
   def createView = () => view(frontendAppConfig, BooleanForm())(fakeRequest, messages)
 

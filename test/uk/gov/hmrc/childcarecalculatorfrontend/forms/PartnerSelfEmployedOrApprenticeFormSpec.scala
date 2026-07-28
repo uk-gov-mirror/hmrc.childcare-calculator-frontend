@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.EmploymentStatus
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class PartnerSelfEmployedOrApprenticeFormSpec extends FormBehaviours {
@@ -25,7 +27,7 @@ class PartnerSelfEmployedOrApprenticeFormSpec extends FormBehaviours {
     "value" -> PartnerSelfEmployedOrApprenticeForm.options.head.value
   )
 
-  val form = PartnerSelfEmployedOrApprenticeForm()
+  val form: Form[EmploymentStatus] = PartnerSelfEmployedOrApprenticeForm()
 
   "PartnerSelfEmployedOrApprentice form" must {
     behave.like(questionForm[String](PartnerSelfEmployedOrApprenticeForm.options.head.value))

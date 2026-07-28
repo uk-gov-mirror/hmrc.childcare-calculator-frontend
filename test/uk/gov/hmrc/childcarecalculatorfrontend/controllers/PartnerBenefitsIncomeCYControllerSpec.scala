@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.JsNumber
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
@@ -30,12 +30,11 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerBenefitsIncomeC
 
 class PartnerBenefitsIncomeCYControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[partnerBenefitsIncomeCY]
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  val view: partnerBenefitsIncomeCY = inject[partnerBenefitsIncomeCY]
+  def onwardRoute: Call             = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new PartnerBenefitsIncomeCYController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -44,8 +43,8 @@ class PartnerBenefitsIncomeCYControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[BigDecimal] = PartnerBenefitsIncomeCYForm()) =
-    view(frontendAppConfig, form)(fakeRequest, messages).toString
+  def viewAsString(form: Form[BigDecimal] = PartnerBenefitsIncomeCYForm()): String =
+    view(form)(fakeRequest, messages).toString
 
   val testNumber = 123
 
@@ -59,7 +58,7 @@ class PartnerBenefitsIncomeCYControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData       = Map(PartnerBenefitsIncomeCYId.toString -> JsNumber(testNumber))
+      val validData       = Map(PartnerBenefitsIncomeCYId.of(testNumber))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)

@@ -23,6 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBothNeithe
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
 
 import javax.inject.{Inject, Singleton}
+import scala.annotation.unused
 
 /** Contains the navigation for current and previous year employment income pages
   */
@@ -65,6 +66,6 @@ private[navigation] class EmploymentIncomeNavigator @Inject() (utils: Utils) ext
       case _                             => routes.BothPaidPensionCYController.onPageLoad()
     }
 
-  private def employmentIncomeCYRoute(_answers: UserAnswers) = routes.BothPaidPensionCYController.onPageLoad()
+  private def employmentIncomeCYRoute(@unused answers: UserAnswers) = routes.BothPaidPensionCYController.onPageLoad()
 
 }

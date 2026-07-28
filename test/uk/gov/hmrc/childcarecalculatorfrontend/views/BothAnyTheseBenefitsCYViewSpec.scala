@@ -28,7 +28,7 @@ class BothAnyTheseBenefitsCYViewSpec extends NewYesNoViewBehaviours {
 
   override val form: Form[Boolean] = BooleanForm()
   val taxYearInfo                  = new TaxYearInfo
-  val view                         = application.injector.instanceOf[bothAnyTheseBenefitsCY]
+  val view                         = inject[bothAnyTheseBenefitsCY]
   val messageKeyPrefix             = "bothAnyTheseBenefitsCY"
 
   def createView(location: Location) = () =>

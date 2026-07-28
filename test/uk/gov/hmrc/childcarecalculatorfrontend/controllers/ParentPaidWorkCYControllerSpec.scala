@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.JsBoolean
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
@@ -30,14 +30,13 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.parentPaidWorkCY
 
 class ParentPaidWorkCYControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[parentPaidWorkCY]
-  val taxYearInfo = new TaxYearInfo
+  val view: parentPaidWorkCY = inject[parentPaidWorkCY]
+  val taxYearInfo            = new TaxYearInfo
 
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new ParentPaidWorkCYController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -47,8 +46,8 @@ class ParentPaidWorkCYControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[Boolean] = BooleanForm()) =
-    view(frontendAppConfig, form, taxYearInfo)(fakeRequest, messages).toString
+  def viewAsString(form: Form[Boolean] = BooleanForm()): String =
+    view(form, taxYearInfo)(fakeRequest, messages).toString
 
   "ParentPaidWorkCY Controller" must {
 

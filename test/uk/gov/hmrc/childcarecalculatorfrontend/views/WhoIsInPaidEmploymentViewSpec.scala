@@ -20,8 +20,8 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.data.Form
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import play.twirl.api.Html
+import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhoIsInPaidEmploymentForm
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewViewBehaviours
@@ -29,7 +29,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whoIsInPaidEmployment
 
 class WhoIsInPaidEmploymentViewSpec extends NewViewBehaviours with BeforeAndAfterEach {
 
-  val view: whoIsInPaidEmployment    = application.injector.instanceOf[whoIsInPaidEmployment]
+  val view: whoIsInPaidEmployment    = inject[whoIsInPaidEmployment]
   val messageKeyPrefix               = "whoIsInPaidEmployment"
   val bereavedPartnersPaternityLeave = "bereaved partner&#x27;s paternity leave"
 

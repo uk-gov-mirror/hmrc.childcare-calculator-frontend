@@ -19,9 +19,9 @@ package uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.tfc
 import org.mockito.Mockito.*
 import org.scalatest.OptionValues
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit
-import uk.gov.hmrc.childcarecalculatorfrontend.models.EmploymentStatus.{Apprentice, SelfEmployed}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{EmploymentStatus, YouPartnerBothNeither}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.SchemeSpec
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
+import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.tfc.Household.{JointHousehold, SingleHousehold}
 
 class ModelFactorySpec extends SchemeSpec with OptionValues {
 
@@ -47,7 +47,7 @@ class ModelFactorySpec extends SchemeSpec with OptionValues {
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.yourSelfEmployed).thenReturn(Some(true))
-        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(SelfEmployed.toString))
+        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed))
 
         factory(answers).value mustBe SingleHousehold(
           Parent(
@@ -68,7 +68,7 @@ class ModelFactorySpec extends SchemeSpec with OptionValues {
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.yourMaximumEarnings).thenReturn(Some(false))
         when(answers.yourSelfEmployed).thenReturn(Some(false))
-        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(SelfEmployed.toString))
+        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed))
 
         factory(answers).value mustBe SingleHousehold(
           Parent(
@@ -114,16 +114,16 @@ class ModelFactorySpec extends SchemeSpec with OptionValues {
       "return `Some` when all data is available" in {
         val answers = spy(helper())
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(Both))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
         when(answers.doYouGetAnyBenefits).thenReturn(Some(Set.empty))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.partnerMinimumEarnings).thenReturn(Some(false))
 
         when(answers.yourSelfEmployed).thenReturn(Some(true))
-        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(SelfEmployed.toString))
+        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed))
 
         when(answers.partnerSelfEmployed).thenReturn(Some(true))
-        when(answers.partnerSelfEmployedOrApprentice).thenReturn(Some(SelfEmployed.toString))
+        when(answers.partnerSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed))
 
         factory(answers).value mustBe JointHousehold(
           Parent(
@@ -147,14 +147,14 @@ class ModelFactorySpec extends SchemeSpec with OptionValues {
         val answers = spy(helper())
 
         when(answers.doYouLiveWithPartner).thenReturn(Some(true))
-        when(answers.whoIsInPaidEmployment).thenReturn(Some(Both))
+        when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
         when(answers.doYouGetAnyBenefits).thenReturn(Some(Set.empty))
         when(answers.yourMinimumEarnings).thenReturn(Some(false))
         when(answers.partnerMinimumEarnings).thenReturn(Some(true))
         when(answers.partnerMaximumEarnings).thenReturn(Some(false))
 
         when(answers.yourSelfEmployed).thenReturn(Some(true))
-        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(Apprentice.toString))
+        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.Apprentice))
 
         factory(answers).value mustBe JointHousehold(
           Parent(
@@ -183,10 +183,10 @@ class ModelFactorySpec extends SchemeSpec with OptionValues {
         when(answers.partnerMinimumEarnings).thenReturn(Some(false))
 
         when(answers.yourSelfEmployed).thenReturn(Some(true))
-        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(SelfEmployed.toString))
+        when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed))
 
         when(answers.partnerSelfEmployed).thenReturn(Some(true))
-        when(answers.partnerSelfEmployedOrApprentice).thenReturn(Some(SelfEmployed.toString))
+        when(answers.partnerSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.SelfEmployed))
 
         factory(answers) mustBe empty
       }

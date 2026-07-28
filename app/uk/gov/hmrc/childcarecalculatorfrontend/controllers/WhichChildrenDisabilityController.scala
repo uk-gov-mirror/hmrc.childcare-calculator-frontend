@@ -70,10 +70,7 @@ class WhichChildrenDisabilityController @Inject() (
     }
   }
 
-  private def options(values: Map[String, Int]): Seq[(String, String)] =
-    values.map { case (k, v) =>
-      (k, v.toString)
-    }.toSeq
+  private def options(values: Map[String, Int]): Seq[(String, Int)] = values.toSeq
 
   private def withValues(
       block: Map[String, Int] => Future[Result]

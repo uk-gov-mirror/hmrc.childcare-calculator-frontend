@@ -19,8 +19,6 @@ package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBothNeither
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
 
-case object WhoIsInPaidEmploymentId extends Identifier with CacheKey {
-  override def toString: String = "whoIsInPaidEmployment"
-
-  override type CacheValue = YouPartnerBothNeither
+case object WhoIsInPaidEmploymentId extends Identifier with CacheKey[YouPartnerBothNeither] {
+  override val toString = "whoIsInPaidEmployment"
 }

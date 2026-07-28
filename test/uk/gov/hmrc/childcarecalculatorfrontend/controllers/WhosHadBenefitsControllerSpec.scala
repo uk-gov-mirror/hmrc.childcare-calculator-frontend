@@ -17,26 +17,25 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.JsString
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhosHadBenefitsForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.WhosHadBenefitsId
-import uk.gov.hmrc.childcarecalculatorfrontend.models.YouPartnerBoth
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBoth
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whosHadBenefits
 
 class WhosHadBenefitsControllerSpec extends ControllerSpecBase {
 
-  val view = application.injector.instanceOf[whosHadBenefits]
+  val view: whosHadBenefits = inject[whosHadBenefits]
 
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new WhosHadBenefitsController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -45,8 +44,8 @@ class WhosHadBenefitsControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[?] = WhosHadBenefitsForm()) =
-    view(frontendAppConfig, form)(fakeRequest, messages).toString
+  def viewAsString(form: Form[YouPartnerBoth] = WhosHadBenefitsForm()): String =
+    view(form)(fakeRequest, messages).toString
 
   "WhosHadBenefits Controller" must {
 
@@ -58,7 +57,7 @@ class WhosHadBenefitsControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData       = Map(WhosHadBenefitsId.toString -> JsString(WhosHadBenefitsForm.options.head.value))
+      val validData       = Map(WhosHadBenefitsId.of(YouPartnerBoth.You))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)

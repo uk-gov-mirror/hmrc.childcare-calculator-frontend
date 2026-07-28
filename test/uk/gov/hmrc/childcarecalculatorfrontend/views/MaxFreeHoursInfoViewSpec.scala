@@ -23,7 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.maxFreeHoursInfo
 
 class MaxFreeHoursInfoViewSpec extends NewViewBehaviours {
 
-  val view             = application.injector.instanceOf[maxFreeHoursInfo]
+  val view             = inject[maxFreeHoursInfo]
   val messageKeyPrefix = "maxFreeHoursInfo"
 
   def answers(

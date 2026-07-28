@@ -28,7 +28,7 @@ class ChildAgedThreeOrFourViewSpec extends NewYesNoViewBehaviours {
   override val form = BooleanForm()
 
   val messageKeyPrefix = "childAgedThreeOrFour"
-  val view             = application.injector.instanceOf[childAgedThreeOrFour]
+  val view             = inject[childAgedThreeOrFour]
 
   val location = Location.England
 

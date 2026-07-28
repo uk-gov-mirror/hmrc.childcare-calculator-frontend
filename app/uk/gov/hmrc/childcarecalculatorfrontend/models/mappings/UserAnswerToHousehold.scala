@@ -16,24 +16,21 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.models.mappings
 
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child.{Child, ChildCareCost, Disability}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.{
-  BackendEmploymentStatus,
-  Claimant,
-  Income,
-  MinimumEarnings
-}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.{BackendEmploymentStatus, Claimant, Income, MinimumEarnings}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class UserAnswerToHousehold @Inject() (appConfig: FrontendAppConfig, utils: Utils) extends OverallIncome {
+class UserAnswerToHousehold @Inject() (
+    nmwConfig: NmwConfig
+) extends OverallIncome {
 
   private def booleanToCredits(x: Option[Boolean]): Option[Credits] = x match {
     case Some(true)  => Some(Credits.UniversalCredit)
@@ -121,7 +118,7 @@ class UserAnswerToHousehold @Inject() (appConfig: FrontendAppConfig, utils: Util
         || selfEmployedLessThan12Months.contains(true)
 
     val amt: Option[BigDecimal] = if (age.isDefined) {
-      Some(utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, age))
+      Some(nmwConfig.getEarningsForAgeRange(LocalDate.now, age))
     } else {
       None
     }

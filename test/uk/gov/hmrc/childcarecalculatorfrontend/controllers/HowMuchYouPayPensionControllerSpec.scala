@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.JsNumber
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
@@ -30,12 +30,11 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.howMuchYouPayPension
 
 class HowMuchYouPayPensionControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[howMuchYouPayPension]
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  val view: howMuchYouPayPension = inject[howMuchYouPayPension]
+  def onwardRoute: Call          = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new HowMuchYouPayPensionController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -44,8 +43,8 @@ class HowMuchYouPayPensionControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[BigDecimal] = HowMuchYouPayPensionForm()) =
-    view(frontendAppConfig, form)(fakeRequest, messages).toString
+  def viewAsString(form: Form[BigDecimal] = HowMuchYouPayPensionForm()): String =
+    view(form)(fakeRequest, messages).toString
 
   val testNumber = 123
 
@@ -59,7 +58,7 @@ class HowMuchYouPayPensionControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData       = Map(HowMuchYouPayPensionId.toString -> JsNumber(testNumber))
+      val validData       = Map(HowMuchYouPayPensionId.of(testNumber))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
@@ -79,7 +78,7 @@ class HowMuchYouPayPensionControllerSpec extends ControllerSpecBase {
     "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value")).withMethod("POST")
       val boundForm =
-        HowMuchYouPayPensionForm(howMuchYouPayPensionInvalidErrorKey).bind(Map("value" -> "invalid value"))
+        HowMuchYouPayPensionForm().bind(Map("value" -> "invalid value"))
 
       val result = controller().onSubmit()(postRequest)
 

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequency
 
@@ -26,11 +26,11 @@ class ChildcarePayFrequencyFormSpec extends FormBehaviours {
     "value" -> ChildcarePayFrequencyForm.options.head.value
   )
 
-  val form = ChildcarePayFrequencyForm("Foo")
+  val form: Form[ChildcarePayFrequency] = ChildcarePayFrequencyForm("Foo")
 
   "ChildcarePayFrequency form" must {
 
-    behave.like(questionForm[ChildcarePayFrequency](ChildcarePayFrequency(0)))
+    behave.like(questionForm[ChildcarePayFrequency](ChildcarePayFrequency.Weekly))
 
     behave.like(
       formWithOptionFieldError(

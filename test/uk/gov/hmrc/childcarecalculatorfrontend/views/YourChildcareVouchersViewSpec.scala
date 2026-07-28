@@ -25,7 +25,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourChildcareVouchers
 class YourChildcareVouchersViewSpec extends NewViewBehaviours with NewYesNoViewBehaviours {
 
   override val form    = BooleanForm()
-  val view             = application.injector.instanceOf[yourChildcareVouchers]
+  val view             = inject[yourChildcareVouchers]
   val messageKeyPrefix = "yourChildcareVouchers"
 
   def createView = () => view(frontendAppConfig, BooleanForm())(fakeRequest, messages)

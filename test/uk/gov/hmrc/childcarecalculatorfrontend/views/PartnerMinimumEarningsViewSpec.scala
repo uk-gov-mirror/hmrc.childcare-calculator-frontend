@@ -20,8 +20,8 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.data.Form
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import play.twirl.api.Html
+import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
@@ -32,7 +32,7 @@ class PartnerMinimumEarningsViewSpec extends NewYesNoViewBehaviours with BeforeA
 
   override val form: Form[Boolean]   = BooleanForm()
   val messageKeyPrefix               = "partnerMinimumEarnings"
-  val view                           = application.injector.instanceOf[partnerMinimumEarnings]
+  val view                           = inject[partnerMinimumEarnings]
   val averageWeeklyEarningsKeyPrefix = "partnerMinimumEarnings.averageWeekly"
   val bereavedPartnersPaternityLeave = "bereaved partner’s paternity leave"
 
@@ -41,7 +41,7 @@ class PartnerMinimumEarningsViewSpec extends NewYesNoViewBehaviours with BeforeA
       form: Form[Boolean] = this.form,
       amount: BigDecimal = 0,
       location: Location = Location.England
-  ): HtmlFormat.Appendable = view(appConfig, form, amount, location)(fakeRequest, messages)
+  ): Html = view(appConfig, form, amount, location)(fakeRequest, messages)
 
   "PartnerMinimumEarnings view" must {
 

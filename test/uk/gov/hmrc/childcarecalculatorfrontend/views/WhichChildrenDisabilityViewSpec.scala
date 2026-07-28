@@ -24,7 +24,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whichChildrenDisabilit
 
 class WhichChildrenDisabilityViewSpec extends NewViewBehaviours with NewCheckboxViewBehaviours[Int] {
 
-  val view             = application.injector.instanceOf[whichChildrenDisability]
+  val view             = inject[whichChildrenDisability]
   val messageKeyPrefix = "whichChildrenDisability"
 
   val fieldKey     = "value"

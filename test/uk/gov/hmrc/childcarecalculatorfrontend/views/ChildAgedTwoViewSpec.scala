@@ -26,7 +26,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.childAgedTwo
 class ChildAgedTwoViewSpec extends NewYesNoViewBehaviours {
 
   override val form    = BooleanForm()
-  val view             = application.injector.instanceOf[childAgedTwo]
+  val view             = inject[childAgedTwo]
   val messageKeyPrefix = "childAgedTwo"
   val location         = Location.England
 

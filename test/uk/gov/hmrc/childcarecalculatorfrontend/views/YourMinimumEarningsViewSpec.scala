@@ -20,8 +20,8 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.data.Form
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import play.twirl.api.Html
+import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
@@ -30,7 +30,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourMinimumEarnings
 
 class YourMinimumEarningsViewSpec extends NewYesNoViewBehaviours with BeforeAndAfterEach {
 
-  val view                           = application.injector.instanceOf[yourMinimumEarnings]
+  val view                           = inject[yourMinimumEarnings]
   val messageKeyPrefix               = "yourMinimumEarnings"
   val averageWeeklyEarningsKeyPrefix = "yourMinimumEarnings.averageWeekly"
   override val form: Form[Boolean]   = BooleanForm()
@@ -41,7 +41,7 @@ class YourMinimumEarningsViewSpec extends NewYesNoViewBehaviours with BeforeAndA
       form: Form[Boolean] = this.form,
       amount: BigDecimal = 0,
       location: Location = Location.England
-  ): HtmlFormat.Appendable = view(appConfig, form, amount, location)(fakeRequest, messages)
+  ): Html = view(appConfig, form, amount, location)(fakeRequest, messages)
 
   "YourMinimumEarnings view" must {
 

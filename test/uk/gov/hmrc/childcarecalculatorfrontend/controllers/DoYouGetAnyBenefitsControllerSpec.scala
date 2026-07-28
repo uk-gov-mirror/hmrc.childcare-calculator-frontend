@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.{JsArray, JsString}
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
@@ -30,16 +30,15 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.doYouGetAnyBenefits
 
 class DoYouGetAnyBenefitsControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[doYouGetAnyBenefits]
-  def onwardRoute = routes.DoesYourPartnerGetAnyBenefitsController.onPageLoad()
+  val view: doYouGetAnyBenefits = inject[doYouGetAnyBenefits]
+  def onwardRoute: Call         = routes.DoesYourPartnerGetAnyBenefitsController.onPageLoad()
 
-  val cacheMapWithPreviousAnswers = new CacheMap("id", Map.empty)
+  val cacheMapWithPreviousAnswers: CacheMap = CacheMap.empty
 
   def retrievalActionWithPreviousAnswers = new FakeDataRetrievalAction(Some(cacheMapWithPreviousAnswers))
 
   def controller(dataRetrievalAction: DataRetrievalAction = retrievalActionWithPreviousAnswers) =
     new DoYouGetAnyBenefitsController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -48,8 +47,8 @@ class DoYouGetAnyBenefitsControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[Set[ParentsBenefit]] = DoYouGetAnyBenefitsForm()) =
-    view(frontendAppConfig, form)(fakeRequest, messages).toString
+  def viewAsString(form: Form[Set[ParentsBenefit]] = DoYouGetAnyBenefitsForm()): String =
+    view(form)(fakeRequest, messages).toString
 
   "DoYouGetAnyBenefits Controller" must {
 
@@ -62,7 +61,7 @@ class DoYouGetAnyBenefitsControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData = Map(
-        DoYouGetAnyBenefitsId.toString -> JsArray(Seq(JsString(ParentsBenefit.CarersCredit.toString)))
+        DoYouGetAnyBenefitsId.of(Set(ParentsBenefit.CarersCredit))
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 

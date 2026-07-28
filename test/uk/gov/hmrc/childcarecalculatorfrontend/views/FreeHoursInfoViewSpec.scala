@@ -24,7 +24,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.freeHoursInfo
 class FreeHoursInfoViewSpec extends NewViewBehaviours {
 
   val messageKeyPrefix = "freeHoursInfo"
-  val view             = application.injector.instanceOf[freeHoursInfo]
+  val view             = inject[freeHoursInfo]
 
   def createView(location: Location) = () => view(location)(fakeRequest, messages)
 

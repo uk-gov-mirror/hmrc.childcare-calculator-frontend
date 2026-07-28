@@ -17,13 +17,14 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, Json}
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.EmploymentIncomeCYForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.EmploymentIncomeCY
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBothNeither
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
@@ -31,12 +32,12 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.employmentIncomeCY
 
 class EmploymentIncomeCYControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[employmentIncomeCY]
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  val view: employmentIncomeCY = inject[employmentIncomeCY]
+  def onwardRoute: Call        = routes.WhatToTellTheCalculatorController.onPageLoad
 
   val taxYearInfo = new TaxYearInfo
 
-  val form = new EmploymentIncomeCYForm(frontendAppConfig).apply()
+  val form: Form[EmploymentIncomeCY] = new EmploymentIncomeCYForm(frontendAppConfig).apply()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new EmploymentIncomeCYController(
@@ -51,8 +52,8 @@ class EmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[EmploymentIncomeCY] = form) =
-    view(frontendAppConfig, form, taxYearInfo)(fakeRequest, messages).toString
+  def viewAsString(form: Form[EmploymentIncomeCY] = form): String =
+    view(form, taxYearInfo)(fakeRequest, messages).toString
 
   "EmploymentIncomeCY Controller" must {
 
@@ -117,9 +118,9 @@ class EmploymentIncomeCYControllerSpec extends ControllerSpecBase {
 
       val validData = Map(
         EitherOfYouMaximumEarningsId.of(false),
-        ParentEmploymentIncomeCYId.of("100000"),
-        PartnerEmploymentIncomeCYId.of("100000"),
-        WhoIsInPaidEmploymentId.of("both")
+        ParentEmploymentIncomeCYId.of(100000),
+        PartnerEmploymentIncomeCYId.of(100000),
+        WhoIsInPaidEmploymentId.of(YouPartnerBothNeither.Both)
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
@@ -127,8 +128,8 @@ class EmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       val result = controller(getRelevantData).onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) contains messages(parentEmploymentIncomeInvalidMaxEarningsErrorKey)
-      contentAsString(result) contains messages(partnerEmploymentIncomeInvalidMaxEarningsErrorKey)
+      contentAsString(result) must include(messages(parentEmploymentIncomeInvalidMaxEarningsErrorKey))
+      contentAsString(result) must include(messages(partnerEmploymentIncomeInvalidMaxEarningsErrorKey))
     }
 
     "return a Bad Request and errors when user answered max earnings question under 1000000 but input was above 1000000" in {
@@ -138,9 +139,9 @@ class EmploymentIncomeCYControllerSpec extends ControllerSpecBase {
 
       val validData = Map(
         EitherOfYouMaximumEarningsId.of(true),
-        ParentEmploymentIncomeCYId.of("1000000"),
-        PartnerEmploymentIncomeCYId.of("1000000"),
-        WhoIsInPaidEmploymentId.of("both")
+        ParentEmploymentIncomeCYId.of(1000000),
+        PartnerEmploymentIncomeCYId.of(1000000),
+        WhoIsInPaidEmploymentId.of(YouPartnerBothNeither.Both)
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
@@ -148,8 +149,8 @@ class EmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       val result = controller(getRelevantData).onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) contains messages(parentEmploymentIncomeInvalidErrorKey)
-      contentAsString(result) contains messages(partnerEmploymentIncomeInvalidErrorKey)
+      contentAsString(result) must include(messages(parentEmploymentIncomeInvalidErrorKey))
+      contentAsString(result) must include(messages(partnerEmploymentIncomeInvalidErrorKey))
     }
   }
 

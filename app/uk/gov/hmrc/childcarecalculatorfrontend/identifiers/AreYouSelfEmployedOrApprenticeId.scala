@@ -19,8 +19,6 @@ package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.EmploymentStatus
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
 
-case object AreYouSelfEmployedOrApprenticeId extends Identifier with CacheKey {
-  override def toString: String = "areYouSelfEmployedOrApprentice"
-
-  override type CacheValue = EmploymentStatus
+case object AreYouSelfEmployedOrApprenticeId extends Identifier with CacheKey[EmploymentStatus] {
+  override val toString = "areYouSelfEmployedOrApprentice"
 }

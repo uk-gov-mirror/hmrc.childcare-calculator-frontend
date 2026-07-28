@@ -28,7 +28,7 @@ class ExpectedChildcareCostsViewSpec extends NewBigDecimalViewBehaviours {
 
   val messageKeyPrefix  = "expectedChildcareCosts"
   val messageKeyPostfix = ".notYet"
-  val view              = application.injector.instanceOf[expectedChildcareCosts]
+  val view              = inject[expectedChildcareCosts]
 
   def createView = () =>
     view(frontendAppConfig, ExpectedChildcareCostsForm(Weekly, "Foo"), Yes, 0, Weekly, "Foo")(

@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class NoOfChildrenFormSpec extends FormSpec {
 
   val missingErrorKey            = "blank"
   val errorKeyNonNumeric: String = noOfChildrenNotInteger
-  val NoOfChildrenForm           = new NoOfChildrenForm(frontendAppConfig).apply()
+  val NoOfChildrenForm: Form[Int] = new NoOfChildrenForm(frontendAppConfig).apply()
 
   "NoOfChildren Form" must {
 

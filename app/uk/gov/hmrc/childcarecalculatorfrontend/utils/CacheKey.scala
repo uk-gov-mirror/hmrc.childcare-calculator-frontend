@@ -18,12 +18,10 @@ package uk.gov.hmrc.childcarecalculatorfrontend.utils
 
 import play.api.libs.json.{JsValue, Json, Writes}
 
-trait CacheKey {
+trait CacheKey[A] {
   val cacheKey: String = toString
 
-  type CacheValue
-
-  def of(value: CacheValue)(using Writes[CacheValue]): (String, JsValue) =
-    toString -> Json.toJson(value)
+  def of(value: A)(using Writes[A]): (String, JsValue) =
+    cacheKey -> Json.toJson(value)
 
 }

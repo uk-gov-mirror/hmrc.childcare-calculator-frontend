@@ -32,7 +32,7 @@ class AboutYourChildFormSpec extends FormBehaviours {
     "aboutYourChild.dob.year"  -> "2017"
   )
 
-  implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), app.injector.instanceOf[MessagesApi])
+  implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), inject[MessagesApi])
 
   val form: Form[AboutYourChild] = AboutYourChildForm()
 
@@ -114,7 +114,7 @@ class AboutYourChildFormSpec extends FormBehaviours {
     }
 
     "fail to bind when the date is more than 18 years in the past" in {
-      val date = LocalDate.now.minusYears(18).minusDays(1)
+      val date = LocalDate.of(2026, 27, 7).minusYears(18).minusDays(1)
       val data = Map(
         "name"                     -> "Foo",
         "aboutYourChild.dob.day"   -> date.getDayOfMonth.toString,
@@ -126,7 +126,7 @@ class AboutYourChildFormSpec extends FormBehaviours {
     }
 
     "fail to bind when the date is more than 1 day in the future" in {
-      val date = LocalDate.now.plusDays(1)
+      val date = LocalDate.of(2026, 27, 7).plusDays(1)
       val data = Map(
         "name"                     -> "Foo",
         "aboutYourChild.dob.day"   -> date.getDayOfMonth.toString,

@@ -19,8 +19,6 @@ package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 import uk.gov.hmrc.childcarecalculatorfrontend.models.views.ResultsViewModel
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
 
-case object ResultsViewModelId extends Identifier with CacheKey {
-  override def toString: String = "resultsViewModel"
-
-  override type CacheValue = ResultsViewModel
+case object ResultsViewModelId extends Identifier with CacheKey[ResultsViewModel] {
+  override val toString = "resultsViewModel"
 }

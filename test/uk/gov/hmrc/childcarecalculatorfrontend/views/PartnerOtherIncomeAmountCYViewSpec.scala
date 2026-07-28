@@ -26,7 +26,7 @@ class PartnerOtherIncomeAmountCYViewSpec extends NewBigDecimalViewBehaviours {
 
   val form             = new PartnerOtherIncomeAmountCYForm(frontendAppConfig).apply()
   val messageKeyPrefix = "partnerOtherIncomeAmountCY"
-  val view             = application.injector.instanceOf[partnerOtherIncomeAmountCY]
+  val view             = inject[partnerOtherIncomeAmountCY]
 
   def createView = () => view(frontendAppConfig, form)(fakeRequest, messages)
 

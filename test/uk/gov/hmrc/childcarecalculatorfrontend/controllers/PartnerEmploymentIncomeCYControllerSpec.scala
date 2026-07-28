@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, JsNumber, Json}
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
@@ -30,10 +30,10 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerEmploymentIncom
 
 class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[partnerEmploymentIncomeCY]
-  val taxYearInfo = new TaxYearInfo
+  val view: partnerEmploymentIncomeCY = inject[partnerEmploymentIncomeCY]
+  val taxYearInfo                     = new TaxYearInfo
 
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new PartnerEmploymentIncomeCYController(
@@ -48,10 +48,10 @@ class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[BigDecimal] = new PartnerEmploymentIncomeCYForm(frontendAppConfig).apply()) =
-    view(frontendAppConfig, form, taxYearInfo)(fakeRequest, messages).toString
+  def viewAsString(form: Form[BigDecimal] = new PartnerEmploymentIncomeCYForm(frontendAppConfig).apply()): String =
+    view(form, taxYearInfo)(fakeRequest, messages).toString
 
-  val form = new PartnerEmploymentIncomeCYForm(frontendAppConfig).apply()
+  val form: Form[BigDecimal] = new PartnerEmploymentIncomeCYForm(frontendAppConfig).apply()
 
   val testNumber = 123
 
@@ -65,7 +65,7 @@ class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData       = Map(PartnerEmploymentIncomeCYId.toString -> JsNumber(testNumber))
+      val validData       = Map(PartnerEmploymentIncomeCYId.of(testNumber))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
@@ -112,7 +112,7 @@ class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
 
       val validData = Map(
         PartnerMaximumEarningsId.of(false),
-        PartnerEmploymentIncomeCYId.of("100000")
+        PartnerEmploymentIncomeCYId.of(100000)
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
@@ -128,7 +128,7 @@ class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
 
       val validData = Map(
         PartnerMaximumEarningsId.of(true),
-        PartnerEmploymentIncomeCYId.of("1000000")
+        PartnerEmploymentIncomeCYId.of(1000000)
       )
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))

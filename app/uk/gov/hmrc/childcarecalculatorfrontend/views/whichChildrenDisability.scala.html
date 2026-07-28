@@ -26,7 +26,7 @@
 
 @(
     form: Form[Set[Int]],
-    options: Seq[(String, String)],
+    options: Seq[(String, Int)],
 )(
     implicit request: Request[?],
     messages: Messages,
@@ -55,7 +55,7 @@
             inputs = options.map { case(text, value) =>
                 CheckboxItem(
                     content = HtmlContent(text.capitalize),
-                    value = value
+                    value = value.toString
                 )
             }
         )

@@ -17,26 +17,26 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, JsString}
+import play.api.libs.json.JsValue
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{AreYouInPaidWorkId, LocationId}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.areYouInPaidWork
 
 class AreYouInPaidWorkControllerSpec extends ControllerSpecBase {
 
-  val view = application.injector.instanceOf[areYouInPaidWork]
+  val view: areYouInPaidWork = inject[areYouInPaidWork]
 
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new AreYouInPaidWorkController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -45,10 +45,10 @@ class AreYouInPaidWorkControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[Boolean] = BooleanForm(), location: Location = Location.England) =
-    view(frontendAppConfig, form, location)(fakeRequest, messages).toString
+  def viewAsString(form: Form[Boolean] = BooleanForm(), location: Location = Location.England): String =
+    view(form, location)(fakeRequest, messages).toString
 
-  val location = LocationId.of(Location.England)
+  val location: (String, JsValue) = LocationId.of(Location.England)
 
   "AreYouInPaidWork Controller" must {
 

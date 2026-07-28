@@ -17,6 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.models
 
 import org.scalatestplus.play.PlaySpec
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Scheme
 
 class SchemeResultsSpec extends PlaySpec {
 

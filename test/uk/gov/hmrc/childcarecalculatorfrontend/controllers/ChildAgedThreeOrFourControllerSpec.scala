@@ -17,31 +17,30 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, JsString}
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{ChildAgedThreeOrFourId, LocationId}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.childAgedThreeOrFour
 
 class ChildAgedThreeOrFourControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[childAgedThreeOrFour]
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  val view: childAgedThreeOrFour = inject[childAgedThreeOrFour]
+  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
-  val location = Location.England
+  val location: Location = Location.England
 
-  val cacheMapWithLocation = CacheMap.of((LocationId.of(location)))
+  val cacheMapWithLocation: CacheMap = CacheMap.of(LocationId.of(location))
 
   def getDataWithLocationSet = new FakeDataRetrievalAction(Some(cacheMapWithLocation))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDataWithLocationSet) =
     new ChildAgedThreeOrFourController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -50,8 +49,8 @@ class ChildAgedThreeOrFourControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[Boolean] = BooleanForm()) =
-    view(frontendAppConfig, form, location)(fakeRequest, messages).toString
+  def viewAsString(form: Form[Boolean] = BooleanForm()): String =
+    view(form, location)(fakeRequest, messages).toString
 
   "ChildAgedThreeOrFour Controller" must {
 

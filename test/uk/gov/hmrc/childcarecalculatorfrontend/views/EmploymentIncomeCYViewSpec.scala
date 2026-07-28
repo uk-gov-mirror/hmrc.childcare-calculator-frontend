@@ -27,7 +27,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.employmentIncomeCY
 class EmploymentIncomeCYViewSpec extends NewQuestionViewBehaviours[EmploymentIncomeCY] {
 
   val messageKeyPrefix = "employmentIncomeCY"
-  val view             = application.injector.instanceOf[employmentIncomeCY]
+  val view             = inject[employmentIncomeCY]
 
   val taxYearInfo = new TaxYearInfo
 

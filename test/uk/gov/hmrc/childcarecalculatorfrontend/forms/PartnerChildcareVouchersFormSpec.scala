@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YesNoNotSure
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class PartnerChildcareVouchersFormSpec extends FormBehaviours {
@@ -25,7 +27,7 @@ class PartnerChildcareVouchersFormSpec extends FormBehaviours {
     "value" -> PartnerChildcareVouchersForm.options.head.value
   )
 
-  val form = PartnerChildcareVouchersForm()
+  val form: Form[YesNoNotSure] = PartnerChildcareVouchersForm()
 
   "PartnerChildcareVouchers form" must {
     behave.like(questionForm[String](PartnerChildcareVouchersForm.options.head.value))

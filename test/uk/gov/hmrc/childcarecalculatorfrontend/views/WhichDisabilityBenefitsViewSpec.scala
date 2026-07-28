@@ -27,7 +27,7 @@ import scala.util.Random
 
 class WhichDisabilityBenefitsViewSpec extends NewViewBehaviours with NewCheckboxViewBehaviours[DisabilityBenefit] {
 
-  val view             = application.injector.instanceOf[whichDisabilityBenefits]
+  val view             = inject[whichDisabilityBenefits]
   val messageKeyPrefix = "whichDisabilityBenefits"
   val fieldKey         = "value"
   val errorMessage     = "error.invalid"

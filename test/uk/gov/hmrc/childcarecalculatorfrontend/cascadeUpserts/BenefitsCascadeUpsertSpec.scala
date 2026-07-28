@@ -52,12 +52,11 @@ class BenefitsCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
     "Save BothAnyTheseBenefitsCY data " must {
       "remove whosHadBenefits, youBenefitsIncomeCY, partnerBenefitsIncomeCY and BenefitsIncomeCY pages data" +
         " when user selects no option" in {
-          val originalCacheMap = (CacheMap.of(
-              YouBenefitsIncomeCYId.of(20),
-              PartnerBenefitsIncomeCYId.of(20),
-              BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20)),
-              WhosHadBenefitsId.of(YouPartnerBoth.You)
-            )
+          val originalCacheMap = CacheMap.of(
+            YouBenefitsIncomeCYId.of(20),
+            PartnerBenefitsIncomeCYId.of(20),
+            BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20)),
+            WhosHadBenefitsId.of(YouPartnerBoth.You)
           )
 
           val result = cascadeUpsert(BothAnyTheseBenefitsCYId, false, originalCacheMap)
@@ -66,8 +65,7 @@ class BenefitsCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
         }
 
       "return original cache map when user selects yes option" in {
-        val originalCacheMap = (CacheMap.of(WhosHadBenefitsId.of(YouPartnerBoth.You), YouBenefitsIncomeCYId.of(20))
-        )
+        val originalCacheMap = CacheMap.of(WhosHadBenefitsId.of(YouPartnerBoth.You), YouBenefitsIncomeCYId.of(20))
 
         val result = cascadeUpsert(BothAnyTheseBenefitsCYId, true, originalCacheMap)
 
@@ -82,11 +80,10 @@ class BenefitsCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
     "Save WhosHadBenefits CY data " must {
       "remove PartnerBenefitsIncomeCY and BenefitsIncomeCY page data when user selects you option" in {
-        val originalCacheMap = (CacheMap.of(
-            YouBenefitsIncomeCYId.of(10),
-            PartnerBenefitsIncomeCYId.of(20),
-            BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20))
-          )
+        val originalCacheMap = CacheMap.of(
+          YouBenefitsIncomeCYId.of(10),
+          PartnerBenefitsIncomeCYId.of(20),
+          BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20))
         )
 
         val result = cascadeUpsert(WhosHadBenefitsId, YouPartnerBoth.You, originalCacheMap)
@@ -98,11 +95,10 @@ class BenefitsCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
       }
 
       "remove youBenefitsIncomeCY and BenefitsIncomeCY page data when user selects partner option" in {
-        val originalCacheMap = (CacheMap.of(
-            YouBenefitsIncomeCYId.of(10),
-            PartnerBenefitsIncomeCYId.of(20),
-            BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20))
-          )
+        val originalCacheMap = CacheMap.of(
+          YouBenefitsIncomeCYId.of(10),
+          PartnerBenefitsIncomeCYId.of(20),
+          BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20))
         )
 
         val result = cascadeUpsert(WhosHadBenefitsId, YouPartnerBoth.Partner, originalCacheMap)
@@ -114,35 +110,16 @@ class BenefitsCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
       }
 
       "remove PartnerBenefitsIncomeCY and youBenefitsIncomeCY page data when user selects both option" in {
-        val originalCacheMap = (CacheMap.of(
-            YouBenefitsIncomeCYId.of(10),
-            PartnerBenefitsIncomeCYId.of(20),
-            BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20))
-          )
+        val originalCacheMap = CacheMap.of(
+          YouBenefitsIncomeCYId.of(10),
+          PartnerBenefitsIncomeCYId.of(20),
+          BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20))
         )
 
         val result = cascadeUpsert(WhosHadBenefitsId, YouPartnerBoth.Both, originalCacheMap)
 
         result.data mustBe Map(
           WhosHadBenefitsId.of(YouPartnerBoth.Both),
-          BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20))
-        )
-      }
-
-      "return original cache map when there is any invalid value for the input" in {
-        val originalCacheMap = (CacheMap.of(
-            YouBenefitsIncomeCYId.of(10),
-            PartnerBenefitsIncomeCYId.of(20),
-            BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20))
-          )
-        )
-
-        val result = cascadeUpsert(WhosHadBenefitsId, "invalidvalue", originalCacheMap)
-
-        result.data mustBe Map(
-          WhosHadBenefitsId.toString -> "invalidvalue",
-          YouBenefitsIncomeCYId.of(10),
-          PartnerBenefitsIncomeCYId.of(20),
           BenefitsIncomeCYId.of(BenefitsIncomeCY(10, 20))
         )
       }

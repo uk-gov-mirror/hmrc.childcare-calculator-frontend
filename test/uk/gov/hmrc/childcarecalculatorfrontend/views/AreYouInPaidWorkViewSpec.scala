@@ -16,15 +16,12 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.views
 
-import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.data.Form
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import play.twirl.api.Html
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewYesNoViewBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.areYouInPaidWork
 
@@ -32,14 +29,13 @@ class AreYouInPaidWorkViewSpec extends NewYesNoViewBehaviours with BeforeAndAfte
 
   override val form: Form[Boolean]   = BooleanForm()
   val messageKeyPrefix               = "areYouInPaidWork"
-  val view: areYouInPaidWork         = application.injector.instanceOf[areYouInPaidWork]
+  val view: areYouInPaidWork         = inject[areYouInPaidWork]
   val bereavedPartnersPaternityLeave = "bereaved partner&#x27;s paternity leave"
 
   def constructView(
-      appConfig: FrontendAppConfig = frontendAppConfig,
       form: Form[Boolean] = BooleanForm(),
       location: Location = Location.England
-  ): HtmlFormat.Appendable = view(appConfig, form, location)(fakeRequest, messages)
+  ): Html = view(form, location)(fakeRequest, messages)
 
   "AreYouInPaidWork view" must {
 

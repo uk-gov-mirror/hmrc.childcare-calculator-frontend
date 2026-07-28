@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.services
 
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.connectors.EligibilityConnector
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.mappings.UserAnswerToHousehold
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -31,7 +30,7 @@ trait SubmissionService {
 }
 
 @Singleton
-class EligibilityService @Inject() (appConfig: FrontendAppConfig, utils: Utils, connector: EligibilityConnector)
+class EligibilityService @Inject() (userAnswerToHousehold: UserAnswerToHousehold, connector: EligibilityConnector)
     extends SubmissionService {
 
   def eligibility(
@@ -41,5 +40,4 @@ class EligibilityService @Inject() (appConfig: FrontendAppConfig, utils: Utils, 
     connector.getEligibility(household)
   }
 
-  private def userAnswerToHousehold: UserAnswerToHousehold = new UserAnswerToHousehold(appConfig, utils)
 }

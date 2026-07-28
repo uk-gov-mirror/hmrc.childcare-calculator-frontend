@@ -23,17 +23,17 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourIncomeInfo
 
 class YourIncomeInfoControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[yourIncomeInfo]
+  val view: yourIncomeInfo = inject[yourIncomeInfo]
   val taxYearInfo = new TaxYearInfo
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new YourIncomeInfoController(frontendAppConfig, mcc, dataRetrievalAction, new DataRequiredAction, taxYearInfo, view)
+    new YourIncomeInfoController(mcc, dataRetrievalAction, new DataRequiredAction, taxYearInfo, view)
 
   "YourIncomeInfo Controller" must {
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(fakeRequest)
       status(result) mustBe OK
-      contentAsString(result) mustBe view(frontendAppConfig, taxYearInfo)(fakeRequest, messages).toString
+      contentAsString(result) mustBe view(taxYearInfo)(fakeRequest, messages).toString
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {

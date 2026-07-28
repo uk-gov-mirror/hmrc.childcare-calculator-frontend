@@ -18,13 +18,14 @@ package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import play.api.data.Form
 import play.api.data.Forms.*
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{unknownErrorKey, whichChildrenBlindErrorKey}
 
 object WhichChildrenBlindForm extends FormErrorHelper {
 
   def apply(options: Int*): Form[Set[Int]] =
     Form(
-      "value" -> set(number.verifying("error.unknown", options.contains _))
-        .verifying("whichChildrenBlind.error.notCompleted", _.nonEmpty)
+      "value" -> set(number.verifying(unknownErrorKey, options.contains _))
+        .verifying(whichChildrenBlindErrorKey, _.nonEmpty)
     )
 
 }

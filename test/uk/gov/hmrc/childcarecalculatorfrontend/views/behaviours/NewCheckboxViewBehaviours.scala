@@ -17,14 +17,14 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours
 
 import play.api.data.{Form, FormError}
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.{Html, Html}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.NewViewSpecBase
 
 trait NewCheckboxViewBehaviours[A] extends NewViewSpecBase {
 
   def form: Form[Set[A]]
   def createView(form: Form[Set[A]]): Html
-  def createView: () => HtmlFormat.Appendable = () => createView(form)
+  def createView: () => Html = () => createView(form)
   def values: Seq[(String, String)]
 
   def fieldKey: String

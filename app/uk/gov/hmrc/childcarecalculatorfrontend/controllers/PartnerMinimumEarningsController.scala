@@ -20,14 +20,14 @@ import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.PartnerMinimumEarningsId
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.partnerMinimumEarningsErrorKey
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerMinimumEarnings
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -37,13 +37,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PartnerMinimumEarningsController @Inject() (
-    appConfig: FrontendAppConfig,
+    nmwConfig: NmwConfig,
     mcc: MessagesControllerComponents,
     dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    utils: Utils,
     partnerMinimumEarnings: partnerMinimumEarnings
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc)
@@ -64,7 +63,7 @@ class PartnerMinimumEarningsController @Inject() (
             Redirect(routes.YourPartnersAgeController.onPageLoad())
           case Some(yourPartnersAge) =>
             val earningsForAge =
-              utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, Some(yourPartnersAge))
+              nmwConfig.getEarningsForAgeRange(LocalDate.now, Some(yourPartnersAge))
 
             val preparedForm = request.userAnswers.partnerMinimumEarnings match {
               case None        => BooleanForm(partnerMinimumEarningsErrorKey, earningsForAge)
@@ -77,7 +76,7 @@ class PartnerMinimumEarningsController @Inject() (
 
   def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
     val earningsForAge =
-      utils.getEarningsForAgeRange(appConfig.configuration, LocalDate.now, request.userAnswers.yourPartnersAge)
+      nmwConfig.getEarningsForAgeRange(LocalDate.now, request.userAnswers.yourPartnersAge)
 
     request.userAnswers.location match {
       case None => Future.successful(Redirect(routes.LocationController.onPageLoad()))

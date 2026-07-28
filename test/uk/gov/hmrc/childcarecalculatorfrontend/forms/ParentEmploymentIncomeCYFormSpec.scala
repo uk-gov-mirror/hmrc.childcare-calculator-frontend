@@ -21,50 +21,47 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class ParentEmploymentIncomeCYFormSpec extends FormSpec {
 
-  val missingErrorKey      = parentEmploymentIncomeBlankErrorKey
-  val invalidValueErrorKey = parentEmploymentIncomeInvalidErrorKey
-
   val parentEmpIncomeCYForm: Form[BigDecimal] = new ParentEmploymentIncomeCYForm(frontendAppConfig).apply()
 
   "ParentEmploymentIncomeCY Form" must {
 
     "bind positive numbers" in {
       val form = parentEmpIncomeCYForm.bind(Map("value" -> "1.0"))
-      form.get mustBe 1.0
+      form.get mustBe BigDecimal(1.0)
     }
 
     "bind positive decimal number up to the threshold of 999999.99" in {
       val form = parentEmpIncomeCYForm.bind(Map("value" -> "999999.99"))
-      form.get mustBe 999999.99
+      form.get mustBe BigDecimal(999999.99)
     }
 
     "fail to bind numbers below the threshold" in {
-      val expectedError = error("value", invalidValueErrorKey)
+      val expectedError = error("value", parentEmploymentIncomeInvalidErrorKey)
       checkForError(parentEmpIncomeCYForm, Map("value" -> "0.9"), expectedError)
     }
 
     "fail to bind negative numbers" in {
-      val expectedError = error("value", invalidValueErrorKey)
+      val expectedError = error("value", parentEmploymentIncomeInvalidErrorKey)
       checkForError(parentEmpIncomeCYForm, Map("value" -> "-1"), expectedError)
     }
 
     "fail to bind non-numerics" in {
-      val expectedError = error("value", invalidValueErrorKey)
+      val expectedError = error("value", parentEmploymentIncomeInvalidErrorKey)
       checkForError(parentEmpIncomeCYForm, Map("value" -> "not a number"), expectedError)
     }
 
     "fail to bind a blank value" in {
-      val expectedError = error("value", missingErrorKey)
+      val expectedError = error("value", parentEmploymentIncomeBlankErrorKey)
       checkForError(parentEmpIncomeCYForm, Map("value" -> ""), expectedError)
     }
 
     "fail to bind when value is omitted" in {
-      val expectedError = error("value", missingErrorKey)
+      val expectedError = error("value", parentEmploymentIncomeBlankErrorKey)
       checkForError(parentEmpIncomeCYForm, emptyForm, expectedError)
     }
 
     "fail to bind if regex does not match" in {
-      val expectedError = error("value", invalidValueErrorKey)
+      val expectedError = error("value", parentEmploymentIncomeInvalidErrorKey)
       checkForError(parentEmpIncomeCYForm, Map("value" -> "1.0235"), expectedError)
 
     }

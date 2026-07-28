@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
 @import uk.gov.hmrc.childcarecalculatorfrontend.models.views.{EligibilityModel, ResultsViewModel, SchemeResultModel}
 @import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 @import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildAgeGroup
 @import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 @import uk.gov.hmrc.childcarecalculatorfrontend.utils.Utils
+@import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 
 @this(
     schemeResult: playComponents.scheme_result,
@@ -89,7 +89,7 @@
         title = messages("result.tfc.title"),
         id = Some("tfc"),
         couldGet = Some(messages("result.you.could.get")),
-        eligibility = Some(EligibilityModel("£" + model.tfc.fold("")(value => utils.valueFormatter(value)), "taxFreeChildcareEligibility")),
+        eligibility = Some(EligibilityModel("£" + model.tfc.fold("")(value => utils.formatBigDecimal(value)), "taxFreeChildcareEligibility")),
         periodText = Some(messages("result.tfc.period")),
         warningMessage = model.tfcWarningMessage,
         displayApplyForTFCLink = true,
@@ -102,7 +102,7 @@
         title = messages("result.esc.title"),
         id = Some("esc"),
         couldGet = Some(messages("result.you.could.get")),
-        eligibility = Some(EligibilityModel("£" + model.esc.fold("")(value => utils.valueFormatter(value)), "childcareVouchersEligibility")),
+        eligibility = Some(EligibilityModel("£" + model.esc.fold("")(value => utils.formatBigDecimal(value)), "childcareVouchersEligibility")),
         periodText = Some(messages("result.esc.period"))
     ))
 }

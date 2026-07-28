@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBoth
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class WhoPaysIntoPensionFormSpec extends FormBehaviours {
@@ -25,7 +27,7 @@ class WhoPaysIntoPensionFormSpec extends FormBehaviours {
     "value" -> WhoPaysIntoPensionForm.options.head.value
   )
 
-  val form = WhoPaysIntoPensionForm()
+  val form: Form[YouPartnerBoth] = WhoPaysIntoPensionForm()
 
   "WhoPaysIntoPension form" must {
     behave.like(questionForm[String](WhoPaysIntoPensionForm.options.head.value))

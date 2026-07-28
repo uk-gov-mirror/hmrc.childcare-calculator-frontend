@@ -17,18 +17,13 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.data.Form
-import play.api.libs.json.JsString
+import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.SurveyDoNotUnderstandForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.SurveyDoNotUnderstandId
-import uk.gov.hmrc.childcarecalculatorfrontend.services.{
-  FakeDataCacheService,
-  SplunkSubmissionServiceInterface,
-  SubmissionStatus,
-  SubmissionSuccessful
-}
+import uk.gov.hmrc.childcarecalculatorfrontend.services.{FakeDataCacheService, SplunkSubmissionServiceInterface, SubmissionStatus, SubmissionSuccessful}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.surveyDoNotUnderstand
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,12 +32,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SurveyDoNotUnderstandControllerSpec extends ControllerSpecBase {
 
-  val view        = application.injector.instanceOf[surveyDoNotUnderstand]
-  def onwardRoute = routes.WhatToTellTheCalculatorController.onPageLoad
+  val view: surveyDoNotUnderstand = inject[surveyDoNotUnderstand]
+  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new SurveyDoNotUnderstandController(
-      frontendAppConfig,
       mcc,
       FakeDataCacheService,
       new FakeNavigator(desiredRoute = onwardRoute),
@@ -52,8 +46,8 @@ class SurveyDoNotUnderstandControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[String] = SurveyDoNotUnderstandForm()) =
-    view(frontendAppConfig, form)(fakeRequest, messages).toString
+  def viewAsString(form: Form[String] = SurveyDoNotUnderstandForm()): String =
+    view(form)(fakeRequest, messages).toString
 
   val testString = "feedback string"
 

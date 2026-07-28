@@ -27,7 +27,7 @@ class DoYouLiveWithPartnerViewSpec extends NewYesNoViewBehaviours {
   override val form = BooleanForm()
 
   val messageKeyPrefix = "doYouLiveWithPartner"
-  val view             = application.injector.instanceOf[doYouLiveWithPartner]
+  val view             = inject[doYouLiveWithPartner]
 
   def createView = () => view(frontendAppConfig, BooleanForm())(fakeRequest, messages)
 

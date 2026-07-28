@@ -30,13 +30,10 @@ object HowMuchYouPayPensionForm extends FormErrorHelper {
   ): Formatter[BigDecimal] =
     DecimalFormatter(missingErrorKey = missingErrorKey, invalidValueErrorKey = invalidValueErrorKey)
 
-  def apply(
-      missingErrorKey: String = howMuchYouPayPensionRequiredErrorKey,
-      invalidValueErrorKey: String = howMuchYouPayPensionInvalidErrorKey
-  ): Form[BigDecimal] =
+  def apply(): Form[BigDecimal] =
     Form(
       single(
-        "value" -> of(howMuchYouPayPensionFormatter(missingErrorKey, invalidValueErrorKey))
+        "value" -> of(howMuchYouPayPensionFormatter(howMuchYouPayPensionRequiredErrorKey, howMuchYouPayPensionInvalidErrorKey))
           .verifying(minimumValue[BigDecimal](1, howMuchYouPayPensionInvalidErrorKey))
           .verifying(maximumValue[BigDecimal](9999.99, howMuchYouPayPensionInvalidErrorKey))
       )

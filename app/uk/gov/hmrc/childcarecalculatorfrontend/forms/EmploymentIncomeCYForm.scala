@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 
 import play.api.data.Form
 import play.api.data.Forms.*
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.models.EmploymentIncomeCY
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 

@@ -67,7 +67,7 @@ package object forms {
       new Mapping[A] {
 
         override val key: String                           = mapping.key
-        override val mappings: Seq[Mapping[_]]             = mapping.mappings
+        override val mappings: Seq[Mapping[?]]             = mapping.mappings
         override val constraints: Seq[Constraint[A]]       = mapping.constraints
         override def unbind(value: A): Map[String, String] = mapping.unbind(value)
         override def withPrefix(prefix: String): Mapping[A] =

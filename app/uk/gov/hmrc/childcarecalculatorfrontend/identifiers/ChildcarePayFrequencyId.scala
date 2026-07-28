@@ -21,8 +21,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
 
 case class ChildcarePayFrequencyId(id: Int) extends Identifier
 
-object ChildcarePayFrequencyId extends Identifier with CacheKey {
-  override def toString: String = "childcarePayFrequency"
-
-  override type CacheValue = Map[Int, ChildcarePayFrequency]
+object ChildcarePayFrequencyId extends Identifier with CacheKey[Map[Int, ChildcarePayFrequency]] {
+  override val toString = "childcarePayFrequency"
 }

@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes.*
 @import uk.gov.hmrc.childcarecalculatorfrontend.forms.LocationForm
+@import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 
 @this(
     layout: Layout,
@@ -27,7 +28,7 @@
 )
 
 @(
-    form: Form[?],
+    form: Form[Location],
 )(
     implicit request: Request[?],
     messages: Messages,

@@ -17,16 +17,13 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.navigation
 
 import play.api.mvc.Call
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
-  Identifier,
-  SurveyChildcareSupportId,
-  SurveyDoNotUnderstandId
-}
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{Identifier, SurveyChildcareSupportId, SurveyDoNotUnderstandId}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{UserAnswers, Utils}
 
 import javax.inject.{Inject, Singleton}
+import scala.annotation.unused
 
 @Singleton
 private[navigation] class SurveyNavigator @Inject() (utils: Utils, appConfig: FrontendAppConfig) extends SubNavigator {
@@ -42,5 +39,5 @@ private[navigation] class SurveyNavigator @Inject() (utils: Utils, appConfig: Fr
       case true  => Call("", appConfig.surveyThankYouUrl)
     }
 
-  private def reasonsForNotUnderstanding(_answers: UserAnswers) = Call("", appConfig.surveyThankYouUrl)
+  private def reasonsForNotUnderstanding(@unused answers: UserAnswers) = Call("", appConfig.surveyThankYouUrl)
 }

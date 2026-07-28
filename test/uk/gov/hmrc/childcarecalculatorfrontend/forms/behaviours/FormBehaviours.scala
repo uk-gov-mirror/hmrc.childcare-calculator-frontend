@@ -36,13 +36,13 @@ trait FormBehaviours extends FormSpec with OptionValues {
     checkForError(form, data, expectedError)
   }
 
-  def questionForm[A](expectedResult: A) =
+  def questionForm[A](expectedResult: A): Unit =
     "bind valid values correctly" in {
       val boundForm = form.bind(validData)
       boundForm.get mustBe expectedResult
     }
 
-  def formWithOptionalTextFields(fields: String*) =
+  def formWithOptionalTextFields(fields: String*): Unit =
     for (field <- fields)
       s"bind when $field is omitted" in {
         val data      = validData - field
@@ -50,7 +50,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
         boundForm.errors.isEmpty mustBe true
       }
 
-  def formWithMandatoryTextFields(fields: String*) =
+  def formWithMandatoryTextFields(fields: String*): Unit =
     for (field <- fields) {
       s"fail to bind when $field is omitted" in {
         val data          = validData - field
@@ -69,7 +69,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
       field: String,
       errorKeyRequired: String = "error.required",
       missingErrorKey: String = "error.blank"
-  ) = {
+  ): Unit = {
 
     s"fail to bind when $field is omitted" in {
       val data          = validData - field
@@ -85,7 +85,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
 
   }
 
-  def formWithMandatoryNumberFields(fields: String*) =
+  def formWithMandatoryNumberFields(fields: String*): Unit =
     for (field <- fields) {
       s"fail to bind when $field is omitted" in {
         val data          = validData - field
@@ -100,7 +100,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
       }
     }
 
-  def formWithConditionallyMandatoryField(booleanField: String, field: String) = {
+  def formWithConditionallyMandatoryField(booleanField: String, field: String): Unit = {
     s"bind when $booleanField is false and $field is omitted" in {
       val data      = validData + (booleanField -> "false") - field
       val boundForm = form.bind(data)
@@ -114,7 +114,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
     }
   }
 
-  def formWithBooleans(fields: String*) =
+  def formWithBooleans(fields: String*): Unit =
     for (field <- fields) {
       s"fail to bind when $field is omitted" in {
         val data          = validData - field
@@ -129,7 +129,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
       }
     }
 
-  def formWithOptionField(field: String, validValues: String*) =
+  def formWithOptionField(field: String, validValues: String*): Unit =
     formWithOptionFieldError(field, "error.required", validValues*)
 
   def formWithOptionFieldError(formError: FormError, validValues: String*): Unit = {
@@ -155,7 +155,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
   def formWithOptionFieldError(field: String, errorMessage: String, validValues: String*): Unit =
     formWithOptionFieldError(FormError(field, errorMessage), validValues*)
 
-  def formWithDateField(field: String) = {
+  def formWithDateField(field: String): Unit = {
     s"fail to bind when $field day is omitted" in {
       val data          = validData - s"$field.day"
       val expectedError = error(s"$field.day", "error.date.day_blank")
@@ -254,7 +254,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
 
   }
 
-  def formWithDecimalField(fields: String*) =
+  def formWithDecimalField(fields: String*): Unit =
     for (field <- fields)
       s"fail to bind when $field is not a decimal" in {
         val data          = validData + (field -> "invalid")
@@ -262,12 +262,12 @@ trait FormBehaviours extends FormSpec with OptionValues {
         checkForError(form, data, expectedError)
       }
 
-  def formWithMinimumValue(fields: String*) =
+  def formWithMinimumValue(fields: String*): Unit =
     for (field <- fields)
       s"fail to bind when $field is less than minimum value" in
         minimumValue(field)
 
-  def formWithInRange(fields: String*) =
+  def formWithInRange(fields: String*): Unit =
     for (field <- fields) {
       s"fail to bind when $field is less than minimum value" in
         minimumValue(field)

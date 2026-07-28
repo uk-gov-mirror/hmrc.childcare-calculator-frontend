@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBoth
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class WhoGetsOtherIncomeCYFormSpec extends FormBehaviours {
@@ -25,7 +27,7 @@ class WhoGetsOtherIncomeCYFormSpec extends FormBehaviours {
     "value" -> WhoGetsOtherIncomeCYForm.options.head.value
   )
 
-  val form = WhoGetsOtherIncomeCYForm()
+  val form: Form[YouPartnerBoth] = WhoGetsOtherIncomeCYForm()
 
   "WhoGetsOtherIncomeCY form" must {
     behave.like(questionForm[String](WhoGetsOtherIncomeCYForm.options.head.value))

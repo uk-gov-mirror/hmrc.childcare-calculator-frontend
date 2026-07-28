@@ -19,8 +19,6 @@ package uk.gov.hmrc.childcarecalculatorfrontend.identifiers
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YesNoNotYet
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheKey
 
-case object ChildcareCostsId extends Identifier with CacheKey {
-  override def toString: String = "childcareCosts"
-
-  override type CacheValue = YesNoNotYet
+case object ChildcareCostsId extends Identifier with CacheKey[YesNoNotYet] {
+  override val toString = "childcareCosts"
 }

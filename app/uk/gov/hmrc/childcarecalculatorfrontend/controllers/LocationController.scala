@@ -22,6 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.DataRetrievalAction
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.LocationForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.LocationId
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
@@ -54,7 +55,7 @@ class LocationController @Inject() (
     LocationForm()
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[?]) => Future.successful(BadRequest(location(formWithErrors))),
+        (formWithErrors: Form[Location]) => Future.successful(BadRequest(location(formWithErrors))),
         value =>
           dataCacheService
             .save(LocationId, value)

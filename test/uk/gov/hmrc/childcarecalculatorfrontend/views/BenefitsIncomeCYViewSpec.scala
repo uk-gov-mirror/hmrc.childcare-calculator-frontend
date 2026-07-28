@@ -26,7 +26,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.benefitsIncomeCY
 class BenefitsIncomeCYViewSpec extends NewQuestionViewBehaviours[BenefitsIncomeCY] {
 
   val messageKeyPrefix = "benefitsIncomeCY"
-  val view             = application.injector.instanceOf[benefitsIncomeCY]
+  val view             = inject[benefitsIncomeCY]
 
   def createView = () => view(frontendAppConfig, BenefitsIncomeCYForm())(fakeRequest, messages)
 

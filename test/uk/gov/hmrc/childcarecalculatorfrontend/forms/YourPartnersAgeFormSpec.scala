@@ -16,16 +16,18 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Age
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
 class YourPartnersAgeFormSpec extends FormBehaviours {
 
   val validData: Map[String, String] = Map(
-    "value" -> YourPartnersAgeForm.options.head.value
+    "value" -> Age.UnderEighteen.toString
   )
 
-  val form = YourPartnersAgeForm()
+  val form: Form[Age] = YourPartnersAgeForm()
 
   "YourPartnersAge form" must {
     behave.like(questionForm[String](YourPartnersAgeForm.options.head.value))

@@ -23,7 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourIncomeInfo
 
 class YourIncomeInfoViewSpec extends NewViewBehaviours {
 
-  val view        = application.injector.instanceOf[yourIncomeInfo]
+  val view        = inject[yourIncomeInfo]
   val taxYearInfo = new TaxYearInfo
 
   def createView       = () => view(frontendAppConfig, taxYearInfo)(fakeRequest, messages)

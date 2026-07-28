@@ -59,7 +59,7 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
     val section2 = answers.noOfChildren match {
       case Some(_) =>
         val childcareCosts = CalculateChildcareCosts(answers)
-        s"${Messages("results.firstParagraph.yearlyChildcareCosts")}${utils.valueFormatter(childcareCosts)}"
+        s"${Messages("results.firstParagraph.yearlyChildcareCosts")}${utils.formatBigDecimal(childcareCosts)}"
       case _ => ""
     }
 

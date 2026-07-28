@@ -17,8 +17,8 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.views
 
 import org.scalatestplus.mockito.MockitoSugar
-import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.childcarecalculatorfrontend.FrontendAppConfig
+import play.twirl.api.Html
+import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.models.{Location, *}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.views.ResultsViewModel
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.Utils
@@ -27,13 +27,13 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.result
 
 class ResultViewSpec extends NewViewBehaviours with MockitoSugar {
 
-  val resultView: result = application.injector.instanceOf[result]
+  val resultView: result = inject[result]
 
   val locationEngland: Location  = Location.England
   val locationScotland: Location = Location.Scotland
   val locationWales: Location    = Location.Wales
 
-  def createView(): () => HtmlFormat.Appendable = () =>
+  def createView(): () => Html = () =>
     resultView(
       frontendAppConfig: FrontendAppConfig,
       ResultsViewModel(

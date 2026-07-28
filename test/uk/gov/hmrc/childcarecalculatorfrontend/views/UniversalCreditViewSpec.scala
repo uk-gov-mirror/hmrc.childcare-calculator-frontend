@@ -24,7 +24,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.universalCredit
 
 class UniversalCreditViewSpec extends NewYesNoViewBehaviours {
 
-  val view = application.injector.instanceOf[universalCredit]
+  val view = inject[universalCredit]
 
   override val form = BooleanForm()
 

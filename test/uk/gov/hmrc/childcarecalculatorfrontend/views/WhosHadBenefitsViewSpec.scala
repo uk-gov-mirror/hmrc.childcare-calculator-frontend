@@ -23,12 +23,12 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whosHadBenefits
 
 class WhosHadBenefitsViewSpec extends NewViewBehaviours {
 
-  val view             = application.injector.instanceOf[whosHadBenefits]
+  val view             = inject[whosHadBenefits]
   val messageKeyPrefix = "whosHadBenefits"
 
   def createView = () => view(frontendAppConfig, WhosHadBenefitsForm())(fakeRequest, messages)
 
-  def createViewUsingForm = (form: Form[?]) => view(frontendAppConfig, form)(fakeRequest, messages)
+  def createViewUsingForm = (form: Form[Set[Int]]) => view(frontendAppConfig, form)(fakeRequest, messages)
 
   "WhosHadBenefits view" must {
     behave.like(normalPage(createView, messageKeyPrefix))
