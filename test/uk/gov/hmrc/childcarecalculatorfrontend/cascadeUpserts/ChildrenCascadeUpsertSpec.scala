@@ -28,7 +28,7 @@ class ChildrenCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
       "remove relevant data in child journey when noOfChildren value is changed" in {
         val originalCacheMap: CacheMap = DataGenerator.sample
 
-        val result = cascadeUpsert(NoOfChildrenId, 4, DataGenerator.sample)
+        val result = cascadeUpsert(NoOfChildrenId, 4, originalCacheMap)
 
         result.data mustBe Map(NoOfChildrenId.of(4))
       }
@@ -162,7 +162,7 @@ class ChildrenCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
           val result = cascadeUpsert(WhoHasChildcareCostsId, Set(0, 4), originalCacheMap)
 
           result.getEntry(ChildcarePayFrequencyId) mustBe Some(
-            Map(0 -> ChildcarePayFrequency.Monthly, 4 -> ChildcarePayFrequency.Weekly.toString)
+            Map(0 -> ChildcarePayFrequency.Monthly, 4 -> ChildcarePayFrequency.Weekly)
           )
           result.getEntry(ExpectedChildcareCostsId) mustBe Some(
             Map(0 -> 123, 4 -> 340)

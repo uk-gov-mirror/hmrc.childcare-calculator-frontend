@@ -16,10 +16,14 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
+import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{LocationId, PartnerMinimumEarningsId, YourPartnersAgeId}
@@ -28,12 +32,14 @@ import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerMinimumEarnings
 
-class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase {
+class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoSugar {
 
   val view: partnerMinimumEarnings   = inject[partnerMinimumEarnings]
   val location: Location             = Location.England
   val cacheMapWithLocation: CacheMap = CacheMap.of(LocationId.of(location))
   val getDataWithLocationSet         = new FakeDataRetrievalAction(Some(cacheMapWithLocation))
+
+  override lazy val nmwConfig: NmwConfig = mock[NmwConfig]
 
   def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
@@ -60,6 +66,8 @@ class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase {
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
+      mockEarnings()
+
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
@@ -76,6 +84,8 @@ class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase {
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
+      mockEarnings()
+
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(
@@ -85,6 +95,8 @@ class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase {
 
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
+
+      mockEarnings()
 
       val result = controller().onSubmit()(postRequest)
 
@@ -96,6 +108,8 @@ class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value")).withMethod("POST")
       val boundForm = BooleanForm("partnerMinimumEarnings.error.notCompleted", 0).bind(Map("value" -> "invalid value"))
 
+      mockEarnings()
+
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
@@ -105,12 +119,16 @@ class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase {
     "redirect to Session Expired for a GET if no existing data is found" in {
       val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
 
+      mockEarnings()
+
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
+
+      mockEarnings()
 
       val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
@@ -125,6 +143,10 @@ class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(routes.YourPartnersAgeController.onPageLoad().url)
     }
 
+  }
+
+  def mockEarnings(value: Int = 0): Unit = {
+    when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(value)
   }
 
 }

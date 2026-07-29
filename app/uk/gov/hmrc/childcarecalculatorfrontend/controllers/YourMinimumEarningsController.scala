@@ -56,6 +56,12 @@ class YourMinimumEarningsController @Inject() (
       case None =>
         Redirect(routes.LocationController.onPageLoad())
 
+      case _ if request.userAnswers.yourAge.isEmpty =>
+        logger.warn(
+          s"Arrived at ${request.uri} without an age value, redirecting to ${routes.YourAgeController.onPageLoad().url}"
+        )
+        Redirect(routes.YourAgeController.onPageLoad())
+
       case Some(location) =>
         val earningsForAge =
           nmwConfig.getEarningsForAgeRange(LocalDate.now, request.userAnswers.yourAge)

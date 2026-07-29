@@ -33,8 +33,8 @@ class WhichDisabilityBenefitsViewSpec extends NewViewBehaviours with NewCheckbox
   override val errorMessage         = "error.invalid"
 
   override val values: Seq[(String, DisabilityBenefit)] = Seq(
-    s"whichDisabilityBenefit.${DisabilityBenefit.DisabilityBenefits}" -> DisabilityBenefit.DisabilityBenefits,
-    s"whichDisabilityBenefit.${DisabilityBenefit.HigherDisabilityBenefits}" -> DisabilityBenefit.HigherDisabilityBenefits
+    s"whichDisabilityBenefits.${DisabilityBenefit.DisabilityBenefits}" -> DisabilityBenefit.DisabilityBenefits,
+    s"whichDisabilityBenefits.${DisabilityBenefit.HigherDisabilityBenefits}" -> DisabilityBenefit.HigherDisabilityBenefits
   )
 
   override val form: Form[Set[DisabilityBenefit]] = WhichDisabilityBenefitsForm("Foo")

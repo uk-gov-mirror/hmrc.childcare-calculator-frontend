@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
+import org.scalactic.source.Position
 import org.scalatest.Assertion
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.data.{Form, FormError}
@@ -30,17 +31,15 @@ trait FormSpec extends PlaySpec with GuiceOneAppPerSuite with Injecting {
 
   def frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
 
-  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError]): Assertion =
-    form
-      .bind(data)
-      .fold(
-        formWithErrors => {
-          for (error <- expectedErrors)
-            formWithErrors.errors must contain(error)
-          formWithErrors.errors.size mustBe expectedErrors.size
-        },
-        form => fail("Expected a validation error when binding the form, but it was bound successfully.")
-      )
+  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError])(using Position): Assertion = {
+    val formWithErrors = form.bind(data)
+
+    for (error <- expectedErrors)
+      formWithErrors.errors must contain(error)
+
+    formWithErrors.errors.size mustBe expectedErrors.size
+
+  }
 
   def error(key: String, value: String, args: Any*): Seq[FormError] = Seq(FormError(key, value, args))
 

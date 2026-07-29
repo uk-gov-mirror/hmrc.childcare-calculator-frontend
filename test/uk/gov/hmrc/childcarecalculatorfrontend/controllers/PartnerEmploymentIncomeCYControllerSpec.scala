@@ -24,8 +24,8 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.PartnerEmploymentIncomeCYForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{PartnerEmploymentIncomeCYId, PartnerMaximumEarningsId}
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerEmploymentIncomeCY
 
 class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {

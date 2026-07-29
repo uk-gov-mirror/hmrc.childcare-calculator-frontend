@@ -22,7 +22,7 @@ import play.api.Application
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, MessagesControllerComponents}
 import play.api.test.{FakeRequest, Injecting}
-import uk.gov.hmrc.childcarecalculatorfrontend.config.{FrontendAppConfig, NmwConfig, NmwConfigSpec}
+import uk.gov.hmrc.childcarecalculatorfrontend.config.{FrontendAppConfig, NmwConfig}
 
 import scala.concurrent.ExecutionContext
 

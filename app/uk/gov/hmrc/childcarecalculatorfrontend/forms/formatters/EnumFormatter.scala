@@ -30,8 +30,8 @@ case class EnumFormatter[E](
   def bind(key: String, data: Map[String, String]): Either[Seq[FormError], E] =
     data.get(key).map(enumFormat.withName) match {
       case Some(Some(value)) => Right(value)
-      case Some(None)        => Left(Seq(FormError(key, unknownValueErrorKey, args)))
-      case None              => Left(Seq(FormError(key, missingErrorKey)))
+      case Some(None)        => Left(Seq(FormError(key, unknownValueErrorKey)))
+      case None              => Left(Seq(FormError(key, missingErrorKey, args)))
     }
 
   def unbind(key: String, value: E): Map[String, String] = Map(key -> value.toString)

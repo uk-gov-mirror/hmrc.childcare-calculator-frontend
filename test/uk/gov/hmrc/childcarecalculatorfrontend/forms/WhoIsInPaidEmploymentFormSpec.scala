@@ -21,7 +21,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBothNeither
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
-class WhoIsInPaidEmploymentFormSpec extends FormBehaviours {
+class WhoIsInPaidEmploymentFormSpec extends FormBehaviours[YouPartnerBothNeither] {
 
   val validData: Map[String, String] = Map(
     "value" -> YouPartnerBothNeither.You.toString
@@ -30,13 +30,13 @@ class WhoIsInPaidEmploymentFormSpec extends FormBehaviours {
   val form: Form[YouPartnerBothNeither] = WhoIsInPaidEmploymentForm()
 
   "WhoIsInPaidEmployment form" must {
-    behave.like(questionForm[String](WhoIsInPaidEmploymentForm.options.head.value))
+    behave.like(questionForm(YouPartnerBothNeither.You))
 
     behave.like(
       formWithOptionFieldError(
         "value",
         whoIsInPaidEmploymentErrorKey,
-        WhoIsInPaidEmploymentForm.options.map(x => x.value)*
+        YouPartnerBothNeither.values*
       )
     )
   }

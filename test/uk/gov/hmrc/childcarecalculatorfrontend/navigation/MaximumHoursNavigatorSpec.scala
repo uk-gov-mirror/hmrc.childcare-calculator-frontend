@@ -25,7 +25,11 @@ import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{EmploymentStatus, YouPartnerBothNeither}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
+  EmploymentStatus,
+  YouPartnerBothNeither,
+  YouPartnerBothNeitherNotSure
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers}
 
@@ -39,17 +43,17 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
       freeChildcareWorkingParents: FreeChildcareWorkingParents,
       tfc: TaxFreeChildcare,
       esc: EmploymentSupportedChildcare
-  ): SubNavigator =
+  ): MaximumHoursNavigator =
     new MaximumHoursNavigator(schemes, freeChildcareWorkingParents, tfc, esc)
 
-  def navigator(schemes: Schemes): SubNavigator = navigator(
+  def navigator(schemes: Schemes): MaximumHoursNavigator = navigator(
     schemes,
     mock[FreeChildcareWorkingParents],
     mock[TaxFreeChildcare],
     mock[EmploymentSupportedChildcare]
   )
 
-  def navigator: SubNavigator = navigator(new Schemes())
+  def navigator: MaximumHoursNavigator = navigator(new Schemes())
 
   private val AllParentsBenefits = Seq(
     ParentsBenefit.CarersAllowance,
@@ -809,12 +813,13 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
           }
 
         "user with partner redirects to Do you get universal credit page where " +
-          "yourChildcareVouchers is yes and  partner does not satisfy NMW" in {
+          "yourChildcareVouchers is yes and partner does not satisfy NMW" in {
             val answers = spy(userAnswers())
             when(answers.doYouLiveWithPartner).thenReturn(Some(true))
             when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.You))
             when(answers.partnerMinimumEarnings).thenReturn(Some(false))
             when(answers.yourMaximumEarnings).thenReturn(Some(true)).thenReturn(Some(false))
+            when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.You))
 
             navigator.nextPage(YourMaximumEarningsId).value(answers) mustBe
               routes.UniversalCreditController.onPageLoad()
@@ -917,6 +922,7 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
             when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Partner))
             when(answers.yourMinimumEarnings).thenReturn(Some(false))
             when(answers.partnerMaximumEarnings).thenReturn(Some(true)).thenReturn(Some(false))
+            when(answers.whoGetsVouchers).thenReturn(Some(YouPartnerBothNeitherNotSure.Partner))
 
             navigator.nextPage(PartnerMaximumEarningsId).value(answers) mustBe
               routes.UniversalCreditController.onPageLoad()

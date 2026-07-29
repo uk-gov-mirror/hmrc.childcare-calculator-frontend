@@ -20,7 +20,7 @@ import play.api.data.Form
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.models.BenefitsIncomeCY
 
-class BenefitsIncomeCYFormSpec extends FormBehaviours {
+class BenefitsIncomeCYFormSpec extends FormBehaviours[BenefitsIncomeCY] {
 
   val validData: Map[String, String] = Map(
     "parentBenefitsIncome"  -> "1",

@@ -16,12 +16,15 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.libs.json.JsValue
 import play.api.mvc.Call
 import play.api.test.Helpers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
+import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{LocationId, YourAgeId, YourMinimumEarningsId}
@@ -34,7 +37,7 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
 
   val view: yourMinimumEarnings = inject[yourMinimumEarnings]
 
-  val mockUtils: Utils = mock[Utils]
+  override lazy val nmwConfig: NmwConfig = mock[NmwConfig]
 
   val location: Location             = Location.England
   val locationMap: (String, JsValue) = LocationId.of(location)
@@ -57,6 +60,10 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
     view(form, 0, location)(using fakeRequest, messages).toString
 
+  def mockEarnings(amount: Int = 0): Unit = {
+    Mockito.when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(amount)
+  }
+
   "YourMinimumEarnings Controller" must {
 
     "return OK and the correct view for a GET" in {
@@ -65,6 +72,8 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
         LocationId.of(Location.England)
       )
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
+
+      mockEarnings()
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
@@ -81,6 +90,8 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
 
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
+      mockEarnings()
+
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(BooleanForm("yourMinimumEarnings.error.notCompleted", 0).fill(true))
@@ -88,6 +99,8 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
 
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
+
+      mockEarnings()
 
       val result = controller().onSubmit()(postRequest)
 
@@ -100,6 +113,8 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value")).withMethod("POST")
       val boundForm   = BooleanForm("yourMinimumEarnings.error.notCompleted", 0).bind(Map("value" -> "invalid value"))
 
+      mockEarnings()
+
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
@@ -109,12 +124,15 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
     "redirect to Session Expired for a GET if no existing data is found" in {
       val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
 
+      mockEarnings()
+
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
+
       val result      = controller(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
@@ -122,6 +140,8 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
     }
 
     "redirect to the 'your age' view when session data does not hold this value" in {
+      mockEarnings()
+
       val result = controller(getDataWithLocationSet).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER

@@ -21,19 +21,19 @@ import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YesNoNotYet
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 
-class ChildcareCostsFormSpec extends FormBehaviours {
+class ChildcareCostsFormSpec extends FormBehaviours[YesNoNotYet] {
 
   val validData: Map[String, String] = Map(
-    "value" -> ChildcareCostsForm.options.head.value
+    "value" -> YesNoNotYet.Yes.toString
   )
 
   val form: Form[YesNoNotYet] = ChildcareCostsForm()
 
   "ChildcareCosts form" must {
-    behave.like(questionForm[String](ChildcareCostsForm.options.head.value))
+    behave.like(questionForm(YesNoNotYet.Yes))
 
     behave.like(
-      formWithOptionFieldError("value", childcareCostsErrorKey, ChildcareCostsForm.options.map(x => x.value)*)
+      formWithOptionFieldError("value", childcareCostsErrorKey, YesNoNotYet.values*)
     )
   }
 

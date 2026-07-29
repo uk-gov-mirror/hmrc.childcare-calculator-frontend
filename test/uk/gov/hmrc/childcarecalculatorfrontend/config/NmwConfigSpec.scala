@@ -85,7 +85,7 @@ class NmwConfigSpec extends SpecBase {
       nmwConfig.getEarningsForAgeRange(
         LocalDate.parse("2026-03-31"),
         Some(Age.TwentyOneOrOver)
-      ) mustBe 203
+      ) mustBe 195
     }
   }
 

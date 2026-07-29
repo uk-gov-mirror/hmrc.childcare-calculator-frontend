@@ -28,18 +28,15 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class NoOfChildrenForm @Inject() (appConfig: FrontendAppConfig) extends FormErrorHelper {
 
-  private def noOfChildrenFormatter(missingErrorKey: String, errorKeyNonNumeric: String): Formatter[Int] =
-    IntFormatter(missingErrorKey = missingErrorKey, invalidValueErrorKey = errorKeyNonNumeric).withRange(
+  private def noOfChildrenFormatter(): Formatter[Int] =
+    IntFormatter(missingErrorKey = noOfChildrenRequiredErrorKey, invalidValueErrorKey = noOfChildrenNotInteger).withRange(
       minValue = appConfig.minAmountChildren,
       maxValue = appConfig.maxAmountChildren,
       tooLowErrorKey = noOfChildrenErrorKey,
       tooHighErrorKey = noOfChildrenErrorKey
     )
 
-  def apply(
-      missingErrorKey: String = noOfChildrenRequiredErrorKey,
-      errorKeyNonNumeric: String = noOfChildrenNotInteger
-  ): Form[Int] =
-    Form(single("value" -> of(noOfChildrenFormatter(missingErrorKey, errorKeyNonNumeric))))
+  def apply(): Form[Int] =
+    Form(single("value" -> of(noOfChildrenFormatter())))
 
 }

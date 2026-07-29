@@ -25,15 +25,9 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Request
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
-import uk.gov.hmrc.childcarecalculatorfrontend.config.{NmwConfig, NmwConfigSpec}
+import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
-  Location,
-  Scheme,
-  YesNoNotSure,
-  YesNoNotYet,
-  YouPartnerBothNeither
-}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.{FreeChildcareWorkingParents, FreeHours, TaxFreeChildcare}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.views.ResultsViewModel
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.*

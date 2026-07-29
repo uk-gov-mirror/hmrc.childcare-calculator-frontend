@@ -20,7 +20,7 @@ import play.api.data.{Form, FormError}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.behaviours.FormBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequency
 
-class ChildcarePayFrequencyFormSpec extends FormBehaviours {
+class ChildcarePayFrequencyFormSpec extends FormBehaviours[ChildcarePayFrequency] {
 
   val validData: Map[String, String] = Map(
     "value" -> ChildcarePayFrequencyForm.options.head.value
@@ -30,12 +30,12 @@ class ChildcarePayFrequencyFormSpec extends FormBehaviours {
 
   "ChildcarePayFrequency form" must {
 
-    behave.like(questionForm[ChildcarePayFrequency](ChildcarePayFrequency.Weekly))
+    behave.like(questionForm(ChildcarePayFrequency.Weekly))
 
     behave.like(
       formWithOptionFieldError(
         FormError("value", "childcarePayFrequency.error.notCompleted", Seq("Foo")),
-        ChildcarePayFrequencyForm.options.map(_.value)*
+        ChildcarePayFrequency.values*
       )
     )
   }

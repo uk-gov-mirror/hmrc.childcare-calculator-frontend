@@ -44,7 +44,7 @@
     childrenAgeGroups.map(childrenAgeGroups =>
         Seq(
             Option.when(childrenAgeGroups.contains(ChildAgeGroup.NineTo23Months)) {
-                messages("maxFreeHoursInfo.you.can.get.ChildAgeGroup.NineTo23Months", appConfig.maxFreeHoursAmount)
+                messages("maxFreeHoursInfo.you.can.get.nineTo23Months", appConfig.maxFreeHoursAmount)
             },
             Option.when(childrenAgeGroups.contains(ChildAgeGroup.TwoYears)) {
                 messages("maxFreeHoursInfo.you.can.get.twoYears", appConfig.maxFreeHoursAmount)

@@ -23,7 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.AboutYourChild
 
 import java.time.LocalDate
 
-class AboutYourChildFormSpec extends FormBehaviours {
+class AboutYourChildFormSpec extends FormBehaviours[AboutYourChild] {
 
   val validData: Map[String, String] = Map(
     "name"                     -> "Foo",
@@ -126,7 +126,7 @@ class AboutYourChildFormSpec extends FormBehaviours {
     }
 
     "fail to bind when the date is more than 1 day in the future" in {
-      val date = LocalDate.of(2026, 7, 27).plusDays(1)
+      val date = LocalDate.now.plusDays(1)
       val data = Map(
         "name"                     -> "Foo",
         "aboutYourChild.dob.day"   -> date.getDayOfMonth.toString,

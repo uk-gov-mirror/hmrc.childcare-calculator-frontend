@@ -66,6 +66,7 @@ class MaximumHoursCascadeUpsert @Inject() {
   private def storeAreYouInPaidWork(value: JsValue, cacheMap: CacheMap): CacheMap = {
     val mapToStore = if (value == JsBoolean(false)) {
       cacheMap.removedAll(
+        WhatIsYourTaxCodeId,
         WhatIsYourPartnersTaxCodeId,
         YourChildcareVouchersId,
         DoYouGetAnyBenefitsId,
@@ -77,7 +78,7 @@ class MaximumHoursCascadeUpsert @Inject() {
         ParentEmploymentIncomeCYId,
         YouPaidPensionCYId,
         HowMuchYouPayPensionId,
-        YourOtherIncomeAmountCYId,
+        YourOtherIncomeThisYearId,
         YouAnyTheseBenefitsCYId,
         YouBenefitsIncomeCYId
       )

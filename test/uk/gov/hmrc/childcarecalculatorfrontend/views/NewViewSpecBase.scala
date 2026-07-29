@@ -31,13 +31,12 @@ package uk.gov.hmrc.childcarecalculatorfrontend.views
  * limitations under the License.
  */
 
-import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalactic.source.Position
 import org.scalatest.Assertion
-import org.scalatest.compatible.Assertion
 import play.twirl.api.Html
+import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 
 import scala.jdk.CollectionConverters.*
 
@@ -83,8 +82,8 @@ trait NewViewSpecBase extends SpecBase {
   def assertNotContainsText(doc: Document, text: String)(using Position): Assertion =
     assert(!doc.toString.contains(text), "\n\ntext " + text + " was rendered on the page.\n")
 
-  def assertContainsLinkWithHref(doc: Document, text: String, href: String)(using Position): Boolean =
-    doc.select("main a").asScala.toList.map(l => (l.text, l.attr("href"))).contains((text, href))
+  def assertContainsLinkWithHref(doc: Document, text: String, href: String)(using Position): Assertion =
+    doc.select("main a").asScala.toList.map(l => (l.text, l.attr("href"))) must contain((text, href))
 
   def assertContainsMessages(doc: Document, expectedMessageKeys: String*)(using Position): Unit =
     for (key <- expectedMessageKeys) assertContainsText(doc, messages(key))

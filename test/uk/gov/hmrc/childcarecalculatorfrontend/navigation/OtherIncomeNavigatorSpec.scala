@@ -26,7 +26,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{YouPartnerBoth, YouPartnerBothNeither}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.TaxFreeChildcare
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers, Utils}
 
 class OtherIncomeNavigatorSpec extends SpecBase with MockitoSugar {

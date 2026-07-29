@@ -79,7 +79,7 @@ class BothAnyTheseBenefitsCYViewSpec extends NewYesNoViewBehaviours {
         messageKeyPrefix,
         "li.income_support",
         "li.jobseekers_allowance",
-        "li.ScottishCarersAllowance",
+        "li.scottishCarersAllowance",
         "li.employment_support",
         "li.pensions",
         "li.disability"

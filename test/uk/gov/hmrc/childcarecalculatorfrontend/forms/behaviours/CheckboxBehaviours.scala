@@ -30,7 +30,7 @@ trait CheckboxBehaviours[A] extends FormSpec {
   def aCheckboxForm(invalid: String = unknownErrorKey): Unit = {
     for {
       (value, i) <- validOptions.zipWithIndex
-    } yield s"binds `$value` successfully" in {
+    } yield s"bind `$value` successfully" in {
       val data = Map(
         s"$fieldName[$i]" -> value.toString
       )
@@ -49,7 +49,7 @@ trait CheckboxBehaviours[A] extends FormSpec {
 
     "fail to bind when no answers are selected" in {
       val data = Map.empty[String, String]
-      form.bind(data).errors must contain(FormError(fieldName, required, args))
+      form.bind(data).errors mustBe Seq(FormError(fieldName, required, args))
     }
 
 }

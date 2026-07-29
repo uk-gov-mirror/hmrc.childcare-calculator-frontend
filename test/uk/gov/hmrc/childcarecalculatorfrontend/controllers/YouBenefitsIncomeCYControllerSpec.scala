@@ -25,7 +25,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.forms.YouBenefitsIncomeCYForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.YouBenefitsIncomeCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.youBenefitsIncomeCY
 
 class YouBenefitsIncomeCYControllerSpec extends ControllerSpecBase {

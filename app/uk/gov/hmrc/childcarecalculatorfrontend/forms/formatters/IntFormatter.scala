@@ -19,9 +19,11 @@ package uk.gov.hmrc.childcarecalculatorfrontend.forms.formatters
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
-import scala.util.control.Exception.nonFatalCatch
-
-case class IntFormatter(missingErrorKey: String, invalidValueErrorKey: String, args: Any*) extends Formatter[Int] {
+case class IntFormatter(
+    missingErrorKey: String,
+    invalidValueErrorKey: String,
+    args: Any*
+) extends Formatter[Int] {
 
   private val baseFormatter = StringFormatter(missingErrorKey, args*)
 
@@ -29,10 +31,9 @@ case class IntFormatter(missingErrorKey: String, invalidValueErrorKey: String, a
     baseFormatter
       .bind(key, data)
       .flatMap { s =>
-        nonFatalCatch
-          .either(s.toInt)
-          .left
-          .map(_ => Seq(FormError(key, invalidValueErrorKey, args)))
+        s.toIntOption
+          .filter(_ >= 0)
+          .toRight(Seq(FormError(key, invalidValueErrorKey, args)))
       }
 
   override def unbind(key: String, value: Int): Map[String, String] =

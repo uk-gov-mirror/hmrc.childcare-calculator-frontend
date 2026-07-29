@@ -62,7 +62,7 @@ class EnumFormatSpec extends PlaySpec {
   "writes" must {
 
     "return valid json when the object is written" in {
-      Json.toJson(Location.England) mustBe JsString("\"england\"")
+      Json.toJson(Location.England) mustBe JsString("england")
     }
 
   }

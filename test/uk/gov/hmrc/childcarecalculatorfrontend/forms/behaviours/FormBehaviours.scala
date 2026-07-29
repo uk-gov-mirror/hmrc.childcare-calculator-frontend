@@ -20,7 +20,7 @@ import org.scalatest.{Assertion, OptionValues}
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.FormSpec
 
-trait FormBehaviours extends FormSpec with OptionValues {
+trait FormBehaviours[A] extends FormSpec with OptionValues {
 
   val validData: Map[String, String]
 
@@ -28,7 +28,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
 
   val minValue: BigDecimal = 1
 
-  val form: Form[?]
+  val form: Form[A]
 
   private def minimumValue(field: String): Assertion = {
     val data          = validData + (field -> (minValue - 1).toString())
@@ -36,10 +36,10 @@ trait FormBehaviours extends FormSpec with OptionValues {
     checkForError(form, data, expectedError)
   }
 
-  def questionForm[A](expectedResult: A): Unit =
+  def questionForm(expectedResult: A): Unit =
     "bind valid values correctly" in {
       val boundForm = form.bind(validData)
-      boundForm.get mustBe expectedResult
+      boundForm.value mustBe Some(expectedResult)
     }
 
   def formWithOptionalTextFields(fields: String*): Unit =
@@ -129,13 +129,13 @@ trait FormBehaviours extends FormSpec with OptionValues {
       }
     }
 
-  def formWithOptionField(field: String, validValues: String*): Unit =
+  def formWithOptionField(field: String, validValues: A*): Unit =
     formWithOptionFieldError(field, "error.required", validValues*)
 
-  def formWithOptionFieldError(formError: FormError, validValues: String*): Unit = {
+  def formWithOptionFieldError(formError: FormError, validValues: A*): Unit = {
     for (validValue <- validValues)
       s"bind when ${formError.key} is set to $validValue" in {
-        val data      = validData + (formError.key -> validValue)
+        val data      = validData + (formError.key -> validValue.toString)
         val boundForm = form.bind(data)
         boundForm.errors.isEmpty mustBe true
       }
@@ -152,7 +152,7 @@ trait FormBehaviours extends FormSpec with OptionValues {
     }
   }
 
-  def formWithOptionFieldError(field: String, errorMessage: String, validValues: String*): Unit =
+  def formWithOptionFieldError(field: String, errorMessage: String, validValues: A*): Unit =
     formWithOptionFieldError(FormError(field, errorMessage), validValues*)
 
   def formWithDateField(field: String): Unit = {

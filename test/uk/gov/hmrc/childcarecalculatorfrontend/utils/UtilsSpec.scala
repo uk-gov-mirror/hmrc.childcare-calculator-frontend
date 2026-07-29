@@ -19,9 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.utils
 import play.api.mvc.Call
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{Age, YouPartnerBoth}
-
-import java.time.LocalDate
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBoth
 
 class UtilsSpec extends SpecBase {
 
