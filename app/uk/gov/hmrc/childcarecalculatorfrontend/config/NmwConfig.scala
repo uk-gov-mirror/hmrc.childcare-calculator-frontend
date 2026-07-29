@@ -21,7 +21,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Age
 
 import java.text.SimpleDateFormat
 import java.time.{LocalDate, ZoneId}
-import java.util.Date
 import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
@@ -33,7 +32,7 @@ class NmwConfig @Inject (configuration: Configuration) {
 
   private val dateFormat = "dd-MM-yyyy"
 
-  private val (default: Configuration, sortedConfigs: Seq[(Configuration, Date)]) = {
+  private val (default: Configuration, sortedConfigs: Seq[(Configuration, LocalDate)]) = {
     val dateFormatter = new SimpleDateFormat(dateFormat)
 
     val (default, rest) = configuration.underlying
@@ -47,14 +46,15 @@ class NmwConfig @Inject (configuration: Configuration) {
     val restSorted = rest
       .map { case (config, dateString) => config -> dateFormatter.parse(dateString) }
       .sortWith((c1, c2) => c1._2.after(c2._2))
+      .map { case (config, date) => config -> date.toInstant.atZone(ZoneId.systemDefault()).toLocalDate }
 
     (default.head._1, restSorted)
   }
 
   private def configForDate(currentDate: LocalDate): Configuration =
     sortedConfigs
-      .find { case (_, ruleDate) =>
-        currentDate.compareTo(ruleDate.toInstant.atZone(ZoneId.systemDefault()).toLocalDate) >= 0
+      .find { case (_, date) =>
+        currentDate.compareTo(date) >= 0
       }
       .map(_._1)
       .getOrElse(default)
