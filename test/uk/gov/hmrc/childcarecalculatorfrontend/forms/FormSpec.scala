@@ -31,7 +31,9 @@ trait FormSpec extends PlaySpec with GuiceOneAppPerSuite with Injecting {
 
   def frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
 
-  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError])(using Position): Assertion = {
+  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError])(
+      using Position
+  ): Assertion = {
     val formWithErrors = form.bind(data)
 
     for (error <- expectedErrors)

@@ -60,9 +60,8 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
     view(form, 0, location)(using fakeRequest, messages).toString
 
-  def mockEarnings(amount: Int = 0): Unit = {
+  def mockEarnings(amount: Int = 0): Unit =
     Mockito.when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(amount)
-  }
 
   "YourMinimumEarnings Controller" must {
 
@@ -133,7 +132,7 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
     "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
 
-      val result      = controller(dontGetAnyData).onSubmit()(postRequest)
+      val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)

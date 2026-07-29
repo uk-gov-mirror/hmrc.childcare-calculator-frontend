@@ -145,8 +145,7 @@ class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase with Mocki
 
   }
 
-  def mockEarnings(value: Int = 0): Unit = {
+  def mockEarnings(value: Int = 0): Unit =
     when(nmwConfig.getEarningsForAgeRange(any(), any())).thenReturn(value)
-  }
 
 }
