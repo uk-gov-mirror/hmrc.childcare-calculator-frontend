@@ -40,8 +40,8 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
   val view: bothAnyTheseBenefitsCY = inject[bothAnyTheseBenefitsCY]
   def onwardRoute: Call            = routes.WhatToTellTheCalculatorController.onPageLoad
 
-  val location: Location             = Location.England
-  val cacheMapWithLocation: CacheMap = CacheMap.of(LocationId.of(location))
+  val england: Location              = Location.England
+  val cacheMapWithLocation: CacheMap = CacheMap.of(LocationId.of(england))
   def getDataWithLocationSet         = new FakeDataRetrievalAction(Some(cacheMapWithLocation))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDataWithLocationSet) =
@@ -55,7 +55,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form, location)(using fakeRequest, messages).toString
+    view(form, england)(using fakeRequest, messages).toString
 
   "BothAnyTheseBenefitsCY Controller" must {
 
@@ -68,7 +68,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
       val validData =
-        Map(LocationId.of(location), BothAnyTheseBenefitsCYId.of(true))
+        Map(LocationId.of(england), BothAnyTheseBenefitsCYId.of(true))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)

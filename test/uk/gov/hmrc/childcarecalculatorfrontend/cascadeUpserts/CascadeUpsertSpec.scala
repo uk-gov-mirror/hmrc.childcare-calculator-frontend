@@ -22,7 +22,9 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheKey, CacheMap}
 
 class CascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
-  val cacheKey: CacheKey[String] = new CacheKey[String] { override val cacheKey = "key" }
+  val cacheKey: CacheKey[String] = new CacheKey[String] {
+    override val cacheKey = "key"
+  }
 
   "using the apply method for a key that has no special function" when {
     "the key doesn't already exists" must {
