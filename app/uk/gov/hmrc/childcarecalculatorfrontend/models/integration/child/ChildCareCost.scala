@@ -17,7 +17,6 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Period
 
 case class ChildCareCost(
     amount: Option[BigDecimal] = None,

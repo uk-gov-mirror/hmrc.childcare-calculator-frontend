@@ -30,7 +30,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{LocationId, YourAgeId, YourMinimumEarningsId}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{Age, Location}
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, Utils}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourMinimumEarnings
 
 class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoSugar {

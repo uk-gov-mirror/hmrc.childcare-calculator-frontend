@@ -26,7 +26,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.{CarersAllowance, IncapacityBenefit}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child.{Child, ChildCareCost, Disability}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child.{Child, ChildCareCost, Disability, Period}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.{
   BackendEmploymentStatus,
   Claimant,

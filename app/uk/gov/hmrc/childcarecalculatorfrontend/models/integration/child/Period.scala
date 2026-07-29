@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.childcarecalculatorfrontend.models.enums
+package uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child
 
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{BindableEnum, EnumFormat}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.EnumFormat
 
-enum Period(override val toString: String) extends BindableEnum {
+enum Period(override val toString: String) {
   case Weekly      extends Period("WEEKLY")
   case Fortnightly extends Period("FORTNIGHTLY")
   case Monthly     extends Period("MONTHLY")

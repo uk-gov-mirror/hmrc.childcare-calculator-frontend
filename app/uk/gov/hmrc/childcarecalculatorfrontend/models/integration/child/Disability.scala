@@ -54,14 +54,13 @@ object Disability {
       childrenWithDisabilities: Map[Int, Set[DisabilityBenefit]]
   ) =
     childrenWithDisabilities.get(currentChildIndex) match {
-      case Some(disabilities) => checkDisabilities(disabilities, blindChildren, currentChildIndex)
+      case Some(disabilities) => checkDisabilities(disabilities, blindChildren)
       case _                  => Disability()
     }
 
   private def checkDisabilities(
       disabilities: Set[DisabilityBenefit],
-      blindChildren: Option[Boolean],
-      currentChildIndex: Int
+      blindChildren: Option[Boolean]
   ) =
     disabilities.foldLeft(Disability())((disabilities, currentDisability) =>
       checkDisabilityType(currentDisability, disabilities, blindChildren)
