@@ -45,7 +45,7 @@ class WhoPaysIntoPensionControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[YouPartnerBoth] = WhoPaysIntoPensionForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "WhoPaysIntoPension Controller" must {
 

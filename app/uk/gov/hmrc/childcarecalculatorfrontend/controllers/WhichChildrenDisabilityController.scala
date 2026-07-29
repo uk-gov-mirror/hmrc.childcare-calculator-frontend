@@ -40,11 +40,12 @@ class WhichChildrenDisabilityController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     whichChildrenDisability: whichChildrenDisability
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     withValues { values =>
       val answer = request.userAnswers.whichChildrenDisability
       val preparedForm = answer match {
@@ -55,7 +56,8 @@ class WhichChildrenDisabilityController @Inject() (
     }
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     withValues { values =>
       WhichChildrenDisabilityForm(values.values.toSeq*)
         .bindFromRequest()
@@ -74,7 +76,7 @@ class WhichChildrenDisabilityController @Inject() (
 
   private def withValues(
       block: Map[String, Int] => Future[Result]
-  )(implicit request: DataRequest[AnyContent]): Future[Result] =
+  )(using request: DataRequest[AnyContent]): Future[Result] =
 
     request.userAnswers.aboutYourChild
       .map { aboutYourChild =>

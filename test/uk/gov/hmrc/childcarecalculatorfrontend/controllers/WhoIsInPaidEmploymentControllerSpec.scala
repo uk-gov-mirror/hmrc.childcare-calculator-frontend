@@ -46,7 +46,7 @@ class WhoIsInPaidEmploymentControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[YouPartnerBothNeither] = WhoIsInPaidEmploymentForm()): String =
-    view(form, Location.England)(fakeRequest, messages).toString
+    view(form, Location.England)(using fakeRequest, messages).toString
 
   val location: (String, JsValue) = LocationId.of(Location.England)
 

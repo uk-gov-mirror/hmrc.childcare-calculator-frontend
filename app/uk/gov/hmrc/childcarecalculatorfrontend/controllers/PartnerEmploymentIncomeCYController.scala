@@ -23,10 +23,11 @@ import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.{FormErrorHelper, PartnerEmploymentIncomeCYForm}
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.PartnerEmploymentIncomeCYId
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.partnerEmploymentIncomeInvalidMaxEarningsErrorKey
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{TaxYearInfo, UserAnswers}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerEmploymentIncomeCY
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -41,30 +42,30 @@ class PartnerEmploymentIncomeCYController @Inject() (
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    taxYearInfo: TaxYearInfo,
     form: PartnerEmploymentIncomeCYForm,
     partnerEmploymentIncomeCY: partnerEmploymentIncomeCY
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with FormErrorHelper
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { request =>
+    given DataRequest[AnyContent] = request
     val preparedForm = request.userAnswers.partnerEmploymentIncomeCY match {
       case None        => form()
       case Some(value) => form().fill(value)
     }
 
-    Ok(partnerEmploymentIncomeCY(preparedForm, taxYearInfo))
+    Ok(partnerEmploymentIncomeCY(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
-    val maxEarnings = request.userAnswers.partnerMaximumEarnings
-    val boundForm   = form().bindFromRequest()
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
+    val maxEarnings               = request.userAnswers.partnerMaximumEarnings
+    val boundForm                 = form().bindFromRequest()
 
     validateForm(maxEarnings, boundForm).fold(
-      (formWithErrors: Form[BigDecimal]) =>
-        Future.successful(BadRequest(partnerEmploymentIncomeCY(formWithErrors, taxYearInfo))),
+      (formWithErrors: Form[BigDecimal]) => Future.successful(BadRequest(partnerEmploymentIncomeCY(formWithErrors))),
       value =>
         dataCacheService
           .save(PartnerEmploymentIncomeCYId, value)

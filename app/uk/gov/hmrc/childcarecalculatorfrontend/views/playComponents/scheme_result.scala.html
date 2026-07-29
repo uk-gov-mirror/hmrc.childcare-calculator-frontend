@@ -27,7 +27,7 @@
 @(
     schemeResult: SchemeResultModel,
 )(
-    implicit messages: Messages,
+    using messages: Messages,
 )
 
 <h3 class="govuk-heading-m" @if(schemeResult.id.isDefined) { id="@schemeResult.id"} >@schemeResult.title</h3>

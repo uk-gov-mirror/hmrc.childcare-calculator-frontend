@@ -23,7 +23,12 @@ import uk.gov.hmrc.childcarecalculatorfrontend.FakeNavigator
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.SurveyDoNotUnderstandForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.SurveyDoNotUnderstandId
-import uk.gov.hmrc.childcarecalculatorfrontend.services.{FakeDataCacheService, SplunkSubmissionServiceInterface, SubmissionStatus, SubmissionSuccessful}
+import uk.gov.hmrc.childcarecalculatorfrontend.services.{
+  FakeDataCacheService,
+  SplunkSubmissionServiceInterface,
+  SubmissionStatus,
+  SubmissionSuccessful
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.surveyDoNotUnderstand
 import uk.gov.hmrc.http.HeaderCarrier
@@ -33,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SurveyDoNotUnderstandControllerSpec extends ControllerSpecBase {
 
   val view: surveyDoNotUnderstand = inject[surveyDoNotUnderstand]
-  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call           = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new SurveyDoNotUnderstandController(
@@ -47,7 +52,7 @@ class SurveyDoNotUnderstandControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[String] = SurveyDoNotUnderstandForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   val testString = "feedback string"
 
@@ -97,9 +102,9 @@ class SurveyDoNotUnderstandControllerSpec extends ControllerSpecBase {
 }
 
 class FakeSplunkSubmissionService extends SplunkSubmissionServiceInterface {
-  implicit val ec: ExecutionContext = ExecutionContext.global
+  given ec: ExecutionContext = ExecutionContext.global
 
-  def submit(date: Map[String, String])(implicit hc: HeaderCarrier): Future[SubmissionStatus] =
+  def submit(date: Map[String, String])(using hc: HeaderCarrier): Future[SubmissionStatus] =
 
     Future(SubmissionSuccessful)
 

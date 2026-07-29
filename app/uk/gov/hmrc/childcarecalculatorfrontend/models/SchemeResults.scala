@@ -25,7 +25,7 @@ case class EscClaimantEligibility(
 )
 
 object EscClaimantEligibility {
-  implicit val escClaimantEligibilityFormat: OFormat[EscClaimantEligibility] = Json.format[EscClaimantEligibility]
+  given escClaimantEligibilityFormat: OFormat[EscClaimantEligibility] = Json.format[EscClaimantEligibility]
 }
 
 case class SingleSchemeResult(
@@ -38,7 +38,7 @@ case class SingleSchemeResult(
 }
 
 object SingleSchemeResult {
-  implicit val schemeFormat: OFormat[SingleSchemeResult] = Json.format[SingleSchemeResult]
+  given schemeFormat: OFormat[SingleSchemeResult] = Json.format[SingleSchemeResult]
 }
 
 case class SchemeResults(
@@ -46,5 +46,5 @@ case class SchemeResults(
 )
 
 object SchemeResults {
-  implicit val schemeResultsFormat: OFormat[SchemeResults] = Json.format[SchemeResults]
+  given schemeResultsFormat: OFormat[SchemeResults] = Json.format[SchemeResults]
 }

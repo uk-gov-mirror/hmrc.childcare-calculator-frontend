@@ -33,7 +33,9 @@ object HowMuchYouPayPensionForm extends FormErrorHelper {
   def apply(): Form[BigDecimal] =
     Form(
       single(
-        "value" -> of(howMuchYouPayPensionFormatter(howMuchYouPayPensionRequiredErrorKey, howMuchYouPayPensionInvalidErrorKey))
+        "value" -> of(
+          howMuchYouPayPensionFormatter(howMuchYouPayPensionRequiredErrorKey, howMuchYouPayPensionInvalidErrorKey)
+        )
           .verifying(minimumValue[BigDecimal](1, howMuchYouPayPensionInvalidErrorKey))
           .verifying(maximumValue[BigDecimal](9999.99, howMuchYouPayPensionInvalidErrorKey))
       )

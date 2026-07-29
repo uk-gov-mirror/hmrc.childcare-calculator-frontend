@@ -26,19 +26,18 @@ import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{DoYouGetAnyBenefitsI
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.youAnyTheseBenefitsCY
 
 class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
   val view: youAnyTheseBenefitsCY = inject[youAnyTheseBenefitsCY]
-  val taxYearInfo = new TaxYearInfo
-  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call           = routes.WhatToTellTheCalculatorController.onPageLoad
 
-  val location: Location = Location.England
+  val location: Location             = Location.England
   val cacheMapWithLocation: CacheMap = CacheMap.of(LocationId.of(location))
-  def getDataWithLocationSet = new FakeDataRetrievalAction(Some(cacheMapWithLocation))
+  def getDataWithLocationSet         = new FakeDataRetrievalAction(Some(cacheMapWithLocation))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getDataWithLocationSet) =
     new YouAnyTheseBenefitsCYController(
@@ -47,12 +46,11 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       dataRetrievalAction,
       new DataRequiredAction,
-      taxYearInfo,
       view
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form, taxYearInfo, location)(fakeRequest, messages).toString
+    view(form, location)(using fakeRequest, messages).toString
 
   "YouAnyTheseBenefits Controller" must {
 
@@ -113,7 +111,7 @@ class YouAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
         val result = controller(getRelevantData).onSubmit()(postRequest)
 
         status(result) mustBe BAD_REQUEST
-        contentAsString(result) contains messages("youAnyTheseBenefitsCY.error.scottishCarers.allowance")
+        contentAsString(result) contains messages("youAnyTheseBenefitsCY.error.ScottishCarers.allowance")
       }
 
     "return a Bad Request and errors when invalid data is submitted" in {

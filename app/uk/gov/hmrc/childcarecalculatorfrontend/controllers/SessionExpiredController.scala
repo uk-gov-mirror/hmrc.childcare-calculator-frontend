@@ -17,7 +17,7 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.session_expired
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -31,5 +31,10 @@ class SessionExpiredController @Inject() (
 ) extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action(implicit request => Ok(session_expired()).withNewSession)
+  def onPageLoad: Action[AnyContent] = Action { request =>
+    given Request[AnyContent] = request
+
+    Ok(session_expired()).withNewSession
+  }
+
 }

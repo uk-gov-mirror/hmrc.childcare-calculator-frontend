@@ -61,7 +61,7 @@ package object forms {
     subMapping.verifying("error.invalidDate", validate _).transform(bind, unbind)
   }
 
-  implicit class WithErrors[A](mapping: Mapping[A]) {
+  extension [A](mapping: Mapping[A]) {
 
     def replaceError(error: FormError, newError: FormError): Mapping[A] =
       new Mapping[A] {
@@ -98,7 +98,7 @@ package object forms {
 
   }
 
-  implicit class WithPrefix(formError: FormError) {
+  extension (formError: FormError) {
 
     def withPrefix(prefix: String): FormError = {
       val key = Seq(prefix, formError.key).filter(_.nonEmpty).mkString(".")

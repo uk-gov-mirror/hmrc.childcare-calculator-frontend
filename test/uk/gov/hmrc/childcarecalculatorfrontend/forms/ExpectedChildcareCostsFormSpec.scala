@@ -22,13 +22,13 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequenc
 
 class ExpectedChildcareCostsFormSpec extends FormSpec {
 
-  val missingErrorKey                 = "expectedChildcareCosts.error.notCompleted"
-  val invalidValueErrorKey            = "expectedChildcareCosts.error.invalid"
-  val firstName                       = "name"
+  val missingErrorKey                  = "expectedChildcareCosts.error.notCompleted"
+  val invalidValueErrorKey             = "expectedChildcareCosts.error.invalid"
+  val firstName                        = "name"
   val frequency: ChildcarePayFrequency = ChildcarePayFrequency.Weekly
-  implicit val messages: MessagesImpl = MessagesImpl(Lang("en"), inject[MessagesApi])
-  val form: Form[BigDecimal] = ExpectedChildcareCostsForm(frequency, firstName)
-  val frequencyString: String         = messages(s"childcarePayFrequency.$frequency").toLowerCase
+  given messages: MessagesImpl         = MessagesImpl(Lang("en"), inject[MessagesApi])
+  val form: Form[BigDecimal]           = ExpectedChildcareCostsForm(frequency, firstName)
+  val frequencyString: String          = messages(s"childcarePayFrequency.$frequency").toLowerCase
 
   "ExpectedChildcareCosts Form" must {
 

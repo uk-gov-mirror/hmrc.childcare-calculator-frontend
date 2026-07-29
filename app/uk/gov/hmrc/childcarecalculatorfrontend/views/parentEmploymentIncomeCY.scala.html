@@ -24,13 +24,13 @@
     heading: playComponents.heading,
     submitButton: playComponents.submit_button,
     inputNumber: playComponents.input_number,
+    taxYearInfo: TaxYearInfo,
 )
 
 @(
     form: Form[BigDecimal],
-    taxYearInfo: TaxYearInfo
 )(
-    implicit request: Request[?],
+    using request: Request[?],
     messages: Messages
 )
 

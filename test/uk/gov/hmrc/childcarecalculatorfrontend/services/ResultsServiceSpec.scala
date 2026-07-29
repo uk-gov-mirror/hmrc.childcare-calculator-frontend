@@ -25,9 +25,15 @@ import play.api.libs.json.JsValue
 import play.api.mvc.Request
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
-import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfigSpec
+import uk.gov.hmrc.childcarecalculatorfrontend.config.{NmwConfig, NmwConfigSpec}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{Location, Scheme, YesNoNotSure, YesNoNotYet, YouPartnerBothNeither}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
+  Location,
+  Scheme,
+  YesNoNotSure,
+  YesNoNotYet,
+  YouPartnerBothNeither
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.{FreeChildcareWorkingParents, FreeHours, TaxFreeChildcare}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.views.ResultsViewModel
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.*
@@ -42,9 +48,9 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
   val freeHours: FreeHours                                     = mock[FreeHours]
   val freeChildcareWorkingParents: FreeChildcareWorkingParents = mock[FreeChildcareWorkingParents]
   val taxFreeChildcare: TaxFreeChildcare                       = mock[TaxFreeChildcare]
-  override lazy val nmwConfig: NmwConfigSpec                                              = mock[NmwConfigSpec]
-  implicit val hc: HeaderCarrier                               = HeaderCarrier()
-  implicit val req: Request[?]                                 = mock[Request[?]]
+  override lazy val nmwConfig: NmwConfig                       = mock[NmwConfig]
+  given hc: HeaderCarrier                                      = HeaderCarrier()
+  given req: Request[?]                                        = mock[Request[?]]
 
   override def beforeEach(): Unit = {
     reset(firstParagraphBuilder)
@@ -83,7 +89,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.doYouLiveWithPartner).thenReturn(Some(true))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -95,7 +101,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.doYouLiveWithPartner).thenReturn(Some(false))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -109,7 +115,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -121,7 +127,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.No))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -135,7 +141,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.approvedProvider).thenReturn(Some(YesNoNotSure.Yes))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -147,7 +153,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.approvedProvider).thenReturn(Some(YesNoNotSure.No))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -161,7 +167,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.areYouInPaidWork).thenReturn(Some(true))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -173,7 +179,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.areYouInPaidWork).thenReturn(Some(false))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -185,7 +191,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.You))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -197,7 +203,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
           val schemeResults = SchemeResults(List(tfcScheme))
           val answers       = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Neither))
 
           val values: ResultsViewModel = await(TestService.getResultsViewModel(answers, Location.England))
@@ -210,7 +216,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
 
         val values = await(TestService.getResultsViewModel(answers, Location.England))
 
@@ -221,7 +227,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
 
         val values = await(TestService.getResultsViewModel(answers, Location.England))
 
@@ -235,7 +241,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
 
         val values = await(TestService.getResultsViewModel(answers, Location.England))
 
@@ -246,7 +252,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
 
         val values = await(TestService.getResultsViewModel(answers, Location.England))
 
@@ -259,7 +265,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme, escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.England))
         when(freeHours.eligibility(any())).thenReturn(Eligibility.Eligible)
         when(freeChildcareWorkingParents.eligibility(any())).thenReturn(Eligibility.NotEligible)
@@ -273,7 +279,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme, escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.Scotland))
         when(freeHours.eligibility(any())).thenReturn(Eligibility.Eligible)
         when(freeChildcareWorkingParents.eligibility(any())).thenReturn(Eligibility.NotEligible)
@@ -287,7 +293,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme, escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.Wales))
         when(freeHours.eligibility(any())).thenReturn(Eligibility.Eligible)
         when(freeChildcareWorkingParents.eligibility(any())).thenReturn(Eligibility.NotEligible)
@@ -301,7 +307,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme, escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.NorthernIreland))
         when(freeHours.eligibility(any())).thenReturn(Eligibility.Eligible)
         when(freeChildcareWorkingParents.eligibility(any())).thenReturn(Eligibility.NotEligible)
@@ -315,7 +321,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme, escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(freeHours.eligibility(any())).thenReturn(Eligibility.Eligible)
         when(answers.isChildAgedThreeOrFour).thenReturn(Some(true))
         when(freeChildcareWorkingParents.eligibility(any())).thenReturn(Eligibility.Eligible)
@@ -329,7 +335,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme, escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(freeHours.eligibility(any())).thenReturn(Eligibility.Eligible)
         when(answers.isChildAgedThreeOrFour).thenReturn(Some(false))
         when(freeChildcareWorkingParents.eligibility(any())).thenReturn(Eligibility.Eligible)
@@ -345,7 +351,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val answers       = spy(userAnswers())
         val schemeResults = SchemeResults(List(tfcScheme, escScheme))
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(freeHours.eligibility(any())).thenReturn(Eligibility.NotEligible)
 
         val values = await(TestService.getResultsViewModel(answers, Location.England))
@@ -359,7 +365,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.universalCredit).thenReturn(Some(false))
 
         val values = await(TestService.getResultsViewModel(answers, Location.England))
@@ -373,7 +379,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme, escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.universalCredit).thenReturn(Some(false))
 
         val values = await(TestService.getResultsViewModel(answers, Location.England))
@@ -385,7 +391,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme, escScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.universalCredit).thenReturn(Some(false))
 
         val values = await(TestService.getResultsViewModel(answers, Location.England))
@@ -397,7 +403,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         val schemeResults = SchemeResults(List(tfcScheme))
         val answers       = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.universalCredit).thenReturn(Some(true))
 
         val values = await(TestService.getResultsViewModel(answers, Location.England))
@@ -414,7 +420,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
       "The user is eligible" in {
         val answers = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(freeChildcareWorkingParents.eligibility(any())).thenReturn(Eligibility.Eligible)
         when(taxFreeChildcare.eligibility(any())).thenReturn(Eligibility.Eligible)
 
@@ -428,7 +434,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
       "The user passes eligibility criteria (catch all in case the first guard case fails somehow)" in {
         val answers = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
         when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -449,7 +455,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
       "The user is ineligible but isn't in England" in {
         val answers = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.Scotland))
         when(answers.childrenAgeGroups).thenReturn(None)
         when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -467,7 +473,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
       "There is no eligible child for free hours but otherwise eligible" in {
         val answers = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.NoneOfThese)))
         when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -488,7 +494,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
       "There is no childcare costs" in {
         val answers = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
         when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.No))
@@ -508,7 +514,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
       "There is no approved provider" in {
         val answers = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
         when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -530,7 +536,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         "Parent is not in paid work" in {
           val answers = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.location).thenReturn(Some(Location.England))
           when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
           when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -548,7 +554,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         "Parent is not earning enough" in {
           val answers = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.location).thenReturn(Some(Location.England))
           when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
           when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -568,7 +574,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         "Parent is earning too much" in {
           val answers = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.location).thenReturn(Some(Location.England))
           when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
           when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -590,7 +596,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         "At least one is not in paid work" in {
           val answers = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.location).thenReturn(Some(Location.England))
           when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
           when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -608,7 +614,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         "At least one is not earning enough, same age" in {
           val answers = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.location).thenReturn(Some(Location.England))
           when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
           when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -629,7 +635,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         "At least one is not earning enough, different age" in {
           val answers = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.location).thenReturn(Some(Location.England))
           when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
           when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -653,7 +659,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
         "At least one is earning too much" in {
           val answers = spy(userAnswers())
 
-          when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+          when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
           when(answers.location).thenReturn(Some(Location.England))
           when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
           when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))
@@ -675,7 +681,7 @@ class ResultsServiceSpec extends PlaySpec with MockitoSugar with SpecBase with B
       "There is no eligible child for TFC" in {
         val answers = spy(userAnswers())
 
-        when(eligibilityService.eligibility(any())(any(), any())).thenReturn(Future.successful(schemeResults))
+        when(eligibilityService.eligibility(any())(using any(), any())).thenReturn(Future.successful(schemeResults))
         when(answers.location).thenReturn(Some(Location.England))
         when(answers.childrenAgeGroups).thenReturn(Some(Set(ChildAgeGroup.FourYears)))
         when(answers.childcareCosts).thenReturn(Some(YesNoNotYet.Yes))

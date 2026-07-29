@@ -21,12 +21,16 @@ import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.childcarecalculatorfrontend.{SpecBase}
+import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{EmploymentStatus, YouPartnerBothNeither, YouPartnerBothNeitherNotSure}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
+  EmploymentStatus,
+  YouPartnerBothNeither,
+  YouPartnerBothNeitherNotSure
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers}
 
@@ -49,7 +53,7 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
     schemes,
     mock[FreeChildcareWorkingParents],
     mock[TaxFreeChildcare],
-    mock[EmploymentSupportedChildcare],
+    mock[EmploymentSupportedChildcare]
   )
 
   def navigator: SubNavigator = navigator(new Schemes())
@@ -584,7 +588,9 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
       when(answers.doYouLiveWithPartner).thenReturn(Some(false))
       when(answers.areYouInPaidWork).thenReturn(Some(true))
       when(answers.yourMinimumEarnings).thenReturn(Some(false))
-      when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.Apprentice)).thenReturn(Some(EmploymentStatus.Neither))
+      when(answers.areYouSelfEmployedOrApprentice)
+        .thenReturn(Some(EmploymentStatus.Apprentice))
+        .thenReturn(Some(EmploymentStatus.Neither))
 
       navigator.nextPage(AreYouSelfEmployedOrApprenticeId).value(answers) mustBe
         routes.UniversalCreditController.onPageLoad()
@@ -608,7 +614,9 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
       when(answers.doYouLiveWithPartner).thenReturn(Some(true))
       when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.You))
       when(answers.yourMinimumEarnings).thenReturn(Some(false))
-      when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.Apprentice)).thenReturn(Some(EmploymentStatus.Neither))
+      when(answers.areYouSelfEmployedOrApprentice)
+        .thenReturn(Some(EmploymentStatus.Apprentice))
+        .thenReturn(Some(EmploymentStatus.Neither))
 
       navigator.nextPage(AreYouSelfEmployedOrApprenticeId).value(answers) mustBe
         routes.UniversalCreditController.onPageLoad()
@@ -635,7 +643,9 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
       when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
       when(answers.yourMinimumEarnings).thenReturn(Some(false))
       when(answers.partnerMinimumEarnings).thenReturn(Some(true))
-      when(answers.areYouSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.Apprentice)).thenReturn(Some(EmploymentStatus.Neither))
+      when(answers.areYouSelfEmployedOrApprentice)
+        .thenReturn(Some(EmploymentStatus.Apprentice))
+        .thenReturn(Some(EmploymentStatus.Neither))
 
       navigator.nextPage(AreYouSelfEmployedOrApprenticeId).value(answers) mustBe
         routes.PartnerMaximumEarningsController.onPageLoad()
@@ -663,7 +673,9 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
       when(answers.doYouLiveWithPartner).thenReturn(Some(true))
       when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Partner))
       when(answers.partnerMinimumEarnings).thenReturn(Some(false))
-      when(answers.partnerSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.Apprentice)).thenReturn(Some(EmploymentStatus.Neither))
+      when(answers.partnerSelfEmployedOrApprentice)
+        .thenReturn(Some(EmploymentStatus.Apprentice))
+        .thenReturn(Some(EmploymentStatus.Neither))
 
       navigator.nextPage(PartnerSelfEmployedOrApprenticeId).value(answers) mustBe
         routes.UniversalCreditController.onPageLoad()
@@ -690,7 +702,9 @@ class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAn
       when(answers.whoIsInPaidEmployment).thenReturn(Some(YouPartnerBothNeither.Both))
       when(answers.yourMinimumEarnings).thenReturn(Some(true))
       when(answers.partnerMinimumEarnings).thenReturn(Some(false))
-      when(answers.partnerSelfEmployedOrApprentice).thenReturn(Some(EmploymentStatus.Apprentice)).thenReturn(Some(EmploymentStatus.Neither))
+      when(answers.partnerSelfEmployedOrApprentice)
+        .thenReturn(Some(EmploymentStatus.Apprentice))
+        .thenReturn(Some(EmploymentStatus.Neither))
 
       navigator.nextPage(PartnerSelfEmployedOrApprenticeId).value(answers) mustBe
         routes.YourMaximumEarningsController.onPageLoad()

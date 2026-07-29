@@ -33,7 +33,9 @@ object YouBenefitsIncomeCYForm extends FormErrorHelper {
   def apply(): Form[BigDecimal] =
     Form(
       single(
-        "value" -> of(youBenefitsIncomeCYFormatter(youBenefitsIncomeCYRequiredErrorKey, youBenefitsIncomeCYInvalidErrorKey))
+        "value" -> of(
+          youBenefitsIncomeCYFormatter(youBenefitsIncomeCYRequiredErrorKey, youBenefitsIncomeCYInvalidErrorKey)
+        )
           .verifying(maximumValue[BigDecimal](9999.99, youBenefitsIncomeCYInvalidErrorKey))
           .verifying(minimumValue[BigDecimal](1, youBenefitsIncomeCYInvalidErrorKey))
       )

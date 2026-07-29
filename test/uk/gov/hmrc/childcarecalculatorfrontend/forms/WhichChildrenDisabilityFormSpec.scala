@@ -22,8 +22,8 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.whichChi
 
 class WhichChildrenDisabilityFormSpec extends CheckboxBehaviours[Int] {
 
-  override def fieldName: String    = "value"
-  override def invalidValue: String = "5"
+  override def fieldName: String      = "value"
+  override def invalidValue: String   = "5"
   override def validOptions: Set[Int] = Set(0, 1)
 
   val form: Form[Set[Int]] = WhichChildrenDisabilityForm(validOptions.toSeq*)

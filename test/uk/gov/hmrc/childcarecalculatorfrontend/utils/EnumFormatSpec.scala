@@ -49,14 +49,13 @@ class EnumFormatSpec extends PlaySpec {
 
     "return success" when {
       "the input matches an enum value's toString value" in {
-        JsString("england").validate[Location] mustBe JsSuccess(Location.England, _)
+        JsString("england").validate[Location] mustBe JsSuccess(Location.England, _: JsPath)
       }
 
       "the input matches an enum value's name" in {
-        JsString("NorthernIreland").validate[Location] mustBe JsSuccess(Location.NorthernIreland, _)
+        JsString("NorthernIreland").validate[Location] mustBe JsSuccess(Location.NorthernIreland, _: JsPath)
       }
     }
-
 
   }
 

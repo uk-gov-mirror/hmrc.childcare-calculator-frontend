@@ -32,5 +32,5 @@ case class Claimant(
 )
 
 object Claimant {
-  implicit val formatClaimant: OFormat[Claimant] = Json.format[Claimant]
+  given formatClaimant: OFormat[Claimant] = Json.format[Claimant]
 }

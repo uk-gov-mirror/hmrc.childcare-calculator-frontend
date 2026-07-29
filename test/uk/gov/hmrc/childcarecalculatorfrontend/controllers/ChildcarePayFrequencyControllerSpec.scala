@@ -57,14 +57,14 @@ class ChildcarePayFrequencyControllerSpec extends ControllerSpecBase with Option
       id: Int = 0,
       name: String = "Foo"
   ): String =
-    view(form, id, name)(fakeRequest, messages).toString
+    view(form, id, name)(using fakeRequest, messages).toString
 
   val requiredData: Map[String, JsValue] = Map(
     WhoHasChildcareCostsId.of(Set(0, 1)),
     AboutYourChildId.of(
       Map(
-        0 -> AboutYourChild("Foo", LocalDate.of(2026, 27, 7)),
-        1 -> AboutYourChild("Bar", LocalDate.of(2026, 27, 7))
+        0 -> AboutYourChild("Foo", LocalDate.of(2026, 7, 27)),
+        1 -> AboutYourChild("Bar", LocalDate.of(2026, 7, 27))
       )
     )
   )

@@ -24,7 +24,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class FirstParagraphBuilder @Inject() (utils: Utils) {
 
-  def buildFirstParagraph(answers: UserAnswers)(implicit messages: Messages): List[String] = {
+  def buildFirstParagraph(answers: UserAnswers)(using messages: Messages): List[String] = {
     val doYouHaveChildren    = buildFirstSection(answers)
     val yearlyChildcareCosts = buildSecondSection(answers)
     val whoAreYouLivingWith  = buildThirdSection(answers)
@@ -38,7 +38,7 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
     firstParagraph
   }
 
-  private def buildFirstSection(answers: UserAnswers)(implicit messages: Messages) =
+  private def buildFirstSection(answers: UserAnswers)(using messages: Messages) =
     answers.noOfChildren match {
       case Some(numberOfChildren) =>
         val childOrChildren =
@@ -55,7 +55,7 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
       case _ => ""
     }
 
-  private def buildSecondSection(answers: UserAnswers)(implicit messages: Messages) = {
+  private def buildSecondSection(answers: UserAnswers)(using messages: Messages) = {
     val section2 = answers.noOfChildren match {
       case Some(_) =>
         val childcareCosts = CalculateChildcareCosts(answers)
@@ -66,7 +66,7 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
     section2
   }
 
-  private def buildThirdSection(answers: UserAnswers)(implicit messages: Messages) = {
+  private def buildThirdSection(answers: UserAnswers)(using messages: Messages) = {
     val livesOnOwnOrWithPartner: Option[String] = answers.doYouLiveWithPartner.map(livesWithPartner =>
       if (livesWithPartner) Messages("results.firstParagraph.withYourPartner")
       else Messages("results.firstParagraph.onYourOwn")
@@ -77,7 +77,7 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
     s"$section3"
   }
 
-  private def buildFourthSection(answers: UserAnswers)(implicit messages: Messages) = {
+  private def buildFourthSection(answers: UserAnswers)(using messages: Messages) = {
     val section4 = answers.doYouLiveWithPartner.fold("")(livesWithPartner =>
       if (livesWithPartner) {
         checkWhoIsInPaidEmployment(answers)
@@ -89,14 +89,14 @@ class FirstParagraphBuilder @Inject() (utils: Utils) {
     s"$section4"
   }
 
-  private def checkIfInPaidWork(answers: UserAnswers)(implicit messages: Messages) =
+  private def checkIfInPaidWork(answers: UserAnswers)(using messages: Messages) =
     if (answers.areYouInPaidWork.getOrElse(false)) {
       Messages("results.firstParagraph.youInPaidWork")
     } else {
       ""
     }
 
-  private def checkWhoIsInPaidEmployment(answers: UserAnswers)(implicit messages: Messages) =
+  private def checkWhoIsInPaidEmployment(answers: UserAnswers)(using messages: Messages) =
     answers.whoIsInPaidEmployment.fold("") {
       case YouPartnerBothNeither.You     => Messages("results.firstParagraph.onlyYouInPaidWork")
       case YouPartnerBothNeither.Partner => Messages("results.firstParagraph.onlyPartnerInPaidWork")

@@ -18,7 +18,10 @@ package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
 import play.api.data.Form
 import play.api.data.Forms.*
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{unknownErrorKey, whichChildrenDisabilityErrorKey}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
+  unknownErrorKey,
+  whichChildrenDisabilityErrorKey
+}
 
 object WhichChildrenDisabilityForm extends FormErrorHelper {
 

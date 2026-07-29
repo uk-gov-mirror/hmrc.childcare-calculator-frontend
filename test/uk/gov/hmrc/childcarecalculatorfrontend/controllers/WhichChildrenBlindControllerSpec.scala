@@ -54,12 +54,12 @@ class WhichChildrenBlindControllerSpec extends ControllerSpecBase with OptionVal
       form: Form[Set[Int]] = WhichChildrenBlindForm(0, 1),
       values: Map[String, Int] = defaultValues
   ): String =
-    view(form, values.toSeq)(fakeRequest, messages).toString
+    view(form, values.toSeq)(using fakeRequest, messages).toString
 
   def requiredData(values: Map[String, Int]): Map[String, JsValue] = Map(
     AboutYourChildId.of(
       values.map { case (name, v) =>
-        v -> AboutYourChild(name, LocalDate.of(2026, 27, 7))
+        v -> AboutYourChild(name, LocalDate.of(2026, 7, 27))
       }
     )
   )

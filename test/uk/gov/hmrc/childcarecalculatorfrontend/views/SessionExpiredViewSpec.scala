@@ -22,11 +22,11 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.session_expired
 
 class SessionExpiredViewSpec extends NewViewBehaviours {
 
-  val view = inject[session_expired]
+  private val view: session_expired = inject[session_expired]
 
-  def createView: () => Html = () => view(frontendAppConfig)(fakeRequest, messages)
+  private def render: () => Html = () => view()(using fakeRequest, messages)
 
   "Session Expired view" must
-    behave.like(normalPage(createView, "session_expired", "guidance", "link.text"))
+    behave.like(normalPage(render, "session_expired", "guidance", "link.text"))
 
 }

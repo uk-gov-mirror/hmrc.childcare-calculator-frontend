@@ -35,8 +35,6 @@ class EmploymentIncomeCYControllerSpec extends ControllerSpecBase {
   val view: employmentIncomeCY = inject[employmentIncomeCY]
   def onwardRoute: Call        = routes.WhatToTellTheCalculatorController.onPageLoad
 
-  val taxYearInfo = new TaxYearInfo
-
   val form: Form[EmploymentIncomeCY] = new EmploymentIncomeCYForm(frontendAppConfig).apply()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
@@ -48,12 +46,11 @@ class EmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredAction,
       new EmploymentIncomeCYForm(frontendAppConfig),
-      taxYearInfo,
       view
     )
 
   def viewAsString(form: Form[EmploymentIncomeCY] = form): String =
-    view(form, taxYearInfo)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "EmploymentIncomeCY Controller" must {
 

@@ -45,7 +45,7 @@ class WhosHadBenefitsControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[YouPartnerBoth] = WhosHadBenefitsForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "WhosHadBenefits Controller" must {
 

@@ -18,7 +18,6 @@
 @import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 @import uk.gov.hmrc.childcarecalculatorfrontend.models.views.ResultsViewModel
 @import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
-@import uk.gov.hmrc.childcarecalculatorfrontend.utils.Utils
 @import uk.gov.hmrc.childcarecalculatorfrontend.views.html.playComponents.*
 
 @this(
@@ -31,9 +30,8 @@
 
 @(
     model: ResultsViewModel,
-    utils: Utils,
 )(
-    implicit request: Request[?],
+    using request: Request[?],
     messages: Messages,
 )
 
@@ -75,7 +73,7 @@
     @if(model.noOfEligibleSchemes > 0) {
         <h2 class="govuk-heading-l">@messages("result.eligible.subheading")</h2>
 
-        @resultEligible(model, utils)
+        @resultEligible(model)
 
         @if(model.location == Location.England) {
             @if(model.noOfEligibleSchemes > 1) {

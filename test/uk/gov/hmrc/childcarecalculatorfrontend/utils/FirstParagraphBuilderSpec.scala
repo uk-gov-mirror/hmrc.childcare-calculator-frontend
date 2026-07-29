@@ -23,17 +23,26 @@ import play.api.libs.json.*
 import play.api.mvc.Request
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.helpers.CacheMapOps
-import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{ChildcarePayFrequencyId, DoYouLiveWithPartnerId, ExpectedChildcareCostsId, NoOfChildrenId}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{ChildcarePayFrequency, YouPartnerBoth, YouPartnerBothNeither}
+import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
+  ChildcarePayFrequencyId,
+  DoYouLiveWithPartnerId,
+  ExpectedChildcareCostsId,
+  NoOfChildrenId
+}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
+  ChildcarePayFrequency,
+  YouPartnerBoth,
+  YouPartnerBothNeither
+}
 import uk.gov.hmrc.http.HeaderCarrier
 
 class FirstParagraphBuilderSpec extends PlaySpec with MockitoSugar with SpecBase with CacheMapOps {
 
-  val utils                      = new Utils()
-  val paragraphBuilder           = new FirstParagraphBuilder(utils)
-  val answers: UserAnswers       = spy(userAnswers())
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-  implicit val req: Request[?]   = mock[Request[?]]
+  val utils                = new Utils()
+  val paragraphBuilder     = new FirstParagraphBuilder(utils)
+  val answers: UserAnswers = spy(userAnswers())
+  given hc: HeaderCarrier  = HeaderCarrier()
+  given req: Request[?]    = mock[Request[?]]
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers*)))
 

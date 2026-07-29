@@ -24,14 +24,13 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.ParentPaidWorkCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.parentPaidWorkCY
 
 class ParentPaidWorkCYControllerSpec extends ControllerSpecBase {
 
   val view: parentPaidWorkCY = inject[parentPaidWorkCY]
-  val taxYearInfo            = new TaxYearInfo
 
   def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
@@ -42,12 +41,11 @@ class ParentPaidWorkCYControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       dataRetrievalAction,
       new DataRequiredAction,
-      taxYearInfo,
       view
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form, taxYearInfo)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "ParentPaidWorkCY Controller" must {
 

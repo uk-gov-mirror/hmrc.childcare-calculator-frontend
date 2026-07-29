@@ -167,9 +167,9 @@ object ChildcareConstants {
   val partnerEmpIncomeCYFormField = "partnerEmploymentIncomeCY"
   val defaultFormValueField       = "value"
 
-  val whoGetsTheBenefitsErrorKey = "whoGetsTheBenefits.error.notCompleted"
+  val whoGetsTheBenefitsErrorKey   = "whoGetsTheBenefits.error.notCompleted"
   val whoHasChildcareCostsErrorKey = "whoHasChildcareCosts.error.notCompleted"
 
-  val whichChildrenBlindErrorKey = "whichChildrenBlind.error.notCompleted"
+  val whichChildrenBlindErrorKey      = "whichChildrenBlind.error.notCompleted"
   val whichChildrenDisabilityErrorKey = "whichChildrenDisability.error.notCompleted"
 }

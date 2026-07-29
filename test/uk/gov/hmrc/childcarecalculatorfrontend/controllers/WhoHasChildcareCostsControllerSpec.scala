@@ -66,12 +66,12 @@ class WhoHasChildcareCostsControllerSpec extends ControllerSpecBase with OptionV
       form: Form[Set[Int]] = WhoHasChildcareCostsForm(0, 1),
       values: Map[String, Int] = defaultValues
   ): String =
-    view(form, values.toSeq)(fakeRequest, messages).toString
+    view(form, values.toSeq)(using fakeRequest, messages).toString
 
   def requiredData(values: Map[String, Int]): Map[String, JsValue] = Map(
     AboutYourChildId.of(
       values.map { case (name, v) =>
-        v -> AboutYourChild(name, LocalDate.of(2026, 27, 7))
+        v -> AboutYourChild(name, LocalDate.of(2026, 7, 27))
       }
     )
   )
@@ -128,7 +128,7 @@ class WhoHasChildcareCostsControllerSpec extends ControllerSpecBase with OptionV
       val value = values.values.toSeq.head
 
       s"populate the view correctly on a GET when the question has previously been answered $i" in {
-        val validData = requiredData(values) + WhoHasChildcareCostsId.of(Set(value))
+        val validData       = requiredData(values) + WhoHasChildcareCostsId.of(Set(value))
         val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)), Some(testDate))
 
         val result = controller(getRelevantData).onPageLoad()(fakeRequest)

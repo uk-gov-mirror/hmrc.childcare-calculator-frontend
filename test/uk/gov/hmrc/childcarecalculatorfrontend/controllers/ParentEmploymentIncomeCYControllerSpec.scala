@@ -24,14 +24,13 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.*
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ParentEmploymentIncomeCYForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{ParentEmploymentIncomeCYId, YourMaximumEarningsId}
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.parentEmploymentIncomeCY
 
 class ParentEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
 
   val view: parentEmploymentIncomeCY = inject[parentEmploymentIncomeCY]
-  val taxYearInfo                    = new TaxYearInfo
 
   def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
@@ -44,12 +43,11 @@ class ParentEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       dataRetrievalAction,
       new DataRequiredAction,
       new ParentEmploymentIncomeCYForm(frontendAppConfig),
-      taxYearInfo,
       view
     )
 
   def viewAsString(form: Form[BigDecimal] = new ParentEmploymentIncomeCYForm(frontendAppConfig).apply()): String =
-    view(form, taxYearInfo)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   val form: Form[BigDecimal] = new ParentEmploymentIncomeCYForm(frontendAppConfig).apply()
 

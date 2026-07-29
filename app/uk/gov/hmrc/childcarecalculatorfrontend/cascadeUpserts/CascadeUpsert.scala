@@ -34,7 +34,7 @@ class CascadeUpsert @Inject() (
   private val funcMap: Map[String, (JsValue, CacheMap) => CacheMap] = pensions.funcMap ++ income.funcMap ++
     benefits.funcMap ++ maxHours.funcMap ++ minHours.funcMap ++ children.funcMap
 
-  def apply[A](key: CacheKey[A], value: A, originalCacheMap: CacheMap)(implicit fmt: Writes[A]): CacheMap =
+  def apply[A](key: CacheKey[A], value: A, originalCacheMap: CacheMap)(using fmt: Writes[A]): CacheMap =
     funcMap
       .get(key.cacheKey)
       .fold {

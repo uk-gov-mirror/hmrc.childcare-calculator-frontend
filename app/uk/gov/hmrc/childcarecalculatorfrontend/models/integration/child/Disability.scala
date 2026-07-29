@@ -26,7 +26,7 @@ case class Disability(
 )
 
 object Disability {
-  implicit val formatDisability: OFormat[Disability] = Json.format[Disability]
+  given formatDisability: OFormat[Disability] = Json.format[Disability]
 
   def populateFromRawData(
       currentChildIndex: Int,

@@ -23,6 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequired
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ChildcareCostsForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.ChildcareCostsId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YesNoNotYet
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
@@ -40,11 +41,12 @@ class ChildcareCostsController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     childcareCosts: childcareCosts
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { request =>
+    given DataRequest[AnyContent] = request
     val preparedForm = request.userAnswers.childcareCosts match {
       case None        => ChildcareCostsForm()
       case Some(value) => ChildcareCostsForm().fill(value)
@@ -52,7 +54,8 @@ class ChildcareCostsController @Inject() (
     Ok(childcareCosts(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     ChildcareCostsForm()
       .bindFromRequest()
       .fold(

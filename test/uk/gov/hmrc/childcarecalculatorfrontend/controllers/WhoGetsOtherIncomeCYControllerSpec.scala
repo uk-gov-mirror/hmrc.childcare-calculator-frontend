@@ -45,7 +45,7 @@ class WhoGetsOtherIncomeCYControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[YouPartnerBoth] = WhoGetsOtherIncomeCYForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "WhoGetsOtherIncomeCY Controller" must {
 
@@ -57,7 +57,7 @@ class WhoGetsOtherIncomeCYControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Map(WhoGetsOtherIncomeCYId.of(YouPartnerBoth.You))
+      val validData       = Map(WhoGetsOtherIncomeCYId.of(YouPartnerBoth.You))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)

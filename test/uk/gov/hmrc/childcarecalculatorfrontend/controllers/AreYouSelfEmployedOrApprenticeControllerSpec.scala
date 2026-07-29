@@ -44,7 +44,7 @@ class AreYouSelfEmployedOrApprenticeControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[EmploymentStatus] = AreYouSelfEmployedOrApprenticeForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "AreYouSelfEmployedOrApprentice Controller" must {
 

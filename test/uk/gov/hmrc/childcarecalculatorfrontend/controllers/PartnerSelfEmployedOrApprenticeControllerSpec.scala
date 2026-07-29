@@ -32,7 +32,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerSelfEmployedOrA
 class PartnerSelfEmployedOrApprenticeControllerSpec extends ControllerSpecBase {
 
   val view: partnerSelfEmployedOrApprentice = inject[partnerSelfEmployedOrApprentice]
-  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call                     = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new PartnerSelfEmployedOrApprenticeController(
@@ -45,7 +45,7 @@ class PartnerSelfEmployedOrApprenticeControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[EmploymentStatus] = PartnerSelfEmployedOrApprenticeForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "PartnerSelfEmployedOrApprentice Controller" must {
 

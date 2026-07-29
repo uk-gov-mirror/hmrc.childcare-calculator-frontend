@@ -31,13 +31,12 @@ import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.{
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.services.FakeDataCacheService
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.bothAnyTheseBenefitsCY
 
 class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
 
-  val taxYearInfo                  = new TaxYearInfo
   val view: bothAnyTheseBenefitsCY = inject[bothAnyTheseBenefitsCY]
   def onwardRoute: Call            = routes.WhatToTellTheCalculatorController.onPageLoad
 
@@ -52,12 +51,11 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       dataRetrievalAction,
       new DataRequiredAction,
-      taxYearInfo,
       view
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form, taxYearInfo, location)(fakeRequest, messages).toString
+    view(form, location)(using fakeRequest, messages).toString
 
   "BothAnyTheseBenefitsCY Controller" must {
 
@@ -97,7 +95,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(boundForm)
     }
 
-    "return a Bad Request and errors when parent answered they get carers allowance and on current page they select 'No' for non scottish users" in {
+    "return a Bad Request and errors when parent answered they get carers allowance and on current page they select 'No' for non Scottish users" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
       val location = Location.England
@@ -116,7 +114,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when parent answered they get either carer’s allowance or carer support payment and " +
-      "on current page they select 'No' for scottish users for scottish users" in {
+      "on current page they select 'No' for Scottish users for Scottish users" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
         val location = Location.Scotland
@@ -131,10 +129,10 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
         val result = controller(getRelevantData).onSubmit()(postRequest)
 
         status(result) mustBe BAD_REQUEST
-        contentAsString(result) contains messages("bothAnyTheseBenefitsCY.error.scottishCarers.allowance")
+        contentAsString(result) contains messages("bothAnyTheseBenefitsCY.error.ScottishCarers.allowance")
       }
 
-    "return a Bad Request and errors when partner answered they get carers allowance and on current page they select 'No' for non scottish users" in {
+    "return a Bad Request and errors when partner answered they get carers allowance and on current page they select 'No' for non Scottish users" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
       val location = Location.England
@@ -152,7 +150,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
     }
 
     "return a Bad Request and errors when partner answered they get either carer’s allowance or carer support payment " +
-      "and on current page they select 'No' for scottish users for scottish users" in {
+      "and on current page they select 'No' for Scottish users for Scottish users" in {
 
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
@@ -168,11 +166,11 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
         val result = controller(getRelevantData).onSubmit()(postRequest)
 
         status(result) mustBe BAD_REQUEST
-        contentAsString(result) contains messages("bothAnyTheseBenefitsCY.error.scottishCarers.allowance")
+        contentAsString(result) contains messages("bothAnyTheseBenefitsCY.error.ScottishCarers.allowance")
       }
 
     "return a Bad Request and errors when parent and partner both answered they get carers allowance and on current " +
-      "                                                               page they select 'No' for non scottish users" in {
+      "                                                               page they select 'No' for non Scottish users" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
         val location = Location.England
@@ -191,7 +189,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
       }
 
     "return a Bad Request and errors when parent and partner both answered they get either carer's allowance or " +
-      "carer support system and on current page they select 'No' for scottish users" in {
+      "carer support system and on current page they select 'No' for Scottish users" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false")).withMethod("POST")
 
         val location = Location.Scotland
@@ -206,10 +204,10 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
         val result = controller(getRelevantData).onSubmit()(postRequest)
 
         status(result) mustBe BAD_REQUEST
-        contentAsString(result) contains messages("bothAnyTheseBenefitsCY.error.scottishCarers.allowance")
+        contentAsString(result) contains messages("bothAnyTheseBenefitsCY.error.ScottishCarers.allowance")
       }
 
-    "redirect to next page when parent or partner or both answered they get carers allowance and they select 'Yes' for non scottish users" in {
+    "redirect to next page when parent or partner or both answered they get carers allowance and they select 'Yes' for non Scottish users" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
 
       val location = Location.England
@@ -228,7 +226,7 @@ class BothAnyTheseBenefitsCYControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to next page when parent or partner or both answered they get carer’s allowance or carer support payment " +
-      "and they select 'Yes' for scottish users" in {
+      "and they select 'Yes' for Scottish users" in {
         val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true")).withMethod("POST")
 
         val location = Location.Scotland

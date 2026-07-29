@@ -48,7 +48,7 @@ class ApprovedProviderControllerSpec extends ControllerSpecBase {
       form: Form[YesNoNotSure] = ApprovedProviderForm(),
       childcareCostsMaybeInFuture: Boolean = false
   ): String =
-    view(form, childcareCostsMaybeInFuture)(fakeRequest, messages).toString
+    view(form, childcareCostsMaybeInFuture)(using fakeRequest, messages).toString
 
   "ApprovedProvider Controller" must {
 
@@ -74,10 +74,7 @@ class ApprovedProviderControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
-      contentAsString(result) mustBe view(ApprovedProviderForm(), true)(
-        fakeRequest,
-        messages
-      ).toString
+      contentAsString(result) mustBe view(ApprovedProviderForm(), true)(using fakeRequest, messages).toString
     }
 
     "populate the view correctly on a GET when we have selected YES on childcare costs" in {
@@ -86,10 +83,7 @@ class ApprovedProviderControllerSpec extends ControllerSpecBase {
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
 
-      contentAsString(result) mustBe view(ApprovedProviderForm(), false)(
-        fakeRequest,
-        messages
-      ).toString
+      contentAsString(result) mustBe view(ApprovedProviderForm(), false)(using fakeRequest, messages).toString
     }
 
     "redirect to the next page when valid data is submitted" in {

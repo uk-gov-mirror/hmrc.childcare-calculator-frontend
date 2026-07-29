@@ -25,88 +25,67 @@ class NmwConfigSpec extends SpecBase {
 
   "getEarningsForAgeRange" should {
 
-    "return the 2019 earnings value for under 18 on day of tax year change" in {
+    "return the 2026 earnings value for under 18 on day of tax year change" in {
       nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-04-06"),
+        LocalDate.parse("2026-04-06"),
         Some(Age.UnderEighteen)
-      ) mustBe 69
+      ) mustBe 128
     }
 
-    "return the 2019 earnings value for under 18 on 1st April 2019" in {
+    "return the 2026 earnings value for under 18 on 1st April 2026" in {
       nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-04-01"),
+        LocalDate.parse("2026-04-01"),
         Some(Age.UnderEighteen)
-      ) mustBe 69
+      ) mustBe 128
     }
 
-    "return the 2018 earnings value for under 18 on 31 March 2019" in {
+    "return the 2025 earnings value for under 18 on 31 March 2026" in {
       nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-03-31"),
+        LocalDate.parse("2026-03-31"),
         Some(Age.UnderEighteen)
-      ) mustBe 67
+      ) mustBe 120
     }
 
-    "return the 2019 earnings value for 18-20 year old on day of tax year change" in {
+    "return the 2026 earnings value for 18-20 year old on day of tax year change" in {
       nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-04-06"),
+        LocalDate.parse("2026-04-06"),
         Some(Age.EighteenToTwenty)
-      ) mustBe 98
+      ) mustBe 173
     }
 
-    "return the 2019 earnings value for 18-20 year old on 1st April 2019" in {
+    "return the 2026 earnings value for 18-20 year old on 1st April 2026" in {
       nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-04-01"),
+        LocalDate.parse("2026-04-01"),
         Some(Age.EighteenToTwenty)
-      ) mustBe 98
+      ) mustBe 173
     }
 
-    "return the 2018 earnings value for 18-20 year old on 31 March 2019" in {
+    "return the 2025 earnings value for 18-20 year old on 31 March 2026" in {
       nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-03-31"),
+        LocalDate.parse("2026-03-31"),
         Some(Age.EighteenToTwenty)
-      ) mustBe 94
+      ) mustBe 160
     }
 
-    "return the 2019 earnings value for 21-24 year old on day of tax year change" in {
+    "return the 2026 earnings value for 21+ year old on day of tax year change" in {
       nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-04-06"),
+        LocalDate.parse("2026-04-06"),
         Some(Age.TwentyOneOrOver)
-      ) mustBe 123
+      ) mustBe 203
     }
 
-    "return the 2019 earnings value for 21-24 year old on 1st April 2019" in {
+    "return the 2026 earnings value for 21+ year old on 1st April 2026" in {
       nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-04-01"),
+        LocalDate.parse("2026-04-01"),
         Some(Age.TwentyOneOrOver)
-      ) mustBe 123
+      ) mustBe 203
     }
 
-    "return the 2018 earnings value for 21-24 year old on 31 March 2019" in {
+    "return the 2025 earnings value for 21-24 year old on 31 March 2026" in {
       nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-03-31"),
+        LocalDate.parse("2026-03-31"),
         Some(Age.TwentyOneOrOver)
-      ) mustBe 118
-    }
-
-    "return the 2019 earnings value for over 24 year old on day of tax year change" in {
-      nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-04-06"),
-        Some("OVERTWENTYFOUR")
-      ) mustBe 131
-    }
-
-    "return the 2019 earnings value for over 24 year old on 1st April 2019" in {
-      nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-04-01"),
-        Some("OVERTWENTYFOUR")
-      ) mustBe 131
-    }
-
-    "return the 2018 earnings value for over 24 old on 31 March 2019" in {
-      nmwConfig.getEarningsForAgeRange(
-        LocalDate.parse("2019-03-31"),
-        Some("OVERTWENTYFOUR")
-      ) mustBe 125
+      ) mustBe 203
     }
   }
 

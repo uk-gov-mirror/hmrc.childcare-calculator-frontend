@@ -28,7 +28,7 @@
     labelClass: Option[String] = None,
     isPageHeading: Boolean = true,
 )(
-    implicit messages: Messages,
+    using messages: Messages,
 )
 
 @govukDateInput(DateInput(

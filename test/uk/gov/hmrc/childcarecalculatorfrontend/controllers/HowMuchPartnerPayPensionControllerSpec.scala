@@ -43,7 +43,7 @@ class HowMuchPartnerPayPensionControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[BigDecimal] = HowMuchPartnerPayPensionForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   val testNumber = 123
 

@@ -32,8 +32,8 @@ class AboutYourChildViewSpec
 
   val view: aboutYourChild = inject[aboutYourChild]
 
-  def render(form: Form[AboutYourChild] = AboutYourChildForm(), index: Int = 0, total: Int = 1): Html =
-    view(AboutYourChildForm(), index, total)(fakeRequest, messages)
+  def render(form: Form[AboutYourChild] = this.form, index: Int = 0, total: Int = 1): Html =
+    view(form, index, total)(using fakeRequest, messages)
 
   override val form: Form[AboutYourChild] = AboutYourChildForm()
 

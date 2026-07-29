@@ -23,6 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequired
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ApprovedProviderForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.ApprovedProviderId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{YesNoNotSure, YesNoNotYet}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
@@ -40,11 +41,12 @@ class ApprovedProviderController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     approvedProvider: approvedProvider
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { request =>
+    given DataRequest[AnyContent]   = request
     val childcareCostsMaybeInFuture = checkIfUnsureAboutChildcareCosts(request.userAnswers)
 
     val preparedForm = request.userAnswers.approvedProvider match {
@@ -54,7 +56,8 @@ class ApprovedProviderController @Inject() (
     Ok(approvedProvider(preparedForm, childcareCostsMaybeInFuture))
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     ApprovedProviderForm()
       .bindFromRequest()
       .fold(

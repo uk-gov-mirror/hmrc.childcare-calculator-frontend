@@ -27,23 +27,26 @@ import scala.util.Random
 
 class WhichDisabilityBenefitsViewSpec extends NewViewBehaviours with NewCheckboxViewBehaviours[DisabilityBenefit] {
 
-  val view             = inject[whichDisabilityBenefits]
-  val messageKeyPrefix = "whichDisabilityBenefits"
-  val fieldKey         = "value"
-  val errorMessage     = "error.invalid"
+  val view: whichDisabilityBenefits = inject[whichDisabilityBenefits]
+  override val messageKeyPrefix     = "whichDisabilityBenefits"
+  override val fieldKey             = "value"
+  override val errorMessage         = "error.invalid"
 
-  val values: Seq[(String, String)] = WhichDisabilityBenefitsForm.options
+  override val values: Seq[(String, DisabilityBenefit)] = Seq(
+    s"whichDisabilityBenefit.${DisabilityBenefit.DisabilityBenefits}" -> DisabilityBenefit.DisabilityBenefits,
+    s"whichDisabilityBenefit.${DisabilityBenefit.HigherDisabilityBenefits}" -> DisabilityBenefit.HigherDisabilityBenefits
+  )
 
-  def form: Form[Set[DisabilityBenefit]] = WhichDisabilityBenefitsForm("Foo")
+  override val form: Form[Set[DisabilityBenefit]] = WhichDisabilityBenefitsForm("Foo")
 
-  def createView(form: Form[Set[DisabilityBenefit]]): Html = createView(form, 0, "Foo")
-
-  def createView(
+  def render(
       form: Form[Set[DisabilityBenefit]],
-      index: Int,
-      name: String
+      index: Int = 0,
+      name: String = "Foo"
   ): Html =
-    view(frontendAppConfig, form, index, name)(fakeRequest, messages)
+    view(form, index, name)(using fakeRequest, messages)
+
+  override def render(form: Form[Set[DisabilityBenefit]]): Html = render(form = form, index = 0)
 
   lazy val cases: Seq[(Int, String)] = {
     val names: LazyList[String]     = LazyList.continually(Random.alphanumeric.take(5).mkString)
@@ -53,7 +56,7 @@ class WhichDisabilityBenefitsViewSpec extends NewViewBehaviours with NewCheckbox
 
   "WhichDisabilityBenefits view" must {
 
-    behave.like(pageWithBackLink(createView))
+    behave.like(pageWithBackLink(render))
 
     behave.like(checkboxPage(legend = Some(messages(s"$messageKeyPrefix.heading", "Foo"))))
 
@@ -62,7 +65,7 @@ class WhichDisabilityBenefitsViewSpec extends NewViewBehaviours with NewCheckbox
       s"data of index: $index, name: $name" when
         behave.like(
           normalPageWithTitleParameters(
-            () => createView(WhichDisabilityBenefitsForm(name), index, name),
+            () => render(WhichDisabilityBenefitsForm(name), index, name),
             messageKeyPrefix,
             messageKeyPostfix = "",
             Seq("help", "types", "dla", "pip", "types.higher", "dla.higher", "pip.higher"),

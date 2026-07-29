@@ -49,7 +49,7 @@ class PartnerMinimumEarningsControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form, 0, location)(fakeRequest, messages).toString
+    view(form, 0, location)(using fakeRequest, messages).toString
 
   "PartnerMinimumEarnings Controller" must {
 

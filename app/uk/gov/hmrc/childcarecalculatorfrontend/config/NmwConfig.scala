@@ -62,7 +62,7 @@ class NmwConfig @Inject (configuration: Configuration) {
   def getEarningsForAgeRange(currentDate: LocalDate, ageRange: Option[Age]): Int =
     configForDate(currentDate)
       .getOptional[Int](ageRange.map(_.toString).getOrElse("non-existent-age"))
-      .getOrElse{
+      .getOrElse {
         throw new RuntimeException(s"no minimum wage config found for age $ageRange")
       }
 

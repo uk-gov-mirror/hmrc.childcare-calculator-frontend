@@ -34,7 +34,7 @@ class DataRetrievalActionImpl @Inject() (
     val dataCacheService: DataCacheService,
     val mcc: MessagesControllerComponents,
     val appConfig: FrontendAppConfig
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends DataRetrievalAction
     with Logging {
 
@@ -42,7 +42,7 @@ class DataRetrievalActionImpl @Inject() (
   override def parser: BodyParser[AnyContent]               = mcc.parsers.defaultBodyParser
 
   override protected def transform[A](request: Request[A]): Future[OptionalDataRequest[A]] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    given hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     if (appConfig.navigationAudit) {
       logger.warn(

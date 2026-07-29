@@ -40,12 +40,12 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
       "save the data and remove PartnerEmploymentIncomeCY, BothPaidPensionCY, WhoPaysIntoPension  page data when user selects yes" in {
         val originalCacheMap = CacheMap.of(
-            EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
-            PartnerEmploymentIncomeCYId.of(1200),
-            BothPaidPensionCYId.of(true),
-            ParentPaidWorkCYId.of(false),
-            WhoPaysIntoPensionId.of(YouPartnerBoth.You)
-          )
+          EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+          PartnerEmploymentIncomeCYId.of(1200),
+          BothPaidPensionCYId.of(true),
+          ParentPaidWorkCYId.of(false),
+          WhoPaysIntoPensionId.of(YouPartnerBoth.You)
+        )
 
         val result = cascadeUpsert(ParentPaidWorkCYId, true, originalCacheMap)
 
@@ -69,11 +69,11 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
       "clear EmploymentIncomeCY, PartnerPaidPensionCY, HowMuchPartnerPayPension, HowMuchYouPayPensionId, HowMuchBothPayPensionId" +
         " page data when user change the selection from yes to no" in {
           val originalCacheMap = CacheMap.of(
-              EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
-              ParentPaidWorkCYId.of(true),
-              HowMuchYouPayPensionId.of(2300),
-              HowMuchBothPayPensionId.of(HowMuchBothPayPension(23, 23))
-            )
+            EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+            ParentPaidWorkCYId.of(true),
+            HowMuchYouPayPensionId.of(2300),
+            HowMuchBothPayPensionId.of(HowMuchBothPayPension(23, 23))
+          )
 
           val result = cascadeUpsert(ParentPaidWorkCYId, false, originalCacheMap)
 
@@ -99,10 +99,10 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
       "save the data and remove ParentEmploymentIncomeCY, EmploymentIncomeCY, YouPaidPensionCYId page data when user changes" +
         "the selection from no to yes" in {
           val originalCacheMap = CacheMap.of(
-              ParentEmploymentIncomeCYId.of(1200),
-              YouPaidPensionCYId.of(true),
-              PartnerPaidWorkCYId.of(false)
-            )
+            ParentEmploymentIncomeCYId.of(1200),
+            YouPaidPensionCYId.of(true),
+            PartnerPaidWorkCYId.of(false)
+          )
 
           val result = cascadeUpsert(PartnerPaidWorkCYId, true, originalCacheMap)
 
@@ -123,13 +123,13 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
       "clear EmploymentIncomeCY,BothPaidPensionCY, WhoPaysIntoPension, HowMuchPartnerPayPension, HowMuchBothPayPension" +
         " page data when user changes the selection from yes to no " in {
           val originalCacheMap = CacheMap.of(
-              EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
-              BothPaidPensionCYId.of(true),
-              WhoPaysIntoPensionId.of(YouPartnerBoth.Both),
-              HowMuchPartnerPayPensionId.of(230),
-              HowMuchBothPayPensionId.of(HowMuchBothPayPension(230, 230)),
-              PartnerPaidWorkCYId.of(true)
-            )
+            EmploymentIncomeCYId.of(EmploymentIncomeCY(20, 20)),
+            BothPaidPensionCYId.of(true),
+            WhoPaysIntoPensionId.of(YouPartnerBoth.Both),
+            HowMuchPartnerPayPensionId.of(230),
+            HowMuchBothPayPensionId.of(HowMuchBothPayPension(230, 230)),
+            PartnerPaidWorkCYId.of(true)
+          )
 
           val result = cascadeUpsert(PartnerPaidWorkCYId, false, originalCacheMap)
 
@@ -164,11 +164,11 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
       "remove whoGetsOtherIncomeCY, yourOtherIncomeAmountCY, partnerOtherIncomeAmountCY and otherIncomeAmountCY pages data" +
         " when user selects no option" in {
           val originalCacheMap = CacheMap.of(
-              YourOtherIncomeAmountCYId.of(20),
-              PartnerOtherIncomeAmountCYId.of(20),
-              OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20)),
-              WhoGetsOtherIncomeCYId.of(YouPartnerBoth.You)
-            )
+            YourOtherIncomeAmountCYId.of(20),
+            PartnerOtherIncomeAmountCYId.of(20),
+            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20)),
+            WhoGetsOtherIncomeCYId.of(YouPartnerBoth.You)
+          )
 
           val result = cascadeUpsert(BothOtherIncomeThisYearId, false, originalCacheMap)
 
@@ -177,9 +177,9 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
       "return original cache map when user selects yes option" in {
         val originalCacheMap = CacheMap.of(
-            WhoGetsOtherIncomeCYId.of(YouPartnerBoth.You),
-            YourOtherIncomeAmountCYId.of(20)
-          )
+          WhoGetsOtherIncomeCYId.of(YouPartnerBoth.You),
+          YourOtherIncomeAmountCYId.of(20)
+        )
 
         val result = cascadeUpsert(BothOtherIncomeThisYearId, true, originalCacheMap)
 
@@ -194,10 +194,10 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
     "Save WhoGetsOtherIncomeCY data " must {
       "remove PartnerOtherIncomeAmountCY and OtherIncomeAmountCY page data when user selects you option" in {
         val originalCacheMap = CacheMap.of(
-            YourOtherIncomeAmountCYId.of(20),
-            PartnerOtherIncomeAmountCYId.of(20),
-            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
-          )
+          YourOtherIncomeAmountCYId.of(20),
+          PartnerOtherIncomeAmountCYId.of(20),
+          OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
+        )
 
         val result = cascadeUpsert(WhoGetsOtherIncomeCYId, YouPartnerBoth.You, originalCacheMap)
 
@@ -209,10 +209,10 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
       "remove YourOtherIncomeAmountCY and OtherIncomeAmountCY page data when user selects partner option" in {
         val originalCacheMap = CacheMap.of(
-            YourOtherIncomeAmountCYId.of(20),
-            PartnerOtherIncomeAmountCYId.of(20),
-            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
-          )
+          YourOtherIncomeAmountCYId.of(20),
+          PartnerOtherIncomeAmountCYId.of(20),
+          OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
+        )
 
         val result = cascadeUpsert(WhoGetsOtherIncomeCYId, YouPartnerBoth.Partner, originalCacheMap)
 
@@ -224,10 +224,10 @@ class IncomeCascadeUpsertSpec extends SpecBase with CascadeUpsertBase {
 
       "remove PartnerOtherIncomeAmountCY and YourOtherIncomeAmountCY page data when user selects both option" in {
         val originalCacheMap = CacheMap.of(
-            YourOtherIncomeAmountCYId.of(20),
-            PartnerOtherIncomeAmountCYId.of(20),
-            OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
-          )
+          YourOtherIncomeAmountCYId.of(20),
+          PartnerOtherIncomeAmountCYId.of(20),
+          OtherIncomeAmountCYId.of(OtherIncomeAmountCY(20, 20))
+        )
 
         val result = cascadeUpsert(WhoGetsOtherIncomeCYId, YouPartnerBoth.Both, originalCacheMap)
 

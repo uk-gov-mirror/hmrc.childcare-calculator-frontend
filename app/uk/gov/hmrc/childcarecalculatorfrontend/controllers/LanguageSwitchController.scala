@@ -19,7 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import com.google.inject.Inject
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Flash, InjectedController}
+import play.api.mvc.*
 import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 
 import javax.inject.Singleton
@@ -28,8 +28,9 @@ import javax.inject.Singleton
 @Singleton
 class LanguageSwitchController @Inject() (
     configuration: Configuration,
-    appConfig: FrontendAppConfig,
-    override implicit val messagesApi: MessagesApi
+    appConfig: FrontendAppConfig
+)(
+    using override val messagesApi: MessagesApi
 ) extends InjectedController
     with I18nSupport {
 
@@ -37,7 +38,7 @@ class LanguageSwitchController @Inject() (
 
   private def languageMap: Map[String, Lang] = appConfig.languageMap
 
-  def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
+  def switchToLanguage(language: String): Action[AnyContent] = Action { request =>
     val enabled = isWelshEnabled
     val lang = if (enabled) {
       languageMap.getOrElse(language, Lang.defaultLang)

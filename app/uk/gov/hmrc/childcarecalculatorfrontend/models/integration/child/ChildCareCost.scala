@@ -25,5 +25,5 @@ case class ChildCareCost(
 )
 
 object ChildCareCost {
-  implicit val formatChildCareCost: OFormat[ChildCareCost] = Json.format[ChildCareCost]
+  given formatChildCareCost: OFormat[ChildCareCost] = Json.format[ChildCareCost]
 }

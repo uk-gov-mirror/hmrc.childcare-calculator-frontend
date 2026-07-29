@@ -21,5 +21,5 @@ import play.api.libs.json.*
 case class HowMuchBothPayPension(howMuchYouPayPension: BigDecimal, howMuchPartnerPayPension: BigDecimal)
 
 object HowMuchBothPayPension {
-  implicit val format: OFormat[HowMuchBothPayPension] = Json.format[HowMuchBothPayPension]
+  given format: OFormat[HowMuchBothPayPension] = Json.format[HowMuchBothPayPension]
 }

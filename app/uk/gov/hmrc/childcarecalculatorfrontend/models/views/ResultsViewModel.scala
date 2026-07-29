@@ -91,5 +91,5 @@ case class ResultsViewModel(
 }
 
 object ResultsViewModel {
-  implicit val format: OFormat[ResultsViewModel] = Json.format[ResultsViewModel]
+  given format: OFormat[ResultsViewModel] = Json.format[ResultsViewModel]
 }

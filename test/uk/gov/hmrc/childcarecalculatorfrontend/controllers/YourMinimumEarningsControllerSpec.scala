@@ -55,7 +55,7 @@ class YourMinimumEarningsControllerSpec extends ControllerSpecBase with MockitoS
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form, 0, location)(fakeRequest, messages).toString
+    view(form, 0, location)(using fakeRequest, messages).toString
 
   "YourMinimumEarnings Controller" must {
 

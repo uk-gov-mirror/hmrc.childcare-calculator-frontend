@@ -33,9 +33,9 @@ import java.time.LocalDate
 
 class RegisteredBlindControllerSpec extends ControllerSpecBase {
 
-  val view1: registeredBlind = inject[registeredBlind]
+  val view1: registeredBlind      = inject[registeredBlind]
   val view2: childRegisteredBlind = inject[childRegisteredBlind]
-  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call           = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new RegisteredBlindController(
@@ -49,10 +49,10 @@ class RegisteredBlindControllerSpec extends ControllerSpecBase {
     )
 
   def singleViewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view2(form, "Foo")(fakeRequest, messages).toString
+    view2(form, "Foo")(using fakeRequest, messages).toString
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view1(form)(fakeRequest, messages).toString
+    view1(form)(using fakeRequest, messages).toString
 
   def requiredData(numberOfChildren: Int): Map[String, JsValue] = Map(
     NoOfChildrenId.of(numberOfChildren),
@@ -131,7 +131,7 @@ class RegisteredBlindControllerSpec extends ControllerSpecBase {
     "redirect to Session Expired for a GET if there is no answer for `number of children`" in {
       val data = Map(
         AboutYourChildId.of(
-          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 27, 7)))
+          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 7, 27)))
         )
       )
       val getData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)))
@@ -143,7 +143,7 @@ class RegisteredBlindControllerSpec extends ControllerSpecBase {
     "redirect to Session Expired for a POST if there is no answer for `number of children`" in {
       val data = Map(
         AboutYourChildId.of(
-          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 27, 7)))
+          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 7, 27)))
         )
       )
       val getData     = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)))

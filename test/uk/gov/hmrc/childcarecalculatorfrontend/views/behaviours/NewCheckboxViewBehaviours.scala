@@ -17,15 +17,15 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours
 
 import play.api.data.{Form, FormError}
-import play.twirl.api.{Html, Html}
+import play.twirl.api.Html
 import uk.gov.hmrc.childcarecalculatorfrontend.views.NewViewSpecBase
 
 trait NewCheckboxViewBehaviours[A] extends NewViewSpecBase {
 
   def form: Form[Set[A]]
-  def createView(form: Form[Set[A]]): Html
-  def createView: () => Html = () => createView(form)
-  def values: Seq[(String, String)]
+  def render(form: Form[Set[A]]): Html
+  def render: () => Html = () => render(form)
+  def values: Seq[(String, A)]
 
   def fieldKey: String
   def errorMessage: String
@@ -45,21 +45,21 @@ trait NewCheckboxViewBehaviours[A] extends NewViewSpecBase {
     "rendered" must {
 
       "contain a legend for the question" in {
-        val doc     = asDocument(createView())
+        val doc     = asDocument(render())
         val legends = doc.getElementsByTag("legend")
         legends.size mustBe 1
         legends.first.text mustBe legend.getOrElse(messages(s"$messageKeyPrefix.heading"))
       }
 
       "contain an input or divider for the value" in {
-        val doc = asDocument(createView())
+        val doc = asDocument(render())
         for { (value, i) <- values.zipWithIndex } yield
           if (value._2 != divider) assertRenderedById(doc, fieldId(i))
           else assertRenderedByCssSelector(doc, ".govuk-checkboxes__divider")
       }
 
       "contain a label for each input or divider" in {
-        val doc = asDocument(createView())
+        val doc = asDocument(render())
         for { ((label, value), i) <- values.zipWithIndex } yield
           if (value != divider) {
             val id = fieldId(i)
@@ -70,7 +70,7 @@ trait NewCheckboxViewBehaviours[A] extends NewViewSpecBase {
       }
 
       "have no values checked when rendered with no form" in {
-        val doc = asDocument(createView())
+        val doc = asDocument(render())
         for { (value, i) <- values.zipWithIndex.filterNot(_._1._2 == divider) } yield assert(
           !doc.getElementById(fieldId(i)).hasAttr("checked")
         )
@@ -79,10 +79,10 @@ trait NewCheckboxViewBehaviours[A] extends NewViewSpecBase {
       values.zipWithIndex.filterNot(_._1._2 == divider).foreach { case (v, i) =>
         s"has correct value checked when value `$v` is given" in {
           val data: Map[String, String] = Map(
-            s"$fieldKey[$i]" -> v._2
+            s"$fieldKey[$i]" -> v._2.toString
           )
 
-          val doc = asDocument(createView(form.bind(data)))
+          val doc = asDocument(render(form.bind(data)))
 
           assert(doc.getElementById(fieldId(i)).hasAttr("checked"), s"${fieldId(i)} is not checked")
 
@@ -95,19 +95,19 @@ trait NewCheckboxViewBehaviours[A] extends NewViewSpecBase {
       }
 
       "not render an error summary" in {
-        val doc = asDocument(createView())
+        val doc = asDocument(render())
         assertNotRenderedById(doc, "error-summary-heading")
       }
     }
 
     "rendered with an error" must {
       "show an error summary" in {
-        val doc = asDocument(createView(form.withError(error)))
+        val doc = asDocument(render(form.withError(error)))
         assertRenderedByCssSelector(doc, ".govuk-error-summary__title")
       }
 
       "show an error in the value field's label" in {
-        val doc       = asDocument(createView(form.withError(error)))
+        val doc       = asDocument(render(form.withError(error)))
         val errorSpan = doc.getElementsByClass("govuk-error-message").first
         errorSpan.text mustBe "Error: " + messages(errorMessage)
       }

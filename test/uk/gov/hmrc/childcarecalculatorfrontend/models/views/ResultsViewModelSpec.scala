@@ -19,7 +19,12 @@ package uk.gov.hmrc.childcarecalculatorfrontend.models.views
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ChildAgeGroup
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{freeHoursForEngland, freeHoursForNI, freeHoursForScotland, freeHoursForWales}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
+  freeHoursForEngland,
+  freeHoursForNI,
+  freeHoursForScotland,
+  freeHoursForWales
+}
 
 class ResultsViewModelSpec extends SpecBase {
 

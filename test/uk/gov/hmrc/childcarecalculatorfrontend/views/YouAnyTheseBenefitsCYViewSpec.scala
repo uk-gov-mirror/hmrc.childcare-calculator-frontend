@@ -17,32 +17,31 @@
 package uk.gov.hmrc.childcarecalculatorfrontend.views
 
 import play.api.data.Form
+import play.twirl.api.Html
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.TaxYearInfo
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewYesNoViewBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.youAnyTheseBenefitsCY
 
 class YouAnyTheseBenefitsCYViewSpec extends NewYesNoViewBehaviours {
 
-  override val form = BooleanForm()
-  val view          = inject[youAnyTheseBenefitsCY]
-  val taxYearInfo   = new TaxYearInfo
+  override val form: Form[Boolean] = BooleanForm()
+  val view: youAnyTheseBenefitsCY  = inject[youAnyTheseBenefitsCY]
+  val taxYearInfo                  = new TaxYearInfo
 
   val messageKeyPrefix = "youAnyTheseBenefitsCY"
 
-  def createView(location: Location) = () =>
-    view(frontendAppConfig, BooleanForm(), taxYearInfo, location)(fakeRequest, messages)
+  def render(form: Form[Boolean] = this.form, location: Location): Html =
+    view(form, location)(using fakeRequest, messages)
 
-  def createViewUsingForm(location: Location) = (form: Form[Boolean]) =>
-    view(frontendAppConfig, form, taxYearInfo, location)(fakeRequest, messages)
+  "YouAnyTheseBenefits view for non Scottish users" must {
+    val england = Location.England
 
-  "YouAnyTheseBenefits view for non scottish users" must {
-    val location: Location = Location.England
     behave.like(
       normalPage(
-        createView(location: Location),
+        () => render(location = england),
         messageKeyPrefix,
         "li.income_support",
         "li.jobseekers_allowance",
@@ -53,18 +52,18 @@ class YouAnyTheseBenefitsCYViewSpec extends NewYesNoViewBehaviours {
       )
     )
 
-    behave.like(pageWithBackLink(createView(location: Location)))
+    behave.like(pageWithBackLink(() => render(location = england)))
 
     behave.like(
       yesNoPage(
-        createViewUsingForm(location: Location),
+        form => render(form = form, location = england),
         messageKeyPrefix,
         routes.YouAnyTheseBenefitsCYController.onSubmit().url
       )
     )
 
     "contain tax year info" in {
-      val doc = asDocument(createView(location: Location)())
+      val doc = asDocument(render(location = england))
       assertContainsText(
         doc,
         messages(s"$messageKeyPrefix.tax_year", taxYearInfo.currentTaxYearStart, taxYearInfo.currentTaxYearEnd)
@@ -72,33 +71,34 @@ class YouAnyTheseBenefitsCYViewSpec extends NewYesNoViewBehaviours {
     }
   }
 
-  "YouAnyTheseBenefits view for scottish users" must {
-    val location: Location = Location.Scotland
+  "YouAnyTheseBenefits view for Scottish users" must {
+    val scotland = Location.Scotland
+
     behave.like(
       normalPage(
-        createView(location: Location),
+        () => render(location = scotland),
         messageKeyPrefix,
         "li.income_support",
         "li.jobseekers_allowance",
-        "li.scottishCarersAllowance",
+        "li.ScottishCarersAllowance",
         "li.employment_support",
         "li.pensions",
         "li.disability"
       )
     )
 
-    behave.like(pageWithBackLink(createView(location: Location)))
+    behave.like(pageWithBackLink(() => render(location = scotland)))
 
     behave.like(
       yesNoPage(
-        createViewUsingForm(location: Location),
+        form => render(form = form, location = scotland),
         messageKeyPrefix,
         routes.YouAnyTheseBenefitsCYController.onSubmit().url
       )
     )
 
     "contain tax year info" in {
-      val doc = asDocument(createView(location: Location)())
+      val doc = asDocument(render(location = scotland))
       assertContainsText(
         doc,
         messages(s"$messageKeyPrefix.tax_year", taxYearInfo.currentTaxYearStart, taxYearInfo.currentTaxYearEnd)

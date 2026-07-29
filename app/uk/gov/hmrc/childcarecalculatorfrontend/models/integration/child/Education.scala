@@ -25,5 +25,5 @@ case class Education(
 )
 
 object Education {
-  implicit val formatEducation: OFormat[Education] = Json.format[Education]
+  given formatEducation: OFormat[Education] = Json.format[Education]
 }

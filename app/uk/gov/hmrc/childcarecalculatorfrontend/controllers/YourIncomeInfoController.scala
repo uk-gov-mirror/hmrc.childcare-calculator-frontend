@@ -19,7 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.TaxYearInfo
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourIncomeInfo
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -31,12 +31,15 @@ class YourIncomeInfoController @Inject() (
     mcc: MessagesControllerComponents,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    taxYearInfo: TaxYearInfo,
     yourIncomeInfo: yourIncomeInfo
 ) extends FrontendController(mcc)
     with I18nSupport {
 
   def onPageLoad: Action[AnyContent] =
-    getData.andThen(requireData)(implicit request => Ok(yourIncomeInfo(taxYearInfo)))
+    getData.andThen(requireData) { request =>
+      given DataRequest[AnyContent] = request
+
+      Ok(yourIncomeInfo())
+    }
 
 }

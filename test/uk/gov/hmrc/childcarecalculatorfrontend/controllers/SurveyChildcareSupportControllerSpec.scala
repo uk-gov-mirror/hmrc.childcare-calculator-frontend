@@ -44,7 +44,7 @@ class SurveyChildcareSupportControllerSpec extends ControllerSpecBase {
       view
     )
 
-  def viewAsString(form: Form[Boolean] = BooleanForm()): String = view(form)(fakeRequest, messages).toString
+  def viewAsString(form: Form[Boolean] = BooleanForm()): String = view(form)(using fakeRequest, messages).toString
 
   "SurveyChildcareSupport Controller" must {
 

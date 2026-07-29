@@ -23,6 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequired
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.WhoIsInPaidEmploymentForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.WhoIsInPaidEmploymentId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.YouPartnerBothNeither
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
@@ -40,11 +41,12 @@ class WhoIsInPaidEmploymentController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     whoIsInPaidEmployment: whoIsInPaidEmployment
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { request =>
+    given DataRequest[AnyContent] = request
     request.userAnswers.location match {
       case None =>
         Redirect(routes.LocationController.onPageLoad())
@@ -57,7 +59,8 @@ class WhoIsInPaidEmploymentController @Inject() (
     }
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     request.userAnswers.location match {
       case None =>
         Future.successful(Redirect(routes.LocationController.onPageLoad()))

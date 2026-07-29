@@ -20,7 +20,7 @@ import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfigSpec
+import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{Location, YesNoNotSure}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.*
@@ -36,7 +36,7 @@ class UserAnswerToHouseholdIncompleteChildDetailsSpec extends SchemeSpec with Mo
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers*)))
 
-  val nmwConfig: NmwConfigSpec = mock[NmwConfigSpec]
+  val nmwConfig: NmwConfig = mock[NmwConfig]
 
   val mockTaxYearInfo: TaxYearInfo = mock[TaxYearInfo]
 
@@ -44,9 +44,9 @@ class UserAnswerToHouseholdIncompleteChildDetailsSpec extends SchemeSpec with Mo
 
   val previousTaxYear: Int = currentTaxYear - 1
 
-  def userAnswerToHousehold: UserAnswerToHousehold = new UserAnswerToHousehold(nmwConfig)
+  val userAnswerToHousehold: UserAnswerToHousehold = new UserAnswerToHousehold(nmwConfig)
 
-  val currentDate: LocalDate = LocalDate.of(2026, 27, 7)
+  val currentDate: LocalDate = LocalDate.of(2026, 7, 27)
 
   override def beforeEach(): Unit = {
     reset(nmwConfig)

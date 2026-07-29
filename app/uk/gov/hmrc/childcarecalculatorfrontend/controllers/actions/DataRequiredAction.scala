@@ -25,7 +25,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.SessionExpiredRouter
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DataRequiredAction @Inject() ()(implicit val executionContext: ExecutionContext)
+class DataRequiredAction @Inject() ()(using override val executionContext: ExecutionContext)
     extends ActionRefiner[OptionalDataRequest, DataRequest] {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =

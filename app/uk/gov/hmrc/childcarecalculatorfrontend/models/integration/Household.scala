@@ -31,5 +31,5 @@ case class Household(
 )
 
 object Household {
-  implicit val formatHousehold: OFormat[Household] = Json.format[Household]
+  given formatHousehold: OFormat[Household] = Json.format[Household]
 }

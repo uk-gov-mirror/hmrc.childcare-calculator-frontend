@@ -40,12 +40,12 @@ class ResultsService @Inject() (
     freeChildcareWorkingParents: FreeChildcareWorkingParents,
     taxFreeChildcare: TaxFreeChildcare,
     firstParagraphBuilder: FirstParagraphBuilder
-)(implicit ec: ExecutionContext) {
+)(using ec: ExecutionContext) {
 
   def getResultsViewModel(
       answers: UserAnswers,
       location: Location
-  )(implicit req: play.api.mvc.Request[?], hc: HeaderCarrier, messages: Messages): Future[ResultsViewModel] = {
+  )(using req: play.api.mvc.Request[?], hc: HeaderCarrier, messages: Messages): Future[ResultsViewModel] = {
 
     val childcareCost = answers.childcareCosts.fold(false) {
       case YesNoNotYet.No => false
@@ -160,7 +160,7 @@ class ResultsService @Inject() (
       case Location.NorthernIreland => resultViewModel.copy(freeHours = Some(freeHoursForNI))
     }
 
-  private def tfcEligibilityMessage(answers: UserAnswers)(implicit messages: Messages): Option[String] = {
+  private def tfcEligibilityMessage(answers: UserAnswers)(using messages: Messages): Option[String] = {
     lazy val hasEligibleChildren    = answers.hasChildEligibleForTfc
     lazy val youInPaidWork          = answers.areYouInPaidWork.getOrElse(false)
     lazy val earningsForAge         = nmwConfig.getEarningsForAgeRange(LocalDate.now, answers.yourAge)
@@ -202,7 +202,7 @@ class ResultsService @Inject() (
 
   private def freeChildcareWorkingParentsEligibilityMessage(
       answers: UserAnswers
-  )(implicit messages: Messages): Option[String] = {
+  )(using messages: Messages): Option[String] = {
     lazy val inEngland              = answers.location.contains(Location.England)
     lazy val hasEligibleChildren    = answers.childrenAgeGroups.exists(!_.contains(ChildAgeGroup.NoneOfThese))
     lazy val youInPaidWork          = answers.areYouInPaidWork.getOrElse(false)

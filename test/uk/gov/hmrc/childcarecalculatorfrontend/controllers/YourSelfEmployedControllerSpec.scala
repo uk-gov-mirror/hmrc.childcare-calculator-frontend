@@ -31,7 +31,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.yourSelfEmployed
 class YourSelfEmployedControllerSpec extends ControllerSpecBase {
 
   val view: yourSelfEmployed = inject[yourSelfEmployed]
-  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call      = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new YourSelfEmployedController(
@@ -44,7 +44,7 @@ class YourSelfEmployedControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "YourSelfEmployed Controller" must {
 

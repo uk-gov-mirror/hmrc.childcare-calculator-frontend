@@ -28,7 +28,7 @@
     field: Field,
     isInline: Boolean = true,
 )(
-    implicit messages: Messages,
+    using messages: Messages,
 )
 
 @govukRadios(Radios(

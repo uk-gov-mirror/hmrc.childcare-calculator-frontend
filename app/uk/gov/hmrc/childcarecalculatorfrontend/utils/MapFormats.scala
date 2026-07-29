@@ -22,7 +22,7 @@ import scala.util.{Failure, Success, Try}
 
 trait MapFormats {
 
-  implicit def mapReads[V](implicit rds: Reads[Map[String, V]]): Reads[Map[Int, V]] =
+  given mapReads[V](using rds: Reads[Map[String, V]]): Reads[Map[Int, V]] =
     Reads[Map[Int, V]] { json =>
       Json.fromJson[Map[String, V]](json).flatMap { data =>
         Try(data.map { case (k, v) =>
@@ -36,7 +36,7 @@ trait MapFormats {
       }
     }
 
-  implicit def mapWrites[V](implicit wrts: Writes[Map[String, V]]): Writes[Map[Int, V]] =
+  given mapWrites[V](using wrts: Writes[Map[String, V]]): Writes[Map[Int, V]] =
     Writes[Map[Int, V]] { map =>
       val newMap = map.map { case (k, v) =>
         (k.toString, v)

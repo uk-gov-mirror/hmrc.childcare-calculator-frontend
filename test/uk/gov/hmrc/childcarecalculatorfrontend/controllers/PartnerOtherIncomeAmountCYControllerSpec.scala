@@ -45,7 +45,7 @@ class PartnerOtherIncomeAmountCYControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[BigDecimal] = partnerOtherIncomeAmountCYForm): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   val testNumber = 123
 

@@ -45,7 +45,7 @@ class ChildrenAgeGroupsControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Set[ChildAgeGroup]] = ChildrenAgeGroupsForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "ChildrenAgeGroupsController" must {
     "return OK and the correct view for a GET" in {

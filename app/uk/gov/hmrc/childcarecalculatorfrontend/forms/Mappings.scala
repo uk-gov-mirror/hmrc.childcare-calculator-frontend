@@ -33,7 +33,7 @@ trait Mappings {
     }
 
   protected def minimumValue[A](minimum: A, errorKey: String, errorArgs: Any*)(
-      implicit ev: Ordering[A]
+      using ev: Ordering[A]
   ): Constraint[A] =
     Constraint { input =>
       import ev.*
@@ -46,7 +46,7 @@ trait Mappings {
     }
 
   protected def maximumValue[A](maximum: A, errorKey: String, errorArgs: Any*)(
-      implicit ev: Ordering[A]
+      using ev: Ordering[A]
   ): Constraint[A] =
     Constraint { input =>
       import ev.*

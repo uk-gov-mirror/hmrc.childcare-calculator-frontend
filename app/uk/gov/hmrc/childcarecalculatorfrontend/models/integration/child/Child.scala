@@ -30,5 +30,5 @@ case class Child(
 )
 
 object Child {
-  implicit val formatChild: OFormat[Child] = Json.format[Child]
+  given formatChild: OFormat[Child] = Json.format[Child]
 }

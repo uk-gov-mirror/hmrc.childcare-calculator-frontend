@@ -23,6 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequired
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.ChildcarePayFrequencyForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.ChildcarePayFrequencyId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequency
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{MapFormats, UserAnswers}
@@ -40,13 +41,14 @@ class ChildcarePayFrequencyController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     childcarePayFrequency: childcarePayFrequency
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport
     with MapFormats {
 
   def onPageLoad(childIndex: Int): Action[AnyContent] =
-    getData.andThen(requireData).async { implicit request =>
+    getData.andThen(requireData).async { request =>
+      given DataRequest[AnyContent] = request
       request.userAnswers.aboutYourChild(childIndex) match {
         case Some(child) =>
           val preparedForm = request.userAnswers.childcarePayFrequency(childIndex) match {
@@ -59,7 +61,8 @@ class ChildcarePayFrequencyController @Inject() (
     }
 
   def onSubmit(childIndex: Int): Action[AnyContent] =
-    getData.andThen(requireData).async { implicit request =>
+    getData.andThen(requireData).async { request =>
+      given DataRequest[AnyContent] = request
       request.userAnswers.aboutYourChild(childIndex) match {
         case Some(child) =>
           ChildcarePayFrequencyForm(child.name)

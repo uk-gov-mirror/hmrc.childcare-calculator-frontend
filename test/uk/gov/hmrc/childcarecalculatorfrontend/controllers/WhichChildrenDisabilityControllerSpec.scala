@@ -51,8 +51,8 @@ class WhichChildrenDisabilityControllerSpec extends ControllerSpecBase with Opti
   val requiredData: Map[String, JsValue] = Map(
     AboutYourChildId.of(
       Map(
-        0 -> AboutYourChild("Foo", LocalDate.of(2026, 27, 7)),
-        1 -> AboutYourChild("Bar", LocalDate.of(2026, 27, 7))
+        0 -> AboutYourChild("Foo", LocalDate.of(2026, 7, 27)),
+        1 -> AboutYourChild("Bar", LocalDate.of(2026, 7, 27))
       )
     )
   )
@@ -65,7 +65,7 @@ class WhichChildrenDisabilityControllerSpec extends ControllerSpecBase with Opti
   )
 
   def viewAsString(form: Form[Set[Int]] = WhichChildrenDisabilityForm()): String =
-    view(form, options)(fakeRequest, messages).toString
+    view(form, options)(using fakeRequest, messages).toString
 
   "WhichChildrenDisability Controller" must {
 

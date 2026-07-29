@@ -36,8 +36,8 @@ class UtilsSpec extends SpecBase {
 
         val optionalPartner = Some(YouPartnerBoth.Partner)
 
-        val partnerCall         = Call("GET", "partner")
-        val bothCall            = Call("GET", "both")
+        val partnerCall = Call("GET", "partner")
+        val bothCall    = Call("GET", "both")
 
         def booleanPf: PartialFunction[Boolean, Call] = {
           case true  => call1
@@ -46,7 +46,7 @@ class UtilsSpec extends SpecBase {
 
         def partnerPf: PartialFunction[YouPartnerBoth, Call] = {
           case YouPartnerBoth.Partner => partnerCall
-          case YouPartnerBoth.Both => bothCall
+          case YouPartnerBoth.Both    => bothCall
         }
 
         val utils = new Utils
@@ -56,14 +56,14 @@ class UtilsSpec extends SpecBase {
       }
 
       "return SessionExpired call when there is None in element" in {
-        val noneValue           = None
+        val noneValue       = None
         val optionalPartner = Some(YouPartnerBoth.You)
-        val call1               = Call("GET", "one")
-        val call2               = Call("GET", "two")
+        val call1           = Call("GET", "one")
+        val call2           = Call("GET", "two")
 
         def stringPf: PartialFunction[YouPartnerBoth, Call] = {
           case YouPartnerBoth.Partner => call1
-          case YouPartnerBoth.Both => call2
+          case YouPartnerBoth.Both    => call2
         }
 
         val utils = new Utils

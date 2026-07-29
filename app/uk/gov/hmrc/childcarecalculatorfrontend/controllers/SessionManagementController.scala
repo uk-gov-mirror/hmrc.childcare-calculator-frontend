@@ -20,6 +20,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.DataRetrievalAction
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.SessionDataClearId
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.OptionalDataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
@@ -35,7 +36,7 @@ class SessionManagementController @Inject() (
     dataCacheService: DataCacheService,
     navigator: Navigator,
     getData: DataRetrievalAction
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
@@ -43,7 +44,9 @@ class SessionManagementController @Inject() (
     Future.successful(Ok("OK"))
   }
 
-  def clearSessionData: Action[AnyContent] = getData.async { implicit request =>
+  def clearSessionData: Action[AnyContent] = getData.async { request =>
+    given OptionalDataRequest[AnyContent] = request
+
     // value has been hard coded as "sessionData" as there is no form associated with this controller
     dataCacheService
       .save(SessionDataClearId, "sessionData")

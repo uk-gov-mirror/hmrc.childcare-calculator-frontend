@@ -31,9 +31,9 @@ import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EligibilityConnector @Inject() (appConfig: FrontendAppConfig, http: HttpClientV2)(implicit ec: ExecutionContext) {
+class EligibilityConnector @Inject() (appConfig: FrontendAppConfig, http: HttpClientV2)(using ec: ExecutionContext) {
 
-  def getEligibility(eligibilityInput: Household)(implicit headerCarrier: HeaderCarrier): Future[SchemeResults] =
+  def getEligibility(eligibilityInput: Household)(using headerCarrier: HeaderCarrier): Future[SchemeResults] =
     http
       .post(url"${appConfig.eligibilityUrl}")
       .withBody(Json.toJson(eligibilityInput))

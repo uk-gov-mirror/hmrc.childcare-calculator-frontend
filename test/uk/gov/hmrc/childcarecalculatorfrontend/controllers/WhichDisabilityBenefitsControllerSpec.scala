@@ -63,7 +63,7 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
       index: Int,
       name: String
   ): String =
-    view(form, index, name)(fakeRequest, messages).toString
+    view(form, index, name)(using fakeRequest, messages).toString
 
   def requiredData(cases: Map[Int, String]): Map[String, JsValue] =
     if (cases.size == 1) {
@@ -72,14 +72,14 @@ class WhichDisabilityBenefitsControllerSpec extends ControllerSpecBase with Opti
       Map(
         NoOfChildrenId.of(1),
         ChildrenDisabilityBenefitsId.of(true),
-        AboutYourChildId.of(Map(index -> AboutYourChild(name, LocalDate.of(2026, 27, 7))))
+        AboutYourChildId.of(Map(index -> AboutYourChild(name, LocalDate.of(2026, 7, 27))))
       )
     } else {
       Map(
         WhichChildrenDisabilityId.of(cases.keySet),
         AboutYourChildId.of(
           cases.map { case (index, name) =>
-            index -> AboutYourChild(name, LocalDate.of(2026, 27, 7))
+            index -> AboutYourChild(name, LocalDate.of(2026, 7, 27))
           }
         )
       )

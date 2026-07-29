@@ -23,6 +23,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.SurveyChildcareSupportId
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.{
   DataCacheService,
@@ -47,12 +48,13 @@ class SurveyChildcareSupportController @Inject() (
     requireData: DataRequiredAction,
     splunkSubmissionService: SplunkSubmissionServiceInterface,
     surveyChildcareSupport: surveyChildcareSupport
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport
     with Logging {
 
-  def onPageLoad: Action[AnyContent] = getData.andThen(requireData) { implicit request =>
+  def onPageLoad: Action[AnyContent] = getData.andThen(requireData) { request =>
+    given DataRequest[AnyContent] = request
     val preparedForm = request.userAnswers.surveyChildcareSupport match {
       case None        => BooleanForm()
       case Some(value) => BooleanForm().fill(value)
@@ -60,7 +62,8 @@ class SurveyChildcareSupportController @Inject() (
     Ok(surveyChildcareSupport(preparedForm))
   }
 
-  def onSubmit: Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit: Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     BooleanForm(surveyChildcareSupportErrorKey)
       .bindFromRequest()
       .fold(

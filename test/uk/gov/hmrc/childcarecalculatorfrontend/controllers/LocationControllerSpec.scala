@@ -30,7 +30,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.location
 
 class LocationControllerSpec extends ControllerSpecBase {
 
-  val view: location = inject[location]
+  val view: location    = inject[location]
   def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
@@ -43,7 +43,7 @@ class LocationControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Location] = LocationForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "Location Controller" must {
 

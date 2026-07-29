@@ -30,7 +30,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.eitherOfYouMaximumEarn
 class EitherOfYouMaximumEarningsControllerSpec extends ControllerSpecBase {
 
   val view: eitherOfYouMaximumEarnings = inject[eitherOfYouMaximumEarnings]
-  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call                = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new EitherOfYouMaximumEarningsController(
@@ -43,7 +43,7 @@ class EitherOfYouMaximumEarningsControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "EitherOfYouMaximumEarnings Controller" must {
 

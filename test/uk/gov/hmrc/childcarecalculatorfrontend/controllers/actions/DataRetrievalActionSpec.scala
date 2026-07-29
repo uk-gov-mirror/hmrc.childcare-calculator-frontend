@@ -31,7 +31,12 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with RecoverMethods with CacheMapOps {
+class DataRetrievalActionSpec
+    extends SpecBase
+    with MockitoSugar
+    with ScalaFutures
+    with RecoverMethods
+    with CacheMapOps {
 
   class Harness(dataCacheService: DataCacheService)
       extends DataRetrievalActionImpl(dataCacheService, mcc, frontendAppConfig) {

@@ -24,7 +24,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object FakeDataCacheService extends DataCacheService {
 
-  implicit val ec: ExecutionContext = ExecutionContext.global
+  given ec: ExecutionContext = ExecutionContext.global
 
   override def save[A](
       key: CacheKey[A],
@@ -44,7 +44,7 @@ object FakeDataCacheService extends DataCacheService {
   )
 
   override def saveInMap[K, V](collectionKey: CacheKey[Map[K, V]], key: K, value: V)(
-      implicit fmt: Format[Map[K, V]],
+      using fmt: Format[Map[K, V]],
       sessionIdProvider: SessionIdProvider
   ) = Future(CacheMap(sessionIdProvider.sessionId, Map()))
 

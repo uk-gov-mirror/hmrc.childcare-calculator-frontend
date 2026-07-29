@@ -22,7 +22,11 @@ import play.api.data.format.Formatter
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.formatters.EnumFormatter
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.DisabilityBenefit
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{unknownErrorKey, whichChildrenDisabilityErrorKey, whichDisabilityBenefitsErrorKey}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
+  unknownErrorKey,
+  whichChildrenDisabilityErrorKey,
+  whichDisabilityBenefitsErrorKey
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.InputOption
 
 object WhichDisabilityBenefitsForm extends FormErrorHelper {
@@ -53,7 +57,7 @@ object WhichDisabilityBenefitsForm extends FormErrorHelper {
     InputOption(
       id = disabilityBenefit.valueId,
       value = disabilityBenefit.toString,
-      messageKey = s"partnerSelfEmployedOrApprentice.$disabilityBenefit"
+      messageKey = s"whichDisabilityBenefits.$disabilityBenefit"
     )
 
 }

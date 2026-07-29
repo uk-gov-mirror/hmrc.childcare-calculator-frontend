@@ -28,7 +28,7 @@ import scala.concurrent.ExecutionContext
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting {
 
-  implicit val application: Application = app
+  given application: Application = app
 
   lazy val frontendAppConfig: FrontendAppConfig = inject[FrontendAppConfig]
 
@@ -42,7 +42,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with Injecting {
 
   lazy val messagesApi: MessagesApi = inject[MessagesApi]
 
-  implicit lazy val messages: Messages = messagesApi.preferred(fakeRequest)
+  given messages: Messages = messagesApi.preferred(fakeRequest)
 
-  implicit lazy val ec: ExecutionContext = inject[ExecutionContext]
+  given ec: ExecutionContext = inject[ExecutionContext]
 }

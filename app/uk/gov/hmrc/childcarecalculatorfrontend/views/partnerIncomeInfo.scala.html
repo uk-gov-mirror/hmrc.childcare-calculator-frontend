@@ -21,13 +21,13 @@
     layout: Layout,
     heading: playComponents.heading,
     button_link: playComponents.button_link,
+    taxYearInfo: TaxYearInfo,
 )
 
 @(
     nextPage: Call,
-    taxYearInfo: TaxYearInfo,
 )(
-    implicit request: Request[?],
+    using request: Request[?],
     messages: Messages,
 )
 

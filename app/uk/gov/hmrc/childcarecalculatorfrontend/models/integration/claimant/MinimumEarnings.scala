@@ -25,5 +25,5 @@ case class MinimumEarnings(
 )
 
 object MinimumEarnings {
-  implicit val formatMinimumEarnings: OFormat[MinimumEarnings] = Json.format[MinimumEarnings]
+  given formatMinimumEarnings: OFormat[MinimumEarnings] = Json.format[MinimumEarnings]
 }

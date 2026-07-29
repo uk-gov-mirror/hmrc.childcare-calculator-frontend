@@ -43,7 +43,7 @@ class UniversalCreditControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form, Some(false))(fakeRequest, messages).toString
+    view(form, Some(false))(using fakeRequest, messages).toString
 
   "UniversalCredit Controller" must {
 

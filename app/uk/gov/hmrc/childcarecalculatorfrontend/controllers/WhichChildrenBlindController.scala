@@ -40,12 +40,13 @@ class WhichChildrenBlindController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     whichChildrenBlind: whichChildrenBlind
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] =
-    getData.andThen(requireData).async { implicit request: DataRequest[?] =>
+    getData.andThen(requireData).async { request =>
+      given DataRequest[?] = request
       withValues { values =>
         val answer = request.userAnswers.whichChildrenBlind
         val preparedForm = answer match {
@@ -57,7 +58,8 @@ class WhichChildrenBlindController @Inject() (
     }
 
   def onSubmit(): Action[AnyContent] =
-    getData.andThen(requireData).async { implicit request: DataRequest[?] =>
+    getData.andThen(requireData).async { request =>
+      given DataRequest[?] = request
       withValues { values =>
         WhichChildrenBlindForm(values.values.toSeq*)
           .bindFromRequest()
@@ -74,7 +76,7 @@ class WhichChildrenBlindController @Inject() (
 
   private def withValues[A](
       block: Map[String, Int] => Future[Result]
-  )(implicit request: DataRequest[A]): Future[Result] =
+  )(using request: DataRequest[A]): Future[Result] =
     request.userAnswers.aboutYourChild
       .map { aboutYourChild =>
         val values: Map[String, Int] = aboutYourChild.map { case (i, model) =>

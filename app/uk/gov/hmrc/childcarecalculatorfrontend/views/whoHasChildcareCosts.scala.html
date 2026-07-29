@@ -28,7 +28,7 @@
     form: Form[Set[Int]],
     inputs: Seq[(String, Int)],
 )(
-    implicit request: Request[?],
+    using request: Request[?],
     messages: Messages,
 )
 

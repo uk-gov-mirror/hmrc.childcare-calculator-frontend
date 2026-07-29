@@ -45,7 +45,7 @@ class YourAgeControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Age] = YourAgeForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "YourAge Controller" must {
 

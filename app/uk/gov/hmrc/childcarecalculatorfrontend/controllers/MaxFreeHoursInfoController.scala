@@ -19,6 +19,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.{EmploymentSupportedChildcare, TaxFreeChildcare}
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.maxFreeHoursInfo
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -37,12 +38,15 @@ class MaxFreeHoursInfoController @Inject() (
 ) extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = getData.andThen(requireData) { implicit request =>
+  def onPageLoad: Action[AnyContent] = getData.andThen(requireData) { request =>
+    given DataRequest[AnyContent] = request
     Ok(
       maxFreeHoursInfo(
-        tfc.eligibility(request.userAnswers),
-        esc.eligibility(request.userAnswers),
-        request.userAnswers
+        tfcEligibility = tfc.eligibility(request.userAnswers),
+        childcareVouchersEligibility = esc.eligibility(request.userAnswers),
+        childrenAgeGroups = request.userAnswers.childrenAgeGroups,
+        max30HoursEnglandContent = request.userAnswers.max30HoursEnglandContent,
+        universalCredit = request.userAnswers.universalCredit
       )
     )
   }

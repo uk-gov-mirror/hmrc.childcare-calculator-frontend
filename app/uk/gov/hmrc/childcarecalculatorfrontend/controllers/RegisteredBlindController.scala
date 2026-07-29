@@ -42,11 +42,12 @@ class RegisteredBlindController @Inject() (
     requireData: DataRequiredAction,
     childRegisteredBlind: childRegisteredBlind,
     registeredBlind: registeredBlind
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     withData { case (noOfChildren, name) =>
       val preparedForm = request.userAnswers.registeredBlind match {
         case None        => BooleanForm()
@@ -56,7 +57,8 @@ class RegisteredBlindController @Inject() (
     }
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     withData { case (noOfChildren, name) =>
       BooleanForm("registeredBlind.error.notCompleted")
         .bindFromRequest()
@@ -70,7 +72,7 @@ class RegisteredBlindController @Inject() (
     }
   }
 
-  private def withData[A](block: (Int, String) => Future[Result])(implicit request: DataRequest[A]): Future[Result] = {
+  private def withData[A](block: (Int, String) => Future[Result])(using request: DataRequest[A]): Future[Result] = {
     for {
       noOfChildren <- request.userAnswers.noOfChildren
       name         <- request.userAnswers.aboutYourChild(0).map(_.name)
@@ -82,7 +84,7 @@ class RegisteredBlindController @Inject() (
   )
 
   private def view(form: Form[Boolean], name: String, noOfChildren: Int)(
-      implicit request: Request[?]
+      using request: Request[?]
   ): Html =
     if (noOfChildren == 1) {
       childRegisteredBlind(form, name)

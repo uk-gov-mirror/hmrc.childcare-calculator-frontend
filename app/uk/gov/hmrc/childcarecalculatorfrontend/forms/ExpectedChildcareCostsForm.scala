@@ -22,7 +22,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.ChildcarePayFrequenc
 
 object ExpectedChildcareCostsForm extends FormErrorHelper {
 
-  def apply(frequency: ChildcarePayFrequency, name: String)(implicit messages: Messages): Form[BigDecimal] =
+  def apply(frequency: ChildcarePayFrequency, name: String)(using messages: Messages): Form[BigDecimal] =
     Form(
       "value" ->
         decimal(

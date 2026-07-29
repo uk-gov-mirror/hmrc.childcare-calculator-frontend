@@ -19,7 +19,7 @@
     addCssClass: Option[String] = None,
     bulletList: Seq[String],
 )(
-    implicit messages: Messages,
+    using messages: Messages,
 )
 
 @cssClass = @{

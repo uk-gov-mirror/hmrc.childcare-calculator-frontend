@@ -25,14 +25,14 @@
     heading: playComponents.heading,
     submitButton: playComponents.submit_button,
     inputYesNo: playComponents.input_yes_no,
+    taxYearInfo: TaxYearInfo,
 )
 
 @(
     form: Form[Boolean],
-    taxYearInfo: TaxYearInfo,
     location : Location,
 )(
-    implicit request: Request[?],
+    using request: Request[?],
     messages: Messages,
 )
 

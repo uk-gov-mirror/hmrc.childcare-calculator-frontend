@@ -43,7 +43,7 @@ class DoYouLiveWithPartnerControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "DoYouLiveWithPartner Controller" must {
 

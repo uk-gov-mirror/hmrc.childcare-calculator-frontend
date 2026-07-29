@@ -31,7 +31,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.childAgedThreeOrFour
 class ChildAgedThreeOrFourControllerSpec extends ControllerSpecBase {
 
   val view: childAgedThreeOrFour = inject[childAgedThreeOrFour]
-  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call          = routes.WhatToTellTheCalculatorController.onPageLoad
 
   val location: Location = Location.England
 
@@ -50,7 +50,7 @@ class ChildAgedThreeOrFourControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view(form, location)(fakeRequest, messages).toString
+    view(form, location)(using fakeRequest, messages).toString
 
   "ChildAgedThreeOrFour Controller" must {
 

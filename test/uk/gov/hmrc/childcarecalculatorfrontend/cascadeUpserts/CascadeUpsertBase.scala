@@ -18,7 +18,7 @@ package uk.gov.hmrc.childcarecalculatorfrontend.cascadeUpserts
 
 import uk.gov.hmrc.childcarecalculatorfrontend.helpers.CacheMapOps
 
-trait CascadeUpsertBase extends CacheMapOps{
+trait CascadeUpsertBase extends CacheMapOps {
 
   def cascadeUpsert: CascadeUpsert = new CascadeUpsert(
     new PensionsCascadeUpsert,
@@ -28,6 +28,5 @@ trait CascadeUpsertBase extends CacheMapOps{
     new MinimumHoursCascadeUpsert,
     new ChildrenCascadeUpsert
   )
-
 
 }

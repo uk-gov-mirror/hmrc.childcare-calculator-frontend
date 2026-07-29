@@ -26,7 +26,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 trait SubmissionService {
-  def eligibility(answers: UserAnswers)(implicit req: play.api.mvc.Request[?], hc: HeaderCarrier): Future[SchemeResults]
+  def eligibility(answers: UserAnswers)(using req: play.api.mvc.Request[?], hc: HeaderCarrier): Future[SchemeResults]
 }
 
 @Singleton
@@ -35,7 +35,7 @@ class EligibilityService @Inject() (userAnswerToHousehold: UserAnswerToHousehold
 
   def eligibility(
       answers: UserAnswers
-  )(implicit req: play.api.mvc.Request[?], hc: HeaderCarrier): Future[SchemeResults] = {
+  )(using req: play.api.mvc.Request[?], hc: HeaderCarrier): Future[SchemeResults] = {
     val household = userAnswerToHousehold.convert(answers)
     connector.getEligibility(household)
   }

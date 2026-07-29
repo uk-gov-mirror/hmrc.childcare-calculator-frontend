@@ -31,7 +31,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.howMuchBothPayPension
 class HowMuchBothPayPensionControllerSpec extends ControllerSpecBase {
 
   val view: howMuchBothPayPension = inject[howMuchBothPayPension]
-  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call           = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new HowMuchBothPayPensionController(
@@ -44,7 +44,7 @@ class HowMuchBothPayPensionControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[HowMuchBothPayPension] = HowMuchBothPayPensionForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "HowMuchBothPayPension Controller" must {
 

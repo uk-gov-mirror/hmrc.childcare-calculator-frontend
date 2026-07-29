@@ -21,13 +21,18 @@ import org.mockito.Mockito.*
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfigSpec
+import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.{CarersAllowance, IncapacityBenefit}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.child.{Child, ChildCareCost, Disability}
-import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.{BackendEmploymentStatus, Claimant, Income, MinimumEarnings}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.claimant.{
+  BackendEmploymentStatus,
+  Claimant,
+  Income,
+  MinimumEarnings
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.SchemeSpec
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, TaxYearInfo, UserAnswers}
 import uk.gov.hmrc.time.TaxYear
@@ -38,7 +43,7 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers*)))
 
-  val nmwConfig: NmwConfigSpec = mock[NmwConfigSpec]
+  val nmwConfig: NmwConfig = mock[NmwConfig]
 
   val mockTaxYearInfo: TaxYearInfo = mock[TaxYearInfo]
 
@@ -238,7 +243,8 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val parent = Claimant(
           escVouchers = Some(YesNoNotSure.No),
           ageRange = Some(Age.TwentyOneOrOver),
-          minimumEarnings = Some(MinimumEarnings(amount = 120, employmentStatus = Some(BackendEmploymentStatus.Apprentice))),
+          minimumEarnings =
+            Some(MinimumEarnings(amount = 120, employmentStatus = Some(BackendEmploymentStatus.Apprentice))),
           maximumEarnings = Some(false),
           currentYearlyIncome = Some(Income(employmentIncome = Some(BigDecimal(32000.0))))
         )
@@ -475,8 +481,9 @@ class UserAnswerToHouseholdSpec extends SchemeSpec with MockitoSugar with Before
         val parent = Claimant(
           escVouchers = Some(YesNoNotSure.NotSure),
           ageRange = Some(Age.TwentyOneOrOver),
-          minimumEarnings =
-            Some(MinimumEarnings(employmentStatus = Some(BackendEmploymentStatus.Apprentice), amount = BigDecimal(112))),
+          minimumEarnings = Some(
+            MinimumEarnings(employmentStatus = Some(BackendEmploymentStatus.Apprentice), amount = BigDecimal(112))
+          ),
           maximumEarnings = Some(true),
           currentYearlyIncome = Some(Income(employmentIncome = Some(BigDecimal(72000.0))))
         )

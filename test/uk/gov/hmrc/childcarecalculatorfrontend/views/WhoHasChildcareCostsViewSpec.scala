@@ -24,28 +24,26 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.whoHasChildcareCosts
 
 class WhoHasChildcareCostsViewSpec extends NewViewBehaviours with NewCheckboxViewBehaviours[Int] {
 
-  val view             = inject[whoHasChildcareCosts]
-  val messageKeyPrefix = "whoHasChildcareCosts"
-  val fieldKey         = "value"
-  val errorMessage     = "error.invalid"
+  val view: whoHasChildcareCosts = inject[whoHasChildcareCosts]
+  override val messageKeyPrefix  = "whoHasChildcareCosts"
+  override val fieldKey          = "value"
+  override val errorMessage      = "error.invalid"
 
-  val values: Seq[(String, String)] = Seq(
-    "Foo" -> "0",
-    "Bar" -> "1"
+  override val values: Seq[(String, Int)] = Seq(
+    "Foo" -> 0,
+    "Bar" -> 1
   )
 
-  val strValues: Seq[(String, String)] = values.map { case (k, v) => (k, v.toString) }
+  override def form: Form[Set[Int]] = WhoHasChildcareCostsForm(0, 1)
 
-  def form: Form[Set[Int]] = WhoHasChildcareCostsForm(0, 1)
-
-  def createView(form: Form[Set[Int]] = form): Html =
-    view(frontendAppConfig, form, strValues)(fakeRequest, messages)
+  override def render(form: Form[Set[Int]] = form): Html =
+    view(form, values)(using fakeRequest, messages)
 
   "WhoHasChildcareCosts view" must {
 
-    behave.like(normalPage(createView, messageKeyPrefix))
+    behave.like(normalPage(render, messageKeyPrefix))
 
-    behave.like(pageWithBackLink(createView))
+    behave.like(pageWithBackLink(render))
     behave.like(checkboxPage())
   }
 

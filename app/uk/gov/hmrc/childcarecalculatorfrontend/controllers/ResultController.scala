@@ -23,7 +23,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.ResultsViewModelId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.services.{DataCacheService, ResultsService}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.Utils
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.result
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -39,13 +38,13 @@ class ResultController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     resultsService: ResultsService,
-    utils: Utils,
     result: result
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onPageLoad: Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     request.userAnswers.location match {
       case Some(location) => renderResultsPage(location)
       case None           => Future.successful(Redirect(routes.LocationController.onPageLoad()))
@@ -54,10 +53,10 @@ class ResultController @Inject() (
 
   private def renderResultsPage(
       location: Location
-  )(implicit request: DataRequest[?], hc: HeaderCarrier): Future[Result] =
+  )(using request: DataRequest[?], hc: HeaderCarrier): Future[Result] =
     resultsService.getResultsViewModel(request.userAnswers, location).map { model =>
       dataCacheService.save(ResultsViewModelId, model)
-      Ok(result(model, utils))
+      Ok(result(model))
     }
 
 }

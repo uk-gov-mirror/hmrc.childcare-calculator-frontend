@@ -18,7 +18,11 @@ package uk.gov.hmrc.childcarecalculatorfrontend.models.schemes
 
 import org.mockito.Mockito.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.Eligibility
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{YesNoNotYet, YouPartnerBothNeither, YouPartnerBothNeitherNotSure}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
+  YesNoNotYet,
+  YouPartnerBothNeither,
+  YouPartnerBothNeitherNotSure
+}
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 
 class EmploymentSupportedChildcareSpec extends SchemeSpec {

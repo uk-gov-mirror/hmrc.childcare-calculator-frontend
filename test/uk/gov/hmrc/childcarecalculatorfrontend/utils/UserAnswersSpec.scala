@@ -21,13 +21,18 @@ import org.scalatestplus.play.PlaySpec
 import uk.gov.hmrc.childcarecalculatorfrontend.DataGenerator.*
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{Location, YesNoNotSure, YesNoNotYet, YouPartnerBothNeitherNotSure}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
+  Location,
+  YesNoNotSure,
+  YesNoNotYet,
+  YouPartnerBothNeitherNotSure
+}
 
 import java.time.LocalDate
 
 class UserAnswersSpec extends PlaySpec with OptionValues {
 
-  private val testDate: LocalDate           = LocalDate.of(2026, 27, 7)
+  private val testDate: LocalDate           = LocalDate.of(2026, 7, 27)
   private val ageOf19: LocalDate            = ageOf19YearsAgo(testDate)
   private val ageOf16Before31Aug: LocalDate = ageOf16WithBirthdayBefore31stAugust(testDate)
   private val ageOf16Over: LocalDate        = ageOfOver16Relative(testDate)
@@ -607,7 +612,8 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
       s"return `true` if user has costs: $costs, and approved costs: $provider" in {
         val answers = userAnswers(
           CacheMap.of(
-            ChildcareCostsId.of(costs), ApprovedProviderId.of(provider)
+            ChildcareCostsId.of(costs),
+            ApprovedProviderId.of(provider)
           )
         )
         answers.hasApprovedCosts.value mustEqual true

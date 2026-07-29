@@ -45,7 +45,7 @@ class WhoGetsVouchersControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[YouPartnerBothNeitherNotSure] = WhoGetsVouchersForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "WhoGetsVouchers Controller" must {
 

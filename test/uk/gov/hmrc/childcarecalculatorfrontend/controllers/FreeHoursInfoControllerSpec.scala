@@ -42,7 +42,7 @@ class FreeHoursInfoControllerSpec extends ControllerSpecBase with BeforeAndAfter
           val result = controller(dataRetrievalAction).onPageLoad(fakeRequest)
 
           status(result) mustBe OK
-          contentAsString(result) mustBe view(location)(fakeRequest, messages).toString
+          contentAsString(result) mustBe view(location)(using fakeRequest, messages).toString
         }
       }
     }

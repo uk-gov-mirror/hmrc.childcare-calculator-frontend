@@ -25,13 +25,13 @@
     heading: playComponents.heading,
     inputText: playComponents.input_text,
     submitButton: playComponents.submit_button,
+    taxYearInfo: TaxYearInfo,
 )
 
 @(
     form: Form[EmploymentIncomeCY],
-    taxYearInfo: TaxYearInfo,
 )(
-    implicit request: Request[?],
+    using request: Request[?],
     messages: Messages,
 )
 

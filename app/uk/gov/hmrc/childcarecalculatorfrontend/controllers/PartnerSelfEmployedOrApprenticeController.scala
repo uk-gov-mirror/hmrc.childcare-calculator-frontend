@@ -23,6 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequired
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.PartnerSelfEmployedOrApprenticeForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.PartnerSelfEmployedOrApprenticeId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.EmploymentStatus
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
@@ -40,11 +41,12 @@ class PartnerSelfEmployedOrApprenticeController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     partnerSelfEmployedOrApprentice: partnerSelfEmployedOrApprentice
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { request =>
+    given DataRequest[AnyContent] = request
     val preparedForm = request.userAnswers.partnerSelfEmployedOrApprentice match {
       case None        => PartnerSelfEmployedOrApprenticeForm()
       case Some(value) => PartnerSelfEmployedOrApprenticeForm().fill(value)
@@ -52,7 +54,8 @@ class PartnerSelfEmployedOrApprenticeController @Inject() (
     Ok(partnerSelfEmployedOrApprentice(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     PartnerSelfEmployedOrApprenticeForm()
       .bindFromRequest()
       .fold(

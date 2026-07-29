@@ -16,28 +16,29 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.views
 
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location
-import uk.gov.hmrc.childcarecalculatorfrontend.models.Location.*
+import play.twirl.api.Html
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location.*
 import uk.gov.hmrc.childcarecalculatorfrontend.views.behaviours.NewViewBehaviours
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.freeHoursInfo
 
 class FreeHoursInfoViewSpec extends NewViewBehaviours {
 
-  val messageKeyPrefix = "freeHoursInfo"
-  val view             = inject[freeHoursInfo]
+  val messageKeyPrefix    = "freeHoursInfo"
+  val view: freeHoursInfo = inject[freeHoursInfo]
 
-  def createView(location: Location) = () => view(location)(fakeRequest, messages)
+  def render(location: Location): Html = view(location)(using fakeRequest, messages)
 
   "FreeHoursInfo view" must {
 
-    behave.like(normalPage(createView(Location.England), messageKeyPrefix))
+    behave.like(normalPage(() => render(Location.England), messageKeyPrefix))
 
-    behave.like(pageWithBackLink(createView(Location.England)))
+    behave.like(pageWithBackLink(() => render(Location.England)))
 
     "display correct content" when {
 
       "location is England" in {
-        val viewInstance = view(Location.England)(fakeRequest, messages)
+        val viewInstance = view(Location.England)(using fakeRequest, messages)
 
         assertContainsText(asDocument(viewInstance), messages(s"$messageKeyPrefix.para1.england"))
         assertContainsText(asDocument(viewInstance), messages(s"$messageKeyPrefix.para2.england"))
@@ -50,7 +51,7 @@ class FreeHoursInfoViewSpec extends NewViewBehaviours {
 
       Seq(Scotland, Wales, NorthernIreland).foreach { location =>
         s"location is $location" in {
-          val viewInstance = view(location)(fakeRequest, messages)
+          val viewInstance = view(location)(using fakeRequest, messages)
 
           assertContainsText(asDocument(viewInstance), messages(s"$messageKeyPrefix.para1.$location"))
           assertContainsText(asDocument(viewInstance), messages(s"$messageKeyPrefix.heading2"))

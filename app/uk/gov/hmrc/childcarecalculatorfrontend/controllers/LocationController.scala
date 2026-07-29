@@ -23,6 +23,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.DataRetrieval
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.LocationForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.LocationId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.OptionalDataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
@@ -39,11 +40,12 @@ class LocationController @Inject() (
     navigator: Navigator,
     getData: DataRetrievalAction,
     location: location
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData { request =>
+    given OptionalDataRequest[AnyContent] = request
     val preparedForm = request.userAnswers.flatMap(x => x.location) match {
       case None        => LocationForm()
       case Some(value) => LocationForm().fill(value)
@@ -51,7 +53,8 @@ class LocationController @Inject() (
     Ok(location(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = getData.async { implicit request =>
+  def onSubmit(): Action[AnyContent] = getData.async { request =>
+    given OptionalDataRequest[AnyContent] = request
     LocationForm()
       .bindFromRequest()
       .fold(

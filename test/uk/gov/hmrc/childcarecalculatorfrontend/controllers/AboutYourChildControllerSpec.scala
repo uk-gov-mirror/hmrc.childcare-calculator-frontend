@@ -48,7 +48,7 @@ class AboutYourChildControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[AboutYourChild] = AboutYourChildForm()): String =
-    aboutYourChild(form, 0, 1)(fakeRequest, messages).toString
+    aboutYourChild(form, 0, 1)(using fakeRequest, messages).toString
 
   val requiredData: Map[String, JsValue] = Map(
     NoOfChildrenId.of(1)
@@ -114,7 +114,7 @@ class AboutYourChildControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val date = LocalDate.of(2026, 27, 7)
+      val date = LocalDate.of(2026, 7, 27)
       val postRequest = fakeRequest
         .withFormUrlEncodedBody(
           "name"                     -> "Foo",
@@ -138,7 +138,7 @@ class AboutYourChildControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if the user hasn't said how many children they have" in {
-      val date = LocalDate.of(2026, 27, 7)
+      val date = LocalDate.of(2026, 7, 27)
       val postRequest = fakeRequest
         .withFormUrlEncodedBody(
           "name"                     -> "Foo",

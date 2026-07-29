@@ -24,13 +24,13 @@
 @this(
     schemeResult: playComponents.scheme_result,
     appConfig: FrontendAppConfig,
+    utils: Utils,
 )
 
 @(
     model: ResultsViewModel,
-    utils: Utils,
 )(
-    implicit messages: Messages,
+    using messages: Messages,
 )
 
 @freeHoursContactCouncil = {

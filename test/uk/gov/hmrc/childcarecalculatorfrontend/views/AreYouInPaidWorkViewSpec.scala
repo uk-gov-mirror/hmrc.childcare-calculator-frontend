@@ -32,20 +32,20 @@ class AreYouInPaidWorkViewSpec extends NewYesNoViewBehaviours with BeforeAndAfte
   val view: areYouInPaidWork         = inject[areYouInPaidWork]
   val bereavedPartnersPaternityLeave = "bereaved partner&#x27;s paternity leave"
 
-  def constructView(
-      form: Form[Boolean] = BooleanForm(),
+  def render(
+      form: Form[Boolean] = this.form,
       location: Location = Location.England
-  ): Html = view(form, location)(fakeRequest, messages)
+  ): Html = view(form, location)(using fakeRequest, messages)
 
   "AreYouInPaidWork view" must {
 
-    behave.like(normalPage(() => constructView(), messageKeyPrefix, "heading", "para1"))
+    behave.like(normalPage(() => render(), messageKeyPrefix, "heading", "para1"))
 
-    behave.like(pageWithBackLink(() => constructView()))
+    behave.like(pageWithBackLink(() => render()))
 
     behave.like(
       yesNoPage(
-        (form: Form[Boolean]) => constructView(form = form),
+        (form: Form[Boolean]) => render(form = form),
         messageKeyPrefix,
         routes.AreYouInPaidWorkController.onSubmit().url
       )
@@ -53,19 +53,19 @@ class AreYouInPaidWorkViewSpec extends NewYesNoViewBehaviours with BeforeAndAfte
 
     "include bereaved partner's paternity leave on page" when {
       "the location is England" in {
-        constructView(location = Location.England).toString must include(
+        render(location = Location.England).toString must include(
           bereavedPartnersPaternityLeave
         )
       }
 
       "the location is Scotland" in {
-        constructView(location = Location.Scotland).toString must include(
+        render(location = Location.Scotland).toString must include(
           bereavedPartnersPaternityLeave
         )
       }
 
       "the location is Wales" in {
-        constructView(location = Location.Wales).toString must include(
+        render(location = Location.Wales).toString must include(
           bereavedPartnersPaternityLeave
         )
       }
@@ -73,7 +73,7 @@ class AreYouInPaidWorkViewSpec extends NewYesNoViewBehaviours with BeforeAndAfte
 
     "NOT include bereaved partner's paternity leave on page" when {
       "the location is Northern Ireland" in
-        (constructView(location = Location.NorthernIreland).toString must not)
+        (render(location = Location.NorthernIreland).toString must not)
           .include(bereavedPartnersPaternityLeave)
     }
   }

@@ -40,11 +40,12 @@ class WhoHasChildcareCostsController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     whoHasChildcareCosts: whoHasChildcareCosts
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     withValues { values =>
       val answer               = request.userAnswers.whoHasChildcareCosts
       val childrenUnderSixteen = request.userAnswers.childrenBelow16AndExactly16Disabled
@@ -58,7 +59,8 @@ class WhoHasChildcareCostsController @Inject() (
     }
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     withValues { values =>
       val childrenUnderSixteen = request.userAnswers.childrenBelow16AndExactly16Disabled
       WhoHasChildcareCostsForm(values.values.toSeq*)
@@ -83,7 +85,7 @@ class WhoHasChildcareCostsController @Inject() (
 
   private def withValues[A](
       block: Map[String, Int] => Future[Result]
-  )(implicit request: DataRequest[A]): Future[Result] =
+  )(using request: DataRequest[A]): Future[Result] =
     request.userAnswers.aboutYourChild
       .map { aboutYourChild =>
         val values: Map[String, Int] = aboutYourChild.map { case (i, model) =>

@@ -27,5 +27,5 @@ case class Income(
 )
 
 object Income {
-  implicit val formatIncome: OFormat[Income] = Json.format[Income]
+  given formatIncome: OFormat[Income] = Json.format[Income]
 }

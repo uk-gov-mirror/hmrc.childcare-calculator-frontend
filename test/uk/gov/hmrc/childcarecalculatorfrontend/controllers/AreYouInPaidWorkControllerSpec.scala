@@ -46,7 +46,7 @@ class AreYouInPaidWorkControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Boolean] = BooleanForm(), location: Location = Location.England): String =
-    view(form, location)(fakeRequest, messages).toString
+    view(form, location)(using fakeRequest, messages).toString
 
   val location: (String, JsValue) = LocationId.of(Location.England)
 

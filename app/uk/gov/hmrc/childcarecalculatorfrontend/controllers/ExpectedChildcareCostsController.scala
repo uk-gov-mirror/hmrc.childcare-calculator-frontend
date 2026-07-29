@@ -41,13 +41,14 @@ class ExpectedChildcareCostsController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     expectedChildcareCosts: expectedChildcareCosts
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport
     with MapFormats {
 
   def onPageLoad(childIndex: Int): Action[AnyContent] =
-    getData.andThen(requireData).async { implicit request =>
+    getData.andThen(requireData).async { request =>
+      given DataRequest[AnyContent] = request
       validIndex(childIndex) { case (hasCosts, name, frequency) =>
         val preparedForm = request.userAnswers.expectedChildcareCosts(childIndex) match {
           case None        => ExpectedChildcareCostsForm(frequency, name)
@@ -60,7 +61,8 @@ class ExpectedChildcareCostsController @Inject() (
     }
 
   def onSubmit(childIndex: Int): Action[AnyContent] =
-    getData.andThen(requireData).async { implicit request =>
+    getData.andThen(requireData).async { request =>
+      given DataRequest[AnyContent] = request
       validIndex(childIndex) { case (hasCosts, name, frequency) =>
         ExpectedChildcareCostsForm(frequency, name)
           .bindFromRequest()
@@ -83,7 +85,7 @@ class ExpectedChildcareCostsController @Inject() (
 
   private def validIndex[A](childIndex: Int)(
       block: (YesNoNotYet, String, ChildcarePayFrequency) => Future[Result]
-  )(implicit request: DataRequest[A]): Future[Result] = {
+  )(using request: DataRequest[A]): Future[Result] = {
 
     for {
       hasCosts  <- request.userAnswers.childcareCosts

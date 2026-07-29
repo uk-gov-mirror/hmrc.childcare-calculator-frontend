@@ -48,7 +48,7 @@ class DoYouGetAnyBenefitsControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[Set[ParentsBenefit]] = DoYouGetAnyBenefitsForm()): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "DoYouGetAnyBenefits Controller" must {
 

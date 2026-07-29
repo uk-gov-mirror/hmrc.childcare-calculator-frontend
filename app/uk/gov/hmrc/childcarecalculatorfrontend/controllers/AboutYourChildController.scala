@@ -41,19 +41,19 @@ class AboutYourChildController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     aboutYourChild: aboutYourChild
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport
     with MapFormats {
 
   private def sessionExpired(message: String, answers: Option[UserAnswers])(
-      implicit request: RequestHeader
+      using request: RequestHeader
   ): Future[Result] =
     Future.successful(Redirect(SessionExpiredRouter.route(getClass.getName, message, answers, request.uri)))
 
   private def validateIndex[A](
       childIndex: Int
-  )(block: Int => Future[Result])(implicit request: DataRequest[A]): Future[Result] =
+  )(block: Int => Future[Result])(using request: DataRequest[A]): Future[Result] =
     request.userAnswers.noOfChildren
       .map { noOfChildren =>
         if (childIndex >= 0 && childIndex < noOfChildren) {
@@ -65,7 +65,8 @@ class AboutYourChildController @Inject() (
       .getOrElse(sessionExpired("validateIndex", None))
 
   def onPageLoad(childIndex: Int): Action[AnyContent] =
-    getData.andThen(requireData).async { implicit request =>
+    getData.andThen(requireData).async { request =>
+      given DataRequest[AnyContent] = request
       validateIndex(childIndex) { noOfChildren =>
         val preparedForm = request.userAnswers.aboutYourChild(childIndex) match {
           case None => AboutYourChildForm(childIndex, noOfChildren)
@@ -76,7 +77,8 @@ class AboutYourChildController @Inject() (
       }
     }
 
-  def onSubmit(childIndex: Int): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(childIndex: Int): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     validateIndex(childIndex) { noOfChildren =>
       AboutYourChildForm(childIndex, noOfChildren, request.userAnswers.aboutYourChild)
         .bindFromRequest()

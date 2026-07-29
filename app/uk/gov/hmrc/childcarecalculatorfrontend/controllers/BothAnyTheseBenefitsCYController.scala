@@ -24,10 +24,11 @@ import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.BothAnyTheseBenefitsCYId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.ParentsBenefit.CarersAllowance
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.*
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{TaxYearInfo, UserAnswers}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.UserAnswers
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.bothAnyTheseBenefitsCY
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -41,13 +42,13 @@ class BothAnyTheseBenefitsCYController @Inject() (
     navigator: Navigator,
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
-    taxYearInfo: TaxYearInfo,
     bothAnyTheseBenefitsCY: bothAnyTheseBenefitsCY
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { request =>
+    given DataRequest[AnyContent] = request
     request.userAnswers.location match {
       case None =>
         Redirect(routes.LocationController.onPageLoad())
@@ -57,12 +58,13 @@ class BothAnyTheseBenefitsCYController @Inject() (
           case None        => BooleanForm()
           case Some(value) => BooleanForm().fill(value)
         }
-        Ok(bothAnyTheseBenefitsCY(preparedForm, taxYearInfo, location))
+        Ok(bothAnyTheseBenefitsCY(preparedForm, location))
     }
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
-    val boundForm = BooleanForm(bothAnyTheseBenefitsCYErrorKey).bindFromRequest()
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
+    val boundForm                 = BooleanForm(bothAnyTheseBenefitsCYErrorKey).bindFromRequest()
     request.userAnswers.location match {
       case None => Future.successful(Redirect(routes.LocationController.onPageLoad()))
       case Some(location) =>
@@ -70,7 +72,7 @@ class BothAnyTheseBenefitsCYController @Inject() (
           (formWithErrors: Form[Boolean]) =>
             Future.successful(
               BadRequest(
-                bothAnyTheseBenefitsCY(formWithErrors, taxYearInfo, location)
+                bothAnyTheseBenefitsCY(formWithErrors, location)
               )
             ),
           value =>

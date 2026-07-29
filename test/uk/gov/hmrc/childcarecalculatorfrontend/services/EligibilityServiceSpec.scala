@@ -38,9 +38,9 @@ class EligibilityServiceSpec extends SchemeSpec with MockitoSugar with ScalaFutu
   def userAnswers(answers: (String, JsValue)*): UserAnswers = new UserAnswers(CacheMap("", Map(answers*)))
   val userAnswerToHousehold: UserAnswerToHousehold          = mock[UserAnswerToHousehold]
   val connector: EligibilityConnector                       = mock[EligibilityConnector]
-  implicit val hc: HeaderCarrier                            = HeaderCarrier()
-  implicit val ec: ExecutionContext                         = ExecutionContext.global
-  implicit val req: Request[?]                              = mock[Request[?]]
+  given hc: HeaderCarrier                                   = HeaderCarrier()
+  given ec: ExecutionContext                                = ExecutionContext.global
+  given req: Request[?]                                     = mock[Request[?]]
 
   def eligibilityService: EligibilityService = new EligibilityService(userAnswerToHousehold, connector)
   val today: LocalDate                       = LocalDate.now
@@ -52,7 +52,7 @@ class EligibilityServiceSpec extends SchemeSpec with MockitoSugar with ScalaFutu
       val answers       = spy(userAnswers())
 
       when(answers.location).thenReturn(Some(Location.England))
-      when(connector.getEligibility(any())(any())).thenReturn(Future(schemeResults))
+      when(connector.getEligibility(any())(using any())).thenReturn(Future(schemeResults))
 
       val futureResult = eligibilityService.eligibility(answers)
       whenReady(futureResult)(result => result mustBe schemeResults)
@@ -64,7 +64,7 @@ class EligibilityServiceSpec extends SchemeSpec with MockitoSugar with ScalaFutu
 
       when(answers.location).thenReturn(Some(Location.England))
       when(answers.childAgedThreeOrFour).thenReturn(Some(true))
-      when(connector.getEligibility(any())(any())).thenReturn(Future(schemeResults))
+      when(connector.getEligibility(any())(using any())).thenReturn(Future(schemeResults))
 
       val futureResult = eligibilityService.eligibility(answers)
       whenReady(futureResult)(result => result mustBe schemeResults)

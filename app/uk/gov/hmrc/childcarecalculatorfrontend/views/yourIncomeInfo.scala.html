@@ -21,12 +21,11 @@
     layout: Layout,
     heading: playComponents.heading,
     buttonLink: playComponents.button_link,
+    taxYearInfo: TaxYearInfo,
 )
 
-@(
-    taxYearInfo: TaxYearInfo,
-)(
-    implicit request: Request[?],
+@()(
+    using request: Request[?],
     messages: Messages,
 )
 

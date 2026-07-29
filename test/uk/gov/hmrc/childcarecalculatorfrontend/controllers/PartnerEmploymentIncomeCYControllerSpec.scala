@@ -31,7 +31,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.partnerEmploymentIncom
 class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
 
   val view: partnerEmploymentIncomeCY = inject[partnerEmploymentIncomeCY]
-  val taxYearInfo                     = new TaxYearInfo
 
   def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
 
@@ -43,13 +42,12 @@ class PartnerEmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       new FakeNavigator(desiredRoute = onwardRoute),
       dataRetrievalAction,
       new DataRequiredAction,
-      taxYearInfo,
       new PartnerEmploymentIncomeCYForm(frontendAppConfig),
       view
     )
 
   def viewAsString(form: Form[BigDecimal] = new PartnerEmploymentIncomeCYForm(frontendAppConfig).apply()): String =
-    view(form, taxYearInfo)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   val form: Form[BigDecimal] = new PartnerEmploymentIncomeCYForm(frontendAppConfig).apply()
 

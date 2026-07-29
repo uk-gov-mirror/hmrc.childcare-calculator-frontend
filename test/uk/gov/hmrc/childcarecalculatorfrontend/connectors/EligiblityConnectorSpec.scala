@@ -34,11 +34,11 @@ import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import scala.concurrent.{ExecutionContext, Future}
 
 class EligiblityConnectorSpec extends PlaySpec with MockitoSugar with ScalaFutures {
-  val mockHttp: HttpClientV2 = mock[HttpClientV2]
-  val frontendAppConfig: FrontendAppConfig  = mock[FrontendAppConfig]
-  implicit val request: Request[AnyContent] = FakeRequest()
-  implicit val hc: HeaderCarrier            = HeaderCarrier()
-  implicit val ec: ExecutionContext         = ExecutionContext.global
+  val mockHttp: HttpClientV2               = mock[HttpClientV2]
+  val frontendAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
+  given request: Request[AnyContent]       = FakeRequest()
+  given hc: HeaderCarrier                  = HeaderCarrier()
+  given ec: ExecutionContext               = ExecutionContext.global
 
   def mockConnector: EligibilityConnector = new EligibilityConnector(frontendAppConfig, mockHttp)
 
@@ -53,12 +53,12 @@ class EligiblityConnectorSpec extends PlaySpec with MockitoSugar with ScalaFutur
       ).thenReturn("http://localhost:9000/test")
 
       when(
-        mockHttp.post(any())(any())
+        mockHttp.post(any())(using any())
       ).thenReturn(testRequestBuilder)
 
       when(
         testRequestBuilder
-          .withBody[Household](any())(any(), any(), any())
+          .withBody[Household](any())(using any(), any(), any())
       ).thenReturn(testRequestBuilder)
 
       when(

@@ -16,7 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{youBenefitsIncomeCYInvalidErrorKey, youBenefitsIncomeCYRequiredErrorKey}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
+  youBenefitsIncomeCYInvalidErrorKey,
+  youBenefitsIncomeCYRequiredErrorKey
+}
 
 class YouBenefitsIncomeCYFormSpec extends FormSpec {
 

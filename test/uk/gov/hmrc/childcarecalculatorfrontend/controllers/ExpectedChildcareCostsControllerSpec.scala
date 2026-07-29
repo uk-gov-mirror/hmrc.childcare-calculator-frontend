@@ -61,7 +61,7 @@ class ExpectedChildcareCostsControllerSpec extends ControllerSpecBase {
       frequency: ChildcarePayFrequency = ChildcarePayFrequency.Weekly,
       name: String = "Foo"
   ): String =
-    view(form, hasCosts, id, frequency, name)(fakeRequest, messages).toString
+    view(form, hasCosts, id, frequency, name)(using fakeRequest, messages).toString
 
   val testNumber: Int = 123
 

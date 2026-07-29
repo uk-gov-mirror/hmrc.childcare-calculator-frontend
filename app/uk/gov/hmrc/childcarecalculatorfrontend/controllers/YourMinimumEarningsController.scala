@@ -24,6 +24,7 @@ import uk.gov.hmrc.childcarecalculatorfrontend.config.NmwConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.actions.{DataRequiredAction, DataRetrievalAction}
 import uk.gov.hmrc.childcarecalculatorfrontend.forms.BooleanForm
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.YourMinimumEarningsId
+import uk.gov.hmrc.childcarecalculatorfrontend.models.requests.DataRequest
 import uk.gov.hmrc.childcarecalculatorfrontend.navigation.Navigator
 import uk.gov.hmrc.childcarecalculatorfrontend.services.DataCacheService
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.yourMinimumEarningsErrorKey
@@ -44,12 +45,13 @@ class YourMinimumEarningsController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     yourMinimumEarnings: yourMinimumEarnings
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport
     with Logging {
 
-  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = getData.andThen(requireData) { request =>
+    given DataRequest[AnyContent] = request
     request.userAnswers.location match {
       case None =>
         Redirect(routes.LocationController.onPageLoad())
@@ -66,7 +68,8 @@ class YourMinimumEarningsController @Inject() (
     }
   }
 
-  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     val earningsForAge =
       nmwConfig.getEarningsForAgeRange(LocalDate.now, request.userAnswers.yourAge)
 

@@ -21,7 +21,7 @@ import play.api.data.format.Formatter
 
 trait WithRequiredBooleanMapping {
 
-  implicit def requiredBooleanFormatter: Formatter[Boolean] = new Formatter[Boolean] {
+  given requiredBooleanFormatter: Formatter[Boolean] = new Formatter[Boolean] {
 
     override val format = Some(("format.boolean", Nil))
 

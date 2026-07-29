@@ -30,9 +30,9 @@ import uk.gov.hmrc.childcarecalculatorfrontend.views.html.otherIncomeAmountCY
 
 class OtherIncomeAmountCYControllerSpec extends ControllerSpecBase {
 
-  val view: otherIncomeAmountCY = inject[otherIncomeAmountCY]
+  val view: otherIncomeAmountCY       = inject[otherIncomeAmountCY]
   val form: Form[OtherIncomeAmountCY] = new OtherIncomeAmountCYForm(frontendAppConfig).apply()
-  def onwardRoute: Call = routes.WhatToTellTheCalculatorController.onPageLoad
+  def onwardRoute: Call               = routes.WhatToTellTheCalculatorController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new OtherIncomeAmountCYController(
@@ -46,7 +46,7 @@ class OtherIncomeAmountCYControllerSpec extends ControllerSpecBase {
     )
 
   def viewAsString(form: Form[OtherIncomeAmountCY] = form): String =
-    view(form)(fakeRequest, messages).toString
+    view(form)(using fakeRequest, messages).toString
 
   "OtherIncomeAmountCY Controller" must {
 

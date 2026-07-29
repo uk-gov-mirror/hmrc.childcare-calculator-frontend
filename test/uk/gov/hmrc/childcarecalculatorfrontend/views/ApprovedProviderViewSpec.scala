@@ -28,8 +28,10 @@ class ApprovedProviderViewSpec extends NewViewBehaviours {
   val messageKeyPrefix       = "approvedProvider"
   val view: approvedProvider = inject[approvedProvider]
 
-  def render(form: Form[YesNoNotSure] = ApprovedProviderForm(), childcareCostsMaybeInFuture : Boolean = false): Html =
-    view(form, childcareCostsMaybeInFuture)(fakeRequest, messages)
+  val form: Form[YesNoNotSure] = ApprovedProviderForm()
+
+  def render(form: Form[YesNoNotSure] = form, childcareCostsMaybeInFuture: Boolean = false): Html =
+    view(form, childcareCostsMaybeInFuture)(using fakeRequest, messages)
 
   "ApprovedProvider view" must {
     behave.like(normalPage(() => render(), messageKeyPrefix, "hint"))
@@ -40,13 +42,13 @@ class ApprovedProviderViewSpec extends NewViewBehaviours {
   "ApprovedProvider view" when {
     "rendered" must {
       "contain radio buttons for the value" in {
-        val doc = asDocument(render(form = ApprovedProviderForm()))
+        val doc = asDocument(render(form = form))
         for (option <- ApprovedProviderForm.options)
           assertContainsRadioButton(doc, option.id, "value", option.value, false)
       }
 
       "contain right title" when {
-        "we have selected 'Not Yet but maybe in the furure'" in {
+        "we have selected 'Not Yet but maybe in the future'" in {
           val doc = asDocument(render(childcareCostsMaybeInFuture = true))
 
           assertEqualsValue(
@@ -107,7 +109,7 @@ class ApprovedProviderViewSpec extends NewViewBehaviours {
     for (option <- ApprovedProviderForm.options)
       s"rendered with a value of '${option.value}'" must {
         s"have the '${option.value}' radio button selected" in {
-          val doc = asDocument(render(form = ApprovedProviderForm().bind(Map("value" -> s"${option.value}"))))
+          val doc = asDocument(render(form = form.bind(Map("value" -> s"${option.value}"))))
           assertContainsRadioButton(doc, option.id, "value", option.value, true)
 
           for (unselectedOption <- ApprovedProviderForm.options.filterNot(o => o == option))

@@ -31,17 +31,17 @@ import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.LocationId
 import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.Location
 import uk.gov.hmrc.childcarecalculatorfrontend.models.views.ResultsViewModel
 import uk.gov.hmrc.childcarecalculatorfrontend.services.{FakeDataCacheService, ResultsService}
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, Utils}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.CacheMap
 import uk.gov.hmrc.childcarecalculatorfrontend.views.html.result
 
 import scala.concurrent.Future
 
 class ResultControllerSpec extends ControllerSpecBase with MockitoSugar {
 
-  val view: result = inject[result]
+  val view: result                  = inject[result]
   val resultService: ResultsService = mock[ResultsService]
 
-  implicit val l: Lang = mock[Lang]
+  given l: Lang = mock[Lang]
 
   val location: Location = Location.England
 
@@ -59,13 +59,12 @@ class ResultControllerSpec extends ControllerSpecBase with MockitoSugar {
       dataRetrievalAction,
       new DataRequiredAction,
       resultService,
-      new Utils,
       view
     )
 
   "Result Controller" must {
     "return OK and with ResultViewModel for a GET" in {
-      when(resultService.getResultsViewModel(any(), any())(any(), any(), any())).thenReturn(
+      when(resultService.getResultsViewModel(any(), any())(using any(), any(), any())).thenReturn(
         Future.successful(
           ResultsViewModel(
             freeHours = Some(15),

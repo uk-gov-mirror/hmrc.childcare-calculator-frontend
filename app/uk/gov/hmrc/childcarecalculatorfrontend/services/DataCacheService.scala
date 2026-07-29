@@ -26,12 +26,12 @@ import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheKey, CacheMap}
 import scala.concurrent.{ExecutionContext, Future}
 
 class DataCacheServiceImpl @Inject() (val sessionRepository: SessionRepository, val cascadeUpsert: CascadeUpsert)(
-    implicit ec: ExecutionContext
+    using ec: ExecutionContext
 ) extends DataCacheService {
 
   def save[A](
       cacheKey: CacheKey[A],
-      value: A,
+      value: A
   )(
       using writes: Writes[A],
       request: SessionIdProvider
@@ -50,12 +50,12 @@ class DataCacheServiceImpl @Inject() (val sessionRepository: SessionRepository, 
 
   def getEntry[A](
       key: CacheKey[A]
-  )(implicit reads: Reads[A], request: SessionIdProvider): Future[Option[A]] =
+  )(using reads: Reads[A], request: SessionIdProvider): Future[Option[A]] =
     fetch().map(optionalCacheMap => optionalCacheMap.flatMap(cacheMap => cacheMap.getEntry(key)))
 
   def saveInMap[K, V](cacheKey: CacheKey[Map[K, V]], key: K, value: V)(
-      implicit fmt: Format[Map[K, V]],
-      request: SessionIdProvider,
+      using fmt: Format[Map[K, V]],
+      request: SessionIdProvider
   ): Future[CacheMap] = {
     val cacheId = request.sessionId
 
@@ -91,7 +91,7 @@ trait DataCacheService {
       value: V
   )(
       using Format[Map[K, V]],
-      SessionIdProvider,
+      SessionIdProvider
   ): Future[CacheMap]
 
 }

@@ -40,13 +40,14 @@ class WhichDisabilityBenefitsController @Inject() (
     getData: DataRetrievalAction,
     requireData: DataRequiredAction,
     whichDisabilityBenefits: whichDisabilityBenefits
-)(implicit ec: ExecutionContext)
+)(using ec: ExecutionContext)
     extends FrontendController(mcc)
     with I18nSupport
     with MapFormats {
 
   def onPageLoad(childIndex: Int): Action[AnyContent] =
-    getData.andThen(requireData).async { implicit request =>
+    getData.andThen(requireData).async { request =>
+      given DataRequest[AnyContent] = request
       withValidIndex(childIndex) { name =>
         val answer = request.userAnswers.whichDisabilityBenefits(childIndex)
         val preparedForm = answer match {
@@ -57,7 +58,8 @@ class WhichDisabilityBenefitsController @Inject() (
       }
     }
 
-  def onSubmit(childIndex: Int): Action[AnyContent] = getData.andThen(requireData).async { implicit request =>
+  def onSubmit(childIndex: Int): Action[AnyContent] = getData.andThen(requireData).async { request =>
+    given DataRequest[AnyContent] = request
     withValidIndex(childIndex) { name =>
       WhichDisabilityBenefitsForm(name)
         .bindFromRequest()
@@ -78,13 +80,13 @@ class WhichDisabilityBenefitsController @Inject() (
   }
 
   private def sessionExpired(message: String, answers: Option[UserAnswers])(
-      implicit request: RequestHeader
+      using request: RequestHeader
   ): Future[Result] =
     Future.successful(Redirect(SessionExpiredRouter.route(getClass.getName, message, answers, request.uri)))
 
   private def withValidIndex[A](
       index: Int
-  )(block: String => Future[Result])(implicit request: DataRequest[A]): Future[Result] = {
+  )(block: String => Future[Result])(using request: DataRequest[A]): Future[Result] = {
     for {
       children <- request.userAnswers.childrenWithDisabilityBenefits
       name     <- request.userAnswers.aboutYourChild(index).map(_.name)

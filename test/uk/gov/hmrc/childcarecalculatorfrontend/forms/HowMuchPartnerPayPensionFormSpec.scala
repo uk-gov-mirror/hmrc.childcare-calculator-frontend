@@ -16,7 +16,10 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.forms
 
-import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{howMuchPartnerPayPensionInvalidErrorKey, howMuchPartnerPayPensionRequiredErrorKey}
+import uk.gov.hmrc.childcarecalculatorfrontend.utils.ChildcareConstants.{
+  howMuchPartnerPayPensionInvalidErrorKey,
+  howMuchPartnerPayPensionRequiredErrorKey
+}
 
 class HowMuchPartnerPayPensionFormSpec extends FormSpec {
 

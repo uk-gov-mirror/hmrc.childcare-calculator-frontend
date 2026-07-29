@@ -53,10 +53,10 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
     )
 
   def singleViewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view1(form, "Foo")(fakeRequest, messages).toString
+    view1(form, "Foo")(using fakeRequest, messages).toString
 
   def viewAsString(form: Form[Boolean] = BooleanForm()): String =
-    view2(form)(fakeRequest, messages).toString
+    view2(form)(using fakeRequest, messages).toString
 
   def requiredData(noOfChildren: Int): Map[String, JsValue] = Map(
     NoOfChildrenId.of(noOfChildren),
@@ -137,7 +137,7 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
     "redirect to Session Expired for a GET if there is no answer for `number of children`" in {
       val data = Map(
         AboutYourChildId.of(
-          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 27, 7)))
+          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 7, 27)))
         )
       )
       val getData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)))
@@ -149,7 +149,7 @@ class ChildrenDisabilityBenefitsControllerSpec extends ControllerSpecBase {
     "redirect to Session Expired for a POST if there is no answer for `number of children`" in {
       val data = Map(
         AboutYourChildId.of(
-          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 27, 7)))
+          Map(0 -> AboutYourChild("Foo", LocalDate.of(2026, 7, 27)))
         )
       )
       val getData     = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, data)))
