@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.childcarecalculatorfrontend.controllers
 
+import org.jsoup.Jsoup
 import play.api.data.Form
 import play.api.mvc.Call
 import play.api.test.Helpers.*
@@ -125,8 +126,15 @@ class EmploymentIncomeCYControllerSpec extends ControllerSpecBase {
       val result = controller(getRelevantData).onSubmit()(postRequest)
 
       status(result) mustBe BAD_REQUEST
-      contentAsString(result) must include(messages(parentEmploymentIncomeInvalidMaxEarningsErrorKey))
-      contentAsString(result) must include(messages(partnerEmploymentIncomeInvalidMaxEarningsErrorKey))
+
+      val document = Jsoup.parse(contentAsString(result))
+
+      document
+        .getElementById("parentEmploymentIncomeCY-error")
+        .text() mustBe s"Error: ${messages(parentEmploymentIncomeBothInvalidMaxEarningsErrorKey)}"
+      document
+        .getElementById("partnerEmploymentIncomeCY-error")
+        .text() mustBe s"Error: ${messages(partnerEmploymentIncomeBothInvalidMaxEarningsErrorKey)}"
     }
 
     "return a Bad Request and errors when user answered max earnings question under 1000000 but input was above 1000000" in {
