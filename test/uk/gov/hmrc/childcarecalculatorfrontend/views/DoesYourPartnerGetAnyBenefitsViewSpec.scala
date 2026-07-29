@@ -47,19 +47,18 @@ class DoesYourPartnerGetAnyBenefitsViewSpec extends NewViewBehaviours with NewCh
         NICreditsForIncapacityOrLimitedCapabilityForWork
       ),
       (s"$messageKeyPrefix.$SevereDisablementAllowance", SevereDisablementAllowance),
-//      (s"$messageKeyPrefix.or", "divider"),
       (s"$messageKeyPrefix.$NoneOfThese", NoneOfThese)
     )
 
   override def render(form: Form[Set[ParentsBenefit]] = form): Html =
     view(form)(using fakeRequest, messages)
 
-  "DoYouGetAnyBenefits view" must {
+  "DoesYourPartnerGetAnyBenefitsViewSpec view" must {
     behave.like(normalPage(render, messageKeyPrefix))
 
     behave.like(pageWithBackLink(render))
 
-    behave.like(checkboxPage())
+    behave.like(checkboxPage(divider = true))
 
     "display correct content when loaded" in {
       val view = render()

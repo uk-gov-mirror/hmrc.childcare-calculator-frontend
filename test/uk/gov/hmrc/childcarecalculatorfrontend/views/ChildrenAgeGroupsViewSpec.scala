@@ -37,7 +37,6 @@ class ChildrenAgeGroupsViewSpec extends NewViewBehaviours with NewCheckboxViewBe
       (s"$messageKeyPrefix.${ChildAgeGroup.TwoYears}", ChildAgeGroup.TwoYears),
       (s"$messageKeyPrefix.${ChildAgeGroup.ThreeYears}", ChildAgeGroup.ThreeYears),
       (s"$messageKeyPrefix.${ChildAgeGroup.FourYears}", ChildAgeGroup.FourYears),
-//      (s"$messageKeyPrefix.or", "divider"),
       (s"$messageKeyPrefix.${ChildAgeGroup.NoneOfThese}", ChildAgeGroup.NoneOfThese)
     )
 
@@ -49,7 +48,7 @@ class ChildrenAgeGroupsViewSpec extends NewViewBehaviours with NewCheckboxViewBe
 
     behave.like(pageWithBackLink(render))
 
-    behave.like(checkboxPage())
+    behave.like(checkboxPage(divider = true))
 
     "display correct content when loaded" in {
       val page     = view(form)(using fakeRequest, messages)

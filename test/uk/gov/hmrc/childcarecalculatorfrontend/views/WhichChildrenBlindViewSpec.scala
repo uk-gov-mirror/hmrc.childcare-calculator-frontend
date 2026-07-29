@@ -48,7 +48,7 @@ class WhichChildrenBlindViewSpec extends NewViewBehaviours with NewCheckboxViewB
 
     behave.like(pageWithBackLink(render))
 
-    behave.like(checkboxPage())
+    behave.like(checkboxPage(divider = false))
   }
 
 }

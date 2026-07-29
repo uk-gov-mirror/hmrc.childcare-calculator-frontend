@@ -44,7 +44,7 @@
     CheckboxItem(
         content = Text(messages(s"childrenAgeGroups.$value")),
         value = value.toString,
-        checked = form.value.getOrElse(Set.empty).contains(ChildAgeGroup.NineTo23Months)
+        checked = form.value.getOrElse(Set.empty).contains(value)
     )
 }
 

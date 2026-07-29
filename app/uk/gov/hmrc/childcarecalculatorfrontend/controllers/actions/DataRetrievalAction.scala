@@ -54,10 +54,8 @@ class DataRetrievalActionImpl @Inject() (
       case None => Future.failed(new IllegalStateException())
       case Some(sessionId) =>
         dataCacheService.fetch()(using sessionIdProvider(sessionId)).map {
-          case None       => OptionalDataRequest(request, sessionId.toString, None)
+          case None => OptionalDataRequest(request, sessionId.toString, None)
           case Some(data) =>
-            // TODO remove before merging
-            logger.warn(data.data.toString)
             OptionalDataRequest(request, sessionId.toString, Some(new UserAnswers(data)))
         }
     }

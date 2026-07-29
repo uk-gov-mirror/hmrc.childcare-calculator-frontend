@@ -46,7 +46,6 @@ class DoYouGetAnyBenefitsViewSpec extends NewViewBehaviours with NewCheckboxView
         NICreditsForIncapacityOrLimitedCapabilityForWork
       ),
       (s"$messageKeyPrefix.$SevereDisablementAllowance", SevereDisablementAllowance),
-//      (s"$messageKeyPrefix.or", "divider"),
       (s"$messageKeyPrefix.$NoneOfThese", NoneOfThese)
     )
 
@@ -58,7 +57,7 @@ class DoYouGetAnyBenefitsViewSpec extends NewViewBehaviours with NewCheckboxView
 
     behave.like(pageWithBackLink(render))
 
-    behave.like(checkboxPage())
+    behave.like(checkboxPage(divider = true))
 
     "display correct content when loaded" in {
       val view = render()

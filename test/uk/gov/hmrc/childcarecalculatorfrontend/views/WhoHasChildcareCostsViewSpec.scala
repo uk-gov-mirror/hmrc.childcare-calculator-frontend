@@ -44,7 +44,7 @@ class WhoHasChildcareCostsViewSpec extends NewViewBehaviours with NewCheckboxVie
     behave.like(normalPage(render, messageKeyPrefix))
 
     behave.like(pageWithBackLink(render))
-    behave.like(checkboxPage())
+    behave.like(checkboxPage(divider = false))
   }
 
 }

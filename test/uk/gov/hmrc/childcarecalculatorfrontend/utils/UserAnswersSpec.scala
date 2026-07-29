@@ -81,7 +81,6 @@ class UserAnswersSpec extends PlaySpec with OptionValues {
           )
         )
       )
-      println(answers)
       val result = userAnswers(answers).childrenOver16
       print(result)
       result.value must contain(0 -> AboutYourChild(foo, ageOf16Over))

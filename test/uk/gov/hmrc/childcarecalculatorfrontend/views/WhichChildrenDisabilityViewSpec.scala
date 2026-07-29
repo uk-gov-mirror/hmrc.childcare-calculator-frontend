@@ -43,7 +43,7 @@ class WhichChildrenDisabilityViewSpec extends NewViewBehaviours with NewCheckbox
 
     behave.like(pageWithBackLink(render))
 
-    behave.like(checkboxPage())
+    behave.like(checkboxPage(divider = false))
   }
 
 }

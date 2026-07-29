@@ -22,21 +22,14 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.childcarecalculatorfrontend.SpecBase
-import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.childcarecalculatorfrontend.controllers.routes
 import uk.gov.hmrc.childcarecalculatorfrontend.identifiers.*
 import uk.gov.hmrc.childcarecalculatorfrontend.models.*
-import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{
-  EmploymentStatus,
-  YouPartnerBothNeither,
-  YouPartnerBothNeitherNotSure
-}
+import uk.gov.hmrc.childcarecalculatorfrontend.models.enums.{EmploymentStatus, YouPartnerBothNeither}
 import uk.gov.hmrc.childcarecalculatorfrontend.models.schemes.*
 import uk.gov.hmrc.childcarecalculatorfrontend.utils.{CacheMap, UserAnswers}
 
 class MaximumHoursNavigatorSpec extends SpecBase with MockitoSugar with BeforeAndAfterEach {
-
-  private val appConfig: FrontendAppConfig = mock[FrontendAppConfig]
 
   def userAnswers(answers: (String, JsValue)*): UserAnswers =
     new UserAnswers(CacheMap("", Map(answers*)))
