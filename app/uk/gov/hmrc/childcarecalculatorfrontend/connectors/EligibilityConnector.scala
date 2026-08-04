@@ -25,7 +25,6 @@ import uk.gov.hmrc.childcarecalculatorfrontend.models.integration.Household
 import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import play.api.libs.ws.writeableOf_JsValue
 import uk.gov.hmrc.childcarecalculatorfrontend.config.FrontendAppConfig
 
 import scala.concurrent.{ExecutionContext, Future}
